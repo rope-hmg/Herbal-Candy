@@ -7,6 +7,8 @@ pub enum Register {
 
     Instruction_Pointer,
     Stack_Pointer,
+    Zero,
+    One,
 }
 
 impl Register {
@@ -33,6 +35,8 @@ pub struct Three_Registers {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Micro_Op {
+    Halt,
+
     Saturating_Add_I32(Three_Registers),
     Saturating_Sub_I32(Three_Registers),
     Saturating_Mul_I32(Three_Registers),
@@ -80,5 +84,8 @@ pub enum Micro_Op {
     Push(Register),
     Pop(Register),
 
+    Move(Register, Register),
+
     Jump(usize),
+    Jump_Not_Zero(usize, Register),
 }

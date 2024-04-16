@@ -44,6 +44,8 @@ impl Virtual_Machine {
             Register::General_Purpose(index) => self.registers[index as usize],
             Register::Instruction_Pointer => self.instruction_pointer as u64,
             Register::Stack_Pointer => self.stack_pointer as u64,
+            Register::Zero => 0,
+            Register::One => 1,
         }
     }
 
@@ -53,12 +55,37 @@ impl Virtual_Machine {
             .write(program.data.as_slice(), Memory_Address(0));
 
         while let Some(instruction) = program.code.get(self.instruction_pointer) {
-            self.execute(*instruction);
-            self.instruction_pointer += 1;
+            match self.execute(*instruction) {
+                Some(next_instruction_pointer) => {
+                    self.instruction_pointer = next_instruction_pointer;
+                },
+
+                None => break,
+            }
+
+            println!("------------------------------");
+            println!("Instruction: {:?}", instruction);
+            println!("Instruction Pointer: {}", self.instruction_pointer);
+            println!(
+                "Register 0: {}",
+                self.register_value(Register::General_Purpose(0))
+            );
+            println!(
+                "Register 1: {}",
+                self.register_value(Register::General_Purpose(1))
+            );
+            println!(
+                "Register 2: {}",
+                self.register_value(Register::General_Purpose(2))
+            );
+            println!(
+                "Register 3: {}",
+                self.register_value(Register::General_Purpose(3))
+            );
         }
     }
 
-    fn execute(&mut self, instruction: Micro_Op) {
+    fn execute(&mut self, instruction: Micro_Op) -> Option<usize> {
         macro_rules! saturating {
             ($operands:expr, $operation:ident as $t:ty) => {{
                 if let Some(destination_index) = $operands.destination.as_general_purpose() {
@@ -68,8 +95,10 @@ impl Virtual_Machine {
                     let result = source_1.$operation(source_2) as u64;
 
                     *self.general_purpose_register_value_mut(destination_index) = result;
+                    Some(self.instruction_pointer + 1)
                 } else {
                     self.current_instruction_is_invalid();
+                    None
                 }
             }};
         }
@@ -86,8 +115,10 @@ impl Virtual_Machine {
                     *self.general_purpose_register_value_mut(destination_index) = result as u64;
 
                     // self.set_flag(Flag::Overflow, overflow);
+                    Some(self.instruction_pointer + 1)
                 } else {
                     self.current_instruction_is_invalid();
+                    None
                 }
             }};
         }
@@ -104,6 +135,8 @@ impl Virtual_Machine {
 
                     *r = u64::from_le_bytes(buffer);
                 }
+
+                Some(self.instruction_pointer + 1)
             }};
         }
 
@@ -113,11 +146,15 @@ impl Virtual_Machine {
                 let bytes = value.to_le_bytes();
                 let dst = self.memory.slot_mut($address);
 
-                unsafe { ptr::copy_nonoverlapping(bytes.as_ptr(), dst, $size) }
+                unsafe { ptr::copy_nonoverlapping(bytes.as_ptr(), dst, $size) };
+
+                Some(self.instruction_pointer + 1)
             }};
         }
 
         match instruction {
+            Micro_Op::Halt => {None},
+
             // Saturating i32
             // --------------
             Micro_Op::Saturating_Add_I32(o) => saturating!(o, saturating_add as i32),
@@ -245,19 +282,43 @@ impl Virtual_Machine {
 
             Micro_Op::Push(register) => {
                 self.stack_pointer -= 8;
-                store!(Memory_Address(self.stack_pointer), register, 8);
+                store!(Memory_Address(self.stack_pointer), register, 8)
             },
 
             Micro_Op::Pop(register) => {
-                load!(register, Memory_Address(self.stack_pointer), 8);
+                let result = load!(register, Memory_Address(self.stack_pointer), 8);
                 self.stack_pointer += 8;
+
+                result
+            },
+
+            // Register Operations
+            // -------------------
+            Micro_Op::Move(destination, source) => {
+                if let Some(register_index) = destination.as_general_purpose() {
+                    *self.general_purpose_register_value_mut(register_index) = self.register_value(source);
+
+                    Some(self.instruction_pointer + 1)
+                } else {
+
+                None
+                }
+
             },
 
             // Branching
             // ---------
             Micro_Op::Jump(address) => {
-                self.instruction_pointer = address;
+                Some(address)
             },
+
+            Micro_Op::Jump_Not_Zero(address, register) => {
+                if self.register_value(register) != 0 {
+                    Some(address)
+                } else {
+                    Some(self.instruction_pointer + 1)
+                }
+            }
         }
     }
 }
