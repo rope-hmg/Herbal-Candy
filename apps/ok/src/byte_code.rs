@@ -5,24 +5,46 @@ pub enum Register {
     /// General Purpose Integer Register
     General_Purpose(u8),
 
+    // The following registers are aliased to the general purpose registers
+    Argument_0,
+    Argument_1,
+    Argument_2,
+    Argument_3,
+
+    Return_0,
+    Return_1,
+    Return_2,
+    Return_3,
+
+    /// readonly, stores the code offset of the currently executing instruction
     Instruction_Pointer,
+    /// readonly, stores the memory address of the top of the stack
     Stack_Pointer,
+    /// readonly, stores the memory address of the top of the frame
+    Frame_Pointer,
+
+    /// readonly, always 0
     Zero,
+    /// readonly, always 1
     One,
 }
 
 impl Register {
-    #[inline(always)]
-    pub fn general_purpose(&self) -> u8 {
-        self.as_general_purpose().unwrap()
-    }
+    pub fn is_general_purpose(&self) -> bool {
+        use Register::*;
 
-    #[inline(always)]
-    pub fn as_general_purpose(&self) -> Option<u8> {
-        match self {
-            Register::General_Purpose(address) => Some(*address),
-            _ => None,
-        }
+        matches!(
+            self,
+            General_Purpose(_)
+                | Argument_0
+                | Argument_1
+                | Argument_2
+                | Argument_3
+                | Return_0
+                | Return_1
+                | Return_2
+                | Return_3
+        )
     }
 }
 
@@ -88,4 +110,7 @@ pub enum Micro_Op {
 
     Jump(usize),
     Jump_Not_Zero(usize, Register),
+
+    Call(usize),
+    Return,
 }

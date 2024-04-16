@@ -20,6 +20,8 @@ fn main() {
     let program = Program {
         data: vec![10, 0, 0, 0],
         code: vec![
+            Micro_Op::Call(2),
+            Micro_Op::Halt,
             Micro_Op::Load_32(Register::General_Purpose(0), Memory_Address(0)),
             Micro_Op::Move(Register::General_Purpose(2), Register::One),
             Micro_Op::Saturating_Sub_I32(Three_Registers {
@@ -34,7 +36,8 @@ fn main() {
             }),
             Micro_Op::Move(Register::General_Purpose(1), Register::General_Purpose(2)),
             Micro_Op::Move(Register::General_Purpose(2), Register::General_Purpose(3)),
-            Micro_Op::Jump_Not_Zero(2, Register::General_Purpose(0)),
+            Micro_Op::Jump_Not_Zero(4, Register::General_Purpose(0)),
+            Micro_Op::Return,
         ],
         start: 0,
     };

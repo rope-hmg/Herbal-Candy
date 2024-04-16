@@ -14,11 +14,25 @@ impl Memory {
     }
 
     #[inline(always)]
+    pub fn size(&self) -> usize {
+        self.size
+    }
+
+    #[inline(always)]
+    pub fn read(&self, address: Memory_Address, data: &mut [u8]) {
+        let slot = self.slot(address);
+
+        unsafe {
+            slot.copy_to_nonoverlapping(data.as_mut_ptr(), data.len());
+        }
+    }
+
+    #[inline(always)]
     pub fn write(&mut self, data: &[u8], address: Memory_Address) {
         let slot = self.slot_mut(address);
 
         unsafe {
-            slot.copy_from(data.as_ptr(), data.len());
+            slot.copy_from_nonoverlapping(data.as_ptr(), data.len());
         }
     }
 
