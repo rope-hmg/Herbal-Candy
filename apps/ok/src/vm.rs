@@ -57,12 +57,12 @@ impl Virtual_Machine {
 
     fn execute(&mut self, instruction: Micro_Op) {
         macro_rules! saturating {
-            ($destination:expr, $source_1:expr, $source_2:expr, $op:ident as $t:ty) => {{
-                if let Some(destination_index) = $destination.as_general_purpose() {
-                    let source_1 = self.register_value($source_1) as $t;
-                    let source_2 = self.register_value($source_2) as $t;
+            ($operands:expr, $operation:ident as $t:ty) => {{
+                if let Some(destination_index) = $operands.destination.as_general_purpose() {
+                    let source_1 = self.register_value($operands.source_1) as $t;
+                    let source_2 = self.register_value($operands.source_2) as $t;
 
-                    let result = source_1.$op(source_2) as u64;
+                    let result = source_1.$operation(source_2) as u64;
 
                     *self.general_purpose_register_value_mut(destination_index) = result;
                 } else {
@@ -72,13 +72,13 @@ impl Virtual_Machine {
         }
 
         macro_rules! overflowing {
-            ($destination:expr, $source_1:expr, $source_2:expr, $op:ident as $t:ty) => {{
-                if let Some(destination_index) = $destination.as_general_purpose() {
-                    let source_1 = self.register_value($source_1) as $t;
-                    let source_2 = self.register_value($source_2) as $t;
+            ($operands:expr, $operation:ident as $t:ty) => {{
+                if let Some(destination_index) = $operands.destination.as_general_purpose() {
+                    let source_1 = self.register_value($operands.source_1) as $t;
+                    let source_2 = self.register_value($operands.source_2) as $t;
 
                     // TODO: Should set the overflow flag.
-                    let (result, _) = source_1.$op(source_2);
+                    let (result, _) = source_1.$operation(source_2);
 
                     *self.general_purpose_register_value_mut(destination_index) = result as u64;
 
@@ -117,147 +117,116 @@ impl Virtual_Machine {
         match instruction {
             // Saturating i32
             // --------------
-            Micro_Op::Saturating_Add_I32(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_add as i32)
-            },
-
-            Micro_Op::Saturating_Sub_I32(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_sub as i32)
-            },
-
-            Micro_Op::Saturating_Mul_I32(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_mul as i32)
-            },
-
-            Micro_Op::Saturating_Div_I32(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_div as i32)
-            },
+            Micro_Op::Saturating_Add_I32(o) => saturating!(o, saturating_add as i32),
+            Micro_Op::Saturating_Sub_I32(o) =>                saturating!(o, saturating_sub as i32)
+            ,
+            Micro_Op::Saturating_Mul_I32(o) => saturating!(o, saturating_mul as i32) ,
+            Micro_Op::Saturating_Div_I32(o) => saturating!(o, saturating_div as i32) ,
 
             // Saturating u32
             // --------------
-            Micro_Op::Saturating_Add_U32(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_add as u32)
-            },
-
-            Micro_Op::Saturating_Sub_U32(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_sub as u32)
-            },
-
-            Micro_Op::Saturating_Mul_U32(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_mul as u32)
-            },
-
-            Micro_Op::Saturating_Div_U32(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_div as u32)
-            },
+            Micro_Op::Saturating_Add_U32(o) =>
+                saturating!(o, saturating_add as u32)
+            ,
+            Micro_Op::Saturating_Sub_U32(o) =>
+                saturating!(o, saturating_sub as u32)
+            ,
+            Micro_Op::Saturating_Mul_U32(o) =>
+                saturating!(o, saturating_mul as u32)
+            ,
+            Micro_Op::Saturating_Div_U32(o) =>
+                saturating!(o, saturating_div as u32)
+            ,
 
             // Saturating i64
             // --------------
-            Micro_Op::Saturating_Add_I64(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_add as i64)
-            },
-
-            Micro_Op::Saturating_Sub_I64(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_sub as i64)
-            },
-
-            Micro_Op::Saturating_Mul_I64(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_mul as i64)
-            },
-
-            Micro_Op::Saturating_Div_I64(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_div as i64)
-            },
+            Micro_Op::Saturating_Add_I64(o) =>
+                saturating!(o, saturating_add as i64)
+            ,
+            Micro_Op::Saturating_Sub_I64(o) =>
+                saturating!(o, saturating_sub as i64)
+            ,
+            Micro_Op::Saturating_Mul_I64(o) =>
+                saturating!(o, saturating_mul as i64)
+            ,
+            Micro_Op::Saturating_Div_I64(o) =>
+                saturating!(o, saturating_div as i64)
+            ,
 
             // Saturating u64
             // --------------
-            Micro_Op::Saturating_Add_U64(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_add as u64)
-            },
-
-            Micro_Op::Saturating_Sub_U64(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_sub as u64)
-            },
-
-            Micro_Op::Saturating_Mul_U64(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_mul as u64)
-            },
-
-            Micro_Op::Saturating_Div_U64(d, s1, s2) => {
-                saturating!(d, s1, s2, saturating_div as u64)
-            },
+            Micro_Op::Saturating_Add_U64(o) =>
+                saturating!(o, saturating_add as u64)
+            ,
+            Micro_Op::Saturating_Sub_U64(o) =>
+                saturating!(o, saturating_sub as u64)
+            ,
+            Micro_Op::Saturating_Mul_U64(o) =>
+                saturating!(o, saturating_mul as u64)
+            ,
+            Micro_Op::Saturating_Div_U64(o) =>
+                saturating!(o, saturating_div as u64)
+            ,
 
             // Overflowing i32
             // ---------------
-            Micro_Op::Overflowing_Add_I32(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_add as i32)
-            },
-
-            Micro_Op::Overflowing_Sub_I32(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_sub as i32)
-            },
-
-            Micro_Op::Overflowing_Mul_I32(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_mul as i32)
-            },
-
-            Micro_Op::Overflowing_Div_I32(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_div as i32)
-            },
+            Micro_Op::Overflowing_Add_I32(o) =>
+                overflowing!(o, overflowing_add as i32)
+            ,
+            Micro_Op::Overflowing_Sub_I32(o) =>
+                overflowing!(o, overflowing_sub as i32)
+            ,
+            Micro_Op::Overflowing_Mul_I32(o) =>
+                overflowing!(o, overflowing_mul as i32)
+            ,
+            Micro_Op::Overflowing_Div_I32(o) =>
+                overflowing!(o, overflowing_div as i32)
+            ,
 
             // Overflowing u32
             // ---------------
-            Micro_Op::Overflowing_Add_U32(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_add as u32)
-            },
-
-            Micro_Op::Overflowing_Sub_U32(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_sub as u32)
-            },
-
-            Micro_Op::Overflowing_Mul_U32(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_mul as u32)
-            },
-
-            Micro_Op::Overflowing_Div_U32(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_div as u32)
-            },
+            Micro_Op::Overflowing_Add_U32(o) =>
+                overflowing!(o, overflowing_add as u32)
+            ,
+            Micro_Op::Overflowing_Sub_U32(o) =>
+                overflowing!(o, overflowing_sub as u32)
+            ,
+            Micro_Op::Overflowing_Mul_U32(o) =>
+                overflowing!(o, overflowing_mul as u32)
+            ,
+            Micro_Op::Overflowing_Div_U32(o) =>
+                overflowing!(o, overflowing_div as u32)
+            ,
 
             // Overflowing i64
             // ---------------
-            Micro_Op::Overflowing_Add_I64(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_add as i64)
-            },
-
-            Micro_Op::Overflowing_Sub_I64(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_sub as i64)
-            },
-
-            Micro_Op::Overflowing_Mul_I64(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_mul as i64)
-            },
-
-            Micro_Op::Overflowing_Div_I64(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_div as i64)
-            },
+            Micro_Op::Overflowing_Add_I64(o) =>
+                overflowing!(o, overflowing_add as i64)
+            ,
+            Micro_Op::Overflowing_Sub_I64(o) =>
+                overflowing!(o, overflowing_sub as i64)
+            ,
+            Micro_Op::Overflowing_Mul_I64(o) =>
+                overflowing!(o, overflowing_mul as i64)
+            ,
+            Micro_Op::Overflowing_Div_I64(o) =>
+                overflowing!(o, overflowing_div as i64)
+            ,
 
             // Overflowing u64
             // ---------------
-            Micro_Op::Overflowing_Add_U64(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_add as u64)
-            },
-
-            Micro_Op::Overflowing_Sub_U64(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_sub as u64)
-            },
-
-            Micro_Op::Overflowing_Mul_U64(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_mul as u64)
-            },
-
-            Micro_Op::Overflowing_Div_U64(d, s1, s2) => {
-                overflowing!(d, s1, s2, overflowing_div as u64)
-            },
+            Micro_Op::Overflowing_Add_U64(o) =>
+                overflowing!(o, overflowing_add as u64)
+            ,
+            Micro_Op::Overflowing_Sub_U64(o) =>
+                overflowing!(o, overflowing_sub as u64)
+            ,
+            Micro_Op::Overflowing_Mul_U64(o) =>
+                overflowing!(o, overflowing_mul as u64)
+            ,
+            Micro_Op::Overflowing_Div_U64(o) =>
+                overflowing!(o, overflowing_div as u64)
+            ,
 
             // Load and Store
             // --------------
