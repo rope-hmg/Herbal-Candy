@@ -13,10 +13,21 @@ impl Memory {
         Self { bytes, size }
     }
 
+    #[inline(always)]
+    pub fn write(&mut self, data: &[u8], address: Memory_Address) {
+        let slot = self.slot_mut(address);
+
+        unsafe {
+            slot.copy_from(data.as_ptr(), data.len());
+        }
+    }
+
+    #[inline(always)]
     pub fn slot(&self, address: Memory_Address) -> *const u8 {
         unsafe { self.bytes.add(address.0) }
     }
 
+    #[inline(always)]
     pub fn slot_mut(&mut self, address: Memory_Address) -> *mut u8 {
         unsafe { self.bytes.add(address.0) }
     }

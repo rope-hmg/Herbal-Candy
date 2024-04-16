@@ -2,39 +2,36 @@
 
 mod byte_code;
 mod memory;
+mod program;
 mod vm;
 
 use std::slice;
 
 use crate::{
-    byte_code::{Micro_Op, Register},
+    byte_code::{Micro_Op, Register, Three_Registers},
     memory::Memory_Address,
+    program::Program,
     vm::Virtual_Machine,
 };
 
 fn main() {
     let mut vm = Virtual_Machine::new(1024 * 1024);
 
-    let ten = 10i32.to_le_bytes();
-    let twenty = 20i32.to_le_bytes();
+    let program = Program {
+        data: vec![10, 0, 0, 0, 20, 0, 0, 0],
+        code: vec![
+            Micro_Op::Load_32(Register::General_Purpose(1), Memory_Address(0)),
+            Micro_Op::Load_32(Register::General_Purpose(2), Memory_Address(4)),
+            Micro_Op::Saturating_Add_I32(Three_Registers {
+                destination: Register::General_Purpose(0),
+                source_1: Register::General_Purpose(1),
+                source_2: Register::General_Purpose(2),
+            }),
+        ],
+        start: 0,
+    };
 
-    unsafe {
-        slice::from_raw_parts_mut(vm.memory.slot_mut(Memory_Address(0)), 4).copy_from_slice(&ten);
-        slice::from_raw_parts_mut(vm.memory.slot_mut(Memory_Address(4)), 4)
-            .copy_from_slice(&twenty);
-    }
-
-    let instructions = &[
-        Micro_Op::Load_32(Register::General_Purpose(1), Memory_Address(0)),
-        Micro_Op::Load_32(Register::General_Purpose(2), Memory_Address(4)),
-        Micro_Op::Saturating_Add_I32(
-            Register::General_Purpose(0),
-            Register::General_Purpose(1),
-            Register::General_Purpose(2),
-        ),
-    ];
-
-    vm.run_program(instructions, 0);
+    vm.run_program(&program);
 
     println!(
         "Register 0: {}",

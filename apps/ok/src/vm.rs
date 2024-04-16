@@ -3,6 +3,7 @@ use std::{mem, ptr};
 
 use crate::byte_code::{Micro_Op, Register};
 use crate::memory::{Memory, Memory_Address};
+use crate::program::Program;
 
 pub struct Virtual_Machine {
     registers: Box<[u64; u8::MAX as usize]>,
@@ -46,10 +47,12 @@ impl Virtual_Machine {
         }
     }
 
-    pub fn run_program(&mut self, program: &[Micro_Op], start: usize) {
-        self.instruction_pointer = start;
+    pub fn run_program(&mut self, program: &Program) {
+        self.instruction_pointer = program.start;
+        self.memory
+            .write(program.data.as_slice(), Memory_Address(0));
 
-        while let Some(instruction) = program.get(self.instruction_pointer) {
+        while let Some(instruction) = program.code.get(self.instruction_pointer) {
             self.execute(*instruction);
             self.instruction_pointer += 1;
         }
