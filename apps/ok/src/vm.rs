@@ -8,19 +8,10 @@ pub const REGISTER_COUNT: usize = 64;
 
 pub struct Virtual_Machine {
     registers: Box<[u64; REGISTER_COUNT]>,
-    instruction_pointer: usize,
-    stack_pointer: usize,
-    frame_pointer: usize,
+    instruction_pointer: u64,
+    stack_pointer: u64,
+    frame_pointer: u64,
     memory: Memory,
-}
-
-/// Not what it seems?
-enum Value_Mut<'a> {
-    General_Purpose(&'a mut u64),
-    Instruction_Pointer(&'a mut usize),
-    Stack_Pointer(&'a mut usize),
-    Frame_Pointer(&'a mut usize),
-    None,
 }
 
 impl Virtual_Machine {
@@ -28,18 +19,18 @@ impl Virtual_Machine {
         Self {
             registers: Box::new([0; REGISTER_COUNT]),
             instruction_pointer: 0,
-            stack_pointer: memory_size,
-            frame_pointer: memory_size,
+            stack_pointer: memory_size as u64,
+            frame_pointer: memory_size as u64,
             memory: Memory::new(memory_size),
         }
     }
 
     pub fn run_program(&mut self, program: &Program) {
-        self.instruction_pointer = program.start;
+        self.instruction_pointer = program.start as u64;
         self.memory
             .write(program.data.as_slice(), Memory_Address(0));
 
-        while let Some(instruction) = program.code.get(self.instruction_pointer) {
+        while let Some(instruction) = program.code.get(self.instruction_pointer as usize) {
             println!("------------------------------");
             println!("Instruction: {:?}", instruction);
 
@@ -53,7 +44,7 @@ impl Virtual_Machine {
         }
     }
 
-    fn execute(&mut self, instruction: Micro_Op) -> Option<usize> {
+    fn execute(&mut self, instruction: Micro_Op) -> Option<u64> {
         macro_rules! saturating {
             ($operands:expr, $operation:ident as $t:ty) => {{
                 if $operands.destination.is_general_purpose() {
@@ -62,9 +53,7 @@ impl Virtual_Machine {
 
                     let result = source_1.$operation(source_2) as u64;
 
-                    if let Value_Mut::General_Purpose(destination) =
-                        self.register_value_mut($operands.destination)
-                    {
+                    if let Some(destination) = self.register_value_mut($operands.destination) {
                         *destination = result;
                     }
 
@@ -85,9 +74,7 @@ impl Virtual_Machine {
                     // TODO: Should set the overflow flag.
                     let (result, _) = source_1.$operation(source_2);
 
-                    if let Value_Mut::General_Purpose(destination) =
-                        self.register_value_mut($operands.destination)
-                    {
+                    if let Some(destination) = self.register_value_mut($operands.destination) {
                         *destination = result as u64;
                     }
 
@@ -201,9 +188,7 @@ impl Virtual_Machine {
                 if destination.is_general_purpose() {
                     let source_value = self.register_value(source);
 
-                    if let Value_Mut::General_Purpose(destination) =
-                        self.register_value_mut(destination)
-                    {
+                    if let Some(destination) = self.register_value_mut(destination) {
                         *destination = source_value;
                     }
 
@@ -255,27 +240,24 @@ impl Virtual_Machine {
         panic!("Invalid instruction");
     }
 
-    fn register_value_mut(&mut self, register: Register) -> Value_Mut {
+    fn register_value_mut(&mut self, register: Register) -> Option<&mut u64> {
         use Register::*;
 
         match register {
-            General_Purpose(index) => {
-                Value_Mut::General_Purpose(&mut self.registers[index as usize])
-            },
-            // TODO: Find a way to keep this in sync with the `register.as_general_purpose()` method.
-            Argument_0 => Value_Mut::General_Purpose(&mut self.registers[0]),
-            Argument_1 => Value_Mut::General_Purpose(&mut self.registers[1]),
-            Argument_2 => Value_Mut::General_Purpose(&mut self.registers[2]),
-            Argument_3 => Value_Mut::General_Purpose(&mut self.registers[3]),
-            Return_0 => Value_Mut::General_Purpose(&mut self.registers[4]),
-            Return_1 => Value_Mut::General_Purpose(&mut self.registers[5]),
-            Return_2 => Value_Mut::General_Purpose(&mut self.registers[6]),
-            Return_3 => Value_Mut::General_Purpose(&mut self.registers[7]),
-            Instruction_Pointer => Value_Mut::Instruction_Pointer(&mut self.instruction_pointer),
-            Stack_Pointer => Value_Mut::Stack_Pointer(&mut self.stack_pointer),
-            Frame_Pointer => Value_Mut::Frame_Pointer(&mut self.frame_pointer),
-            Zero => Value_Mut::None,
-            One => Value_Mut::None,
+            General_Purpose(index) => Some(&mut self.registers[index as usize]),
+            Argument_0 => Some(&mut self.registers[0]),
+            Argument_1 => Some(&mut self.registers[1]),
+            Argument_2 => Some(&mut self.registers[2]),
+            Argument_3 => Some(&mut self.registers[3]),
+            Return_0 => Some(&mut self.registers[4]),
+            Return_1 => Some(&mut self.registers[5]),
+            Return_2 => Some(&mut self.registers[6]),
+            Return_3 => Some(&mut self.registers[7]),
+            Instruction_Pointer => Some(&mut self.instruction_pointer),
+            Stack_Pointer => Some(&mut self.stack_pointer),
+            Frame_Pointer => Some(&mut self.frame_pointer),
+            Zero => None,
+            One => None,
         }
     }
 
@@ -284,7 +266,6 @@ impl Virtual_Machine {
 
         match register {
             General_Purpose(index) => self.registers[index as usize],
-            // TODO: Find a way to keep this in sync with the `register.as_general_purpose()` method.
             Argument_0 => self.registers[0],
             Argument_1 => self.registers[1],
             Argument_2 => self.registers[2],
@@ -293,9 +274,9 @@ impl Virtual_Machine {
             Return_1 => self.registers[5],
             Return_2 => self.registers[6],
             Return_3 => self.registers[7],
-            Instruction_Pointer => self.instruction_pointer as u64,
-            Stack_Pointer => self.stack_pointer as u64,
-            Frame_Pointer => self.frame_pointer as u64,
+            Instruction_Pointer => self.instruction_pointer,
+            Stack_Pointer => self.stack_pointer,
+            Frame_Pointer => self.frame_pointer,
             Zero => 0,
             One => 1,
         }
@@ -304,23 +285,12 @@ impl Virtual_Machine {
     fn load(&mut self, register: Register, address: Memory_Address, size: usize) {
         let src = self.memory.slot(address);
 
-        macro_rules! write_to_register {
-            ($dst:expr, $t:ty) => {{
-                // We need to make sure that we're only updating the bytes that we're interested in.
-                let mut buffer = $dst.to_le_bytes();
+        if let Some(dst) = self.register_value_mut(register) {
+            let mut buffer = dst.to_le_bytes();
 
-                unsafe { ptr::copy_nonoverlapping(src, buffer.as_mut_ptr(), size) };
+            unsafe { ptr::copy_nonoverlapping(src, buffer.as_mut_ptr(), size) };
 
-                *$dst = <$t>::from_le_bytes(buffer);
-            }};
-        }
-
-        match self.register_value_mut(register) {
-            Value_Mut::General_Purpose(r) => write_to_register!(r, u64),
-            Value_Mut::Instruction_Pointer(r) => write_to_register!(r, usize),
-            Value_Mut::Stack_Pointer(r) => write_to_register!(r, usize),
-            Value_Mut::Frame_Pointer(r) => write_to_register!(r, usize),
-            Value_Mut::None => {},
+            *dst = u64::from_le_bytes(buffer);
         }
     }
 

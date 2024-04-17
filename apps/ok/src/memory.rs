@@ -38,12 +38,12 @@ impl Memory {
 
     #[inline(always)]
     pub fn slot(&self, address: Memory_Address) -> *const u8 {
-        unsafe { self.bytes.add(address.0) }
+        unsafe { self.bytes.add(address.0 as usize) }
     }
 
     #[inline(always)]
     pub fn slot_mut(&mut self, address: Memory_Address) -> *mut u8 {
-        unsafe { self.bytes.add(address.0) }
+        unsafe { self.bytes.add(address.0 as usize) }
     }
 }
 
@@ -57,4 +57,4 @@ impl Drop for Memory {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
-pub struct Memory_Address(pub usize);
+pub struct Memory_Address(pub u64);

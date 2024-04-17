@@ -108,9 +108,9 @@ pub enum Micro_Op {
 
     Move(Register, Register),
 
-    Jump(usize),
-    Jump_Not_Zero(usize, Register),
+    Jump(u64),
+    Jump_Not_Zero(u64, Register),
 
-    Call(usize),
+    Call(u64),
     Return,
 }
