@@ -56,7 +56,7 @@ pub struct Three_Registers {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Micro_Op {
+pub enum Instruction {
     Halt,
 
     Saturating_Add_I8(Three_Registers),

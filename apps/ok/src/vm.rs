@@ -1,6 +1,6 @@
 use std::ptr;
 
-use crate::byte_code::{Micro_Op, Register};
+use crate::byte_code::{Instruction, Register};
 use crate::memory::{Memory, Memory_Address};
 use crate::program::Program;
 
@@ -44,7 +44,7 @@ impl Virtual_Machine {
         }
     }
 
-    fn execute(&mut self, instruction: Micro_Op) -> Option<u64> {
+    fn execute(&mut self, instruction: Instruction) -> Option<u64> {
         macro_rules! saturating {
             ($operands:expr, $operation:ident as $t:ty) => {{
                 if $operands.destination.is_general_purpose() {
@@ -102,145 +102,145 @@ impl Virtual_Machine {
         }
 
         match instruction {
-            Micro_Op::Halt => None,
+            Instruction::Halt => None,
 
             // Saturating i8
             // --------------
-            Micro_Op::Saturating_Add_I8(o) => saturating!(o, saturating_add as i8),
-            Micro_Op::Saturating_Sub_I8(o) => saturating!(o, saturating_sub as i8),
-            Micro_Op::Saturating_Mul_I8(o) => saturating!(o, saturating_mul as i8),
-            Micro_Op::Saturating_Div_I8(o) => saturating!(o, saturating_div as i8),
+            Instruction::Saturating_Add_I8(o) => saturating!(o, saturating_add as i8),
+            Instruction::Saturating_Sub_I8(o) => saturating!(o, saturating_sub as i8),
+            Instruction::Saturating_Mul_I8(o) => saturating!(o, saturating_mul as i8),
+            Instruction::Saturating_Div_I8(o) => saturating!(o, saturating_div as i8),
 
             // Saturating u8
             // --------------
-            Micro_Op::Saturating_Add_U8(o) => saturating!(o, saturating_add as u8),
-            Micro_Op::Saturating_Sub_U8(o) => saturating!(o, saturating_sub as u8),
-            Micro_Op::Saturating_Mul_U8(o) => saturating!(o, saturating_mul as u8),
-            Micro_Op::Saturating_Div_U8(o) => saturating!(o, saturating_div as u8),
+            Instruction::Saturating_Add_U8(o) => saturating!(o, saturating_add as u8),
+            Instruction::Saturating_Sub_U8(o) => saturating!(o, saturating_sub as u8),
+            Instruction::Saturating_Mul_U8(o) => saturating!(o, saturating_mul as u8),
+            Instruction::Saturating_Div_U8(o) => saturating!(o, saturating_div as u8),
 
             // Saturating i16
             // --------------
-            Micro_Op::Saturating_Add_I16(o) => saturating!(o, saturating_add as i16),
-            Micro_Op::Saturating_Sub_I16(o) => saturating!(o, saturating_sub as i16),
-            Micro_Op::Saturating_Mul_I16(o) => saturating!(o, saturating_mul as i16),
-            Micro_Op::Saturating_Div_I16(o) => saturating!(o, saturating_div as i16),
+            Instruction::Saturating_Add_I16(o) => saturating!(o, saturating_add as i16),
+            Instruction::Saturating_Sub_I16(o) => saturating!(o, saturating_sub as i16),
+            Instruction::Saturating_Mul_I16(o) => saturating!(o, saturating_mul as i16),
+            Instruction::Saturating_Div_I16(o) => saturating!(o, saturating_div as i16),
 
             // Saturating u16
             // --------------
-            Micro_Op::Saturating_Add_U16(o) => saturating!(o, saturating_add as u16),
-            Micro_Op::Saturating_Sub_U16(o) => saturating!(o, saturating_sub as u16),
-            Micro_Op::Saturating_Mul_U16(o) => saturating!(o, saturating_mul as u16),
-            Micro_Op::Saturating_Div_U16(o) => saturating!(o, saturating_div as u16),
+            Instruction::Saturating_Add_U16(o) => saturating!(o, saturating_add as u16),
+            Instruction::Saturating_Sub_U16(o) => saturating!(o, saturating_sub as u16),
+            Instruction::Saturating_Mul_U16(o) => saturating!(o, saturating_mul as u16),
+            Instruction::Saturating_Div_U16(o) => saturating!(o, saturating_div as u16),
 
             // Saturating i32
             // --------------
-            Micro_Op::Saturating_Add_I32(o) => saturating!(o, saturating_add as i32),
-            Micro_Op::Saturating_Sub_I32(o) => saturating!(o, saturating_sub as i32),
-            Micro_Op::Saturating_Mul_I32(o) => saturating!(o, saturating_mul as i32),
-            Micro_Op::Saturating_Div_I32(o) => saturating!(o, saturating_div as i32),
+            Instruction::Saturating_Add_I32(o) => saturating!(o, saturating_add as i32),
+            Instruction::Saturating_Sub_I32(o) => saturating!(o, saturating_sub as i32),
+            Instruction::Saturating_Mul_I32(o) => saturating!(o, saturating_mul as i32),
+            Instruction::Saturating_Div_I32(o) => saturating!(o, saturating_div as i32),
 
             // Saturating u32
             // --------------
-            Micro_Op::Saturating_Add_U32(o) => saturating!(o, saturating_add as u32),
-            Micro_Op::Saturating_Sub_U32(o) => saturating!(o, saturating_sub as u32),
-            Micro_Op::Saturating_Mul_U32(o) => saturating!(o, saturating_mul as u32),
-            Micro_Op::Saturating_Div_U32(o) => saturating!(o, saturating_div as u32),
+            Instruction::Saturating_Add_U32(o) => saturating!(o, saturating_add as u32),
+            Instruction::Saturating_Sub_U32(o) => saturating!(o, saturating_sub as u32),
+            Instruction::Saturating_Mul_U32(o) => saturating!(o, saturating_mul as u32),
+            Instruction::Saturating_Div_U32(o) => saturating!(o, saturating_div as u32),
 
             // Saturating i64
             // --------------
-            Micro_Op::Saturating_Add_I64(o) => saturating!(o, saturating_add as i64),
-            Micro_Op::Saturating_Sub_I64(o) => saturating!(o, saturating_sub as i64),
-            Micro_Op::Saturating_Mul_I64(o) => saturating!(o, saturating_mul as i64),
-            Micro_Op::Saturating_Div_I64(o) => saturating!(o, saturating_div as i64),
+            Instruction::Saturating_Add_I64(o) => saturating!(o, saturating_add as i64),
+            Instruction::Saturating_Sub_I64(o) => saturating!(o, saturating_sub as i64),
+            Instruction::Saturating_Mul_I64(o) => saturating!(o, saturating_mul as i64),
+            Instruction::Saturating_Div_I64(o) => saturating!(o, saturating_div as i64),
 
             // Saturating u64
             // --------------
-            Micro_Op::Saturating_Add_U64(o) => saturating!(o, saturating_add as u64),
-            Micro_Op::Saturating_Sub_U64(o) => saturating!(o, saturating_sub as u64),
-            Micro_Op::Saturating_Mul_U64(o) => saturating!(o, saturating_mul as u64),
-            Micro_Op::Saturating_Div_U64(o) => saturating!(o, saturating_div as u64),
+            Instruction::Saturating_Add_U64(o) => saturating!(o, saturating_add as u64),
+            Instruction::Saturating_Sub_U64(o) => saturating!(o, saturating_sub as u64),
+            Instruction::Saturating_Mul_U64(o) => saturating!(o, saturating_mul as u64),
+            Instruction::Saturating_Div_U64(o) => saturating!(o, saturating_div as u64),
 
             // Overflowing i8
             // ---------------
-            Micro_Op::Overflowing_Add_I8(o) => overflowing!(o, overflowing_add as i8),
-            Micro_Op::Overflowing_Sub_I8(o) => overflowing!(o, overflowing_sub as i8),
-            Micro_Op::Overflowing_Mul_I8(o) => overflowing!(o, overflowing_mul as i8),
-            Micro_Op::Overflowing_Div_I8(o) => overflowing!(o, overflowing_div as i8),
+            Instruction::Overflowing_Add_I8(o) => overflowing!(o, overflowing_add as i8),
+            Instruction::Overflowing_Sub_I8(o) => overflowing!(o, overflowing_sub as i8),
+            Instruction::Overflowing_Mul_I8(o) => overflowing!(o, overflowing_mul as i8),
+            Instruction::Overflowing_Div_I8(o) => overflowing!(o, overflowing_div as i8),
 
             // Overflowing u8
             // ---------------
-            Micro_Op::Overflowing_Add_U8(o) => overflowing!(o, overflowing_add as u8),
-            Micro_Op::Overflowing_Sub_U8(o) => overflowing!(o, overflowing_sub as u8),
-            Micro_Op::Overflowing_Mul_U8(o) => overflowing!(o, overflowing_mul as u8),
-            Micro_Op::Overflowing_Div_U8(o) => overflowing!(o, overflowing_div as u8),
+            Instruction::Overflowing_Add_U8(o) => overflowing!(o, overflowing_add as u8),
+            Instruction::Overflowing_Sub_U8(o) => overflowing!(o, overflowing_sub as u8),
+            Instruction::Overflowing_Mul_U8(o) => overflowing!(o, overflowing_mul as u8),
+            Instruction::Overflowing_Div_U8(o) => overflowing!(o, overflowing_div as u8),
 
             // Overflowing i16
             // ---------------
-            Micro_Op::Overflowing_Add_I16(o) => overflowing!(o, overflowing_add as i16),
-            Micro_Op::Overflowing_Sub_I16(o) => overflowing!(o, overflowing_sub as i16),
-            Micro_Op::Overflowing_Mul_I16(o) => overflowing!(o, overflowing_mul as i16),
-            Micro_Op::Overflowing_Div_I16(o) => overflowing!(o, overflowing_div as i16),
+            Instruction::Overflowing_Add_I16(o) => overflowing!(o, overflowing_add as i16),
+            Instruction::Overflowing_Sub_I16(o) => overflowing!(o, overflowing_sub as i16),
+            Instruction::Overflowing_Mul_I16(o) => overflowing!(o, overflowing_mul as i16),
+            Instruction::Overflowing_Div_I16(o) => overflowing!(o, overflowing_div as i16),
 
             // Overflowing u16
             // ---------------
-            Micro_Op::Overflowing_Add_U16(o) => overflowing!(o, overflowing_add as u16),
-            Micro_Op::Overflowing_Sub_U16(o) => overflowing!(o, overflowing_sub as u16),
-            Micro_Op::Overflowing_Mul_U16(o) => overflowing!(o, overflowing_mul as u16),
-            Micro_Op::Overflowing_Div_U16(o) => overflowing!(o, overflowing_div as u16),
+            Instruction::Overflowing_Add_U16(o) => overflowing!(o, overflowing_add as u16),
+            Instruction::Overflowing_Sub_U16(o) => overflowing!(o, overflowing_sub as u16),
+            Instruction::Overflowing_Mul_U16(o) => overflowing!(o, overflowing_mul as u16),
+            Instruction::Overflowing_Div_U16(o) => overflowing!(o, overflowing_div as u16),
 
             // Overflowing i32
             // ---------------
-            Micro_Op::Overflowing_Add_I32(o) => overflowing!(o, overflowing_add as i32),
-            Micro_Op::Overflowing_Sub_I32(o) => overflowing!(o, overflowing_sub as i32),
-            Micro_Op::Overflowing_Mul_I32(o) => overflowing!(o, overflowing_mul as i32),
-            Micro_Op::Overflowing_Div_I32(o) => overflowing!(o, overflowing_div as i32),
+            Instruction::Overflowing_Add_I32(o) => overflowing!(o, overflowing_add as i32),
+            Instruction::Overflowing_Sub_I32(o) => overflowing!(o, overflowing_sub as i32),
+            Instruction::Overflowing_Mul_I32(o) => overflowing!(o, overflowing_mul as i32),
+            Instruction::Overflowing_Div_I32(o) => overflowing!(o, overflowing_div as i32),
 
             // Overflowing u32
             // ---------------
-            Micro_Op::Overflowing_Add_U32(o) => overflowing!(o, overflowing_add as u32),
-            Micro_Op::Overflowing_Sub_U32(o) => overflowing!(o, overflowing_sub as u32),
-            Micro_Op::Overflowing_Mul_U32(o) => overflowing!(o, overflowing_mul as u32),
-            Micro_Op::Overflowing_Div_U32(o) => overflowing!(o, overflowing_div as u32),
+            Instruction::Overflowing_Add_U32(o) => overflowing!(o, overflowing_add as u32),
+            Instruction::Overflowing_Sub_U32(o) => overflowing!(o, overflowing_sub as u32),
+            Instruction::Overflowing_Mul_U32(o) => overflowing!(o, overflowing_mul as u32),
+            Instruction::Overflowing_Div_U32(o) => overflowing!(o, overflowing_div as u32),
 
             // Overflowing i64
             // ---------------
-            Micro_Op::Overflowing_Add_I64(o) => overflowing!(o, overflowing_add as i64),
-            Micro_Op::Overflowing_Sub_I64(o) => overflowing!(o, overflowing_sub as i64),
-            Micro_Op::Overflowing_Mul_I64(o) => overflowing!(o, overflowing_mul as i64),
-            Micro_Op::Overflowing_Div_I64(o) => overflowing!(o, overflowing_div as i64),
+            Instruction::Overflowing_Add_I64(o) => overflowing!(o, overflowing_add as i64),
+            Instruction::Overflowing_Sub_I64(o) => overflowing!(o, overflowing_sub as i64),
+            Instruction::Overflowing_Mul_I64(o) => overflowing!(o, overflowing_mul as i64),
+            Instruction::Overflowing_Div_I64(o) => overflowing!(o, overflowing_div as i64),
 
             // Overflowing u64
             // ---------------
-            Micro_Op::Overflowing_Add_U64(o) => overflowing!(o, overflowing_add as u64),
-            Micro_Op::Overflowing_Sub_U64(o) => overflowing!(o, overflowing_sub as u64),
-            Micro_Op::Overflowing_Mul_U64(o) => overflowing!(o, overflowing_mul as u64),
-            Micro_Op::Overflowing_Div_U64(o) => overflowing!(o, overflowing_div as u64),
+            Instruction::Overflowing_Add_U64(o) => overflowing!(o, overflowing_add as u64),
+            Instruction::Overflowing_Sub_U64(o) => overflowing!(o, overflowing_sub as u64),
+            Instruction::Overflowing_Mul_U64(o) => overflowing!(o, overflowing_mul as u64),
+            Instruction::Overflowing_Div_U64(o) => overflowing!(o, overflowing_div as u64),
 
             // Load and Store
             // --------------
-            Micro_Op::Load_8(register, address) => load!(register, address, 1),
-            Micro_Op::Load_16(register, address) => load!(register, address, 2),
-            Micro_Op::Load_32(register, address) => load!(register, address, 4),
-            Micro_Op::Load_64(register, address) => load!(register, address, 8),
+            Instruction::Load_8(register, address) => load!(register, address, 1),
+            Instruction::Load_16(register, address) => load!(register, address, 2),
+            Instruction::Load_32(register, address) => load!(register, address, 4),
+            Instruction::Load_64(register, address) => load!(register, address, 8),
 
-            Micro_Op::Store_8(address, register) => store!(address, register, 1),
-            Micro_Op::Store_16(address, register) => store!(address, register, 2),
-            Micro_Op::Store_32(address, register) => store!(address, register, 4),
-            Micro_Op::Store_64(address, register) => store!(address, register, 8),
+            Instruction::Store_8(address, register) => store!(address, register, 1),
+            Instruction::Store_16(address, register) => store!(address, register, 2),
+            Instruction::Store_32(address, register) => store!(address, register, 4),
+            Instruction::Store_64(address, register) => store!(address, register, 8),
 
-            Micro_Op::Push(register) => {
+            Instruction::Push(register) => {
                 self.push(register);
                 Some(self.instruction_pointer + 1)
             },
 
-            Micro_Op::Pop(register) => {
+            Instruction::Pop(register) => {
                 self.pop(register);
                 Some(self.instruction_pointer + 1)
             },
 
             // Register Operations
             // -------------------
-            Micro_Op::Move(destination, source) => {
+            Instruction::Move(destination, source) => {
                 if destination.is_general_purpose() {
                     let source_value = self.register_value(source);
 
@@ -256,9 +256,9 @@ impl Virtual_Machine {
 
             // Control Flow
             // ------------
-            Micro_Op::Jump(address) => Some(address),
+            Instruction::Jump(address) => Some(address),
 
-            Micro_Op::Jump_Not_Zero(address, register) => {
+            Instruction::Jump_Not_Zero(address, register) => {
                 if self.register_value(register) != 0 {
                     Some(address)
                 } else {
@@ -266,7 +266,7 @@ impl Virtual_Machine {
                 }
             },
 
-            Micro_Op::Call(address) => {
+            Instruction::Call(address) => {
                 // Arguments are already pushed onto the stack.
 
                 self.push(Register::Instruction_Pointer); // The "return" address (actually the address of the call instruction)
@@ -280,7 +280,7 @@ impl Virtual_Machine {
                 Some(address)
             },
 
-            Micro_Op::Return => {
+            Instruction::Return => {
                 // Reset the stack pointer to the top of the frame.
                 self.stack_pointer = self.frame_pointer;
 
