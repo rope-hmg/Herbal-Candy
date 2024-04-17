@@ -104,6 +104,34 @@ impl Virtual_Machine {
         match instruction {
             Micro_Op::Halt => None,
 
+            // Saturating i8
+            // --------------
+            Micro_Op::Saturating_Add_I8(o) => saturating!(o, saturating_add as i8),
+            Micro_Op::Saturating_Sub_I8(o) => saturating!(o, saturating_sub as i8),
+            Micro_Op::Saturating_Mul_I8(o) => saturating!(o, saturating_mul as i8),
+            Micro_Op::Saturating_Div_I8(o) => saturating!(o, saturating_div as i8),
+
+            // Saturating u8
+            // --------------
+            Micro_Op::Saturating_Add_U8(o) => saturating!(o, saturating_add as u8),
+            Micro_Op::Saturating_Sub_U8(o) => saturating!(o, saturating_sub as u8),
+            Micro_Op::Saturating_Mul_U8(o) => saturating!(o, saturating_mul as u8),
+            Micro_Op::Saturating_Div_U8(o) => saturating!(o, saturating_div as u8),
+
+            // Saturating i16
+            // --------------
+            Micro_Op::Saturating_Add_I16(o) => saturating!(o, saturating_add as i16),
+            Micro_Op::Saturating_Sub_I16(o) => saturating!(o, saturating_sub as i16),
+            Micro_Op::Saturating_Mul_I16(o) => saturating!(o, saturating_mul as i16),
+            Micro_Op::Saturating_Div_I16(o) => saturating!(o, saturating_div as i16),
+
+            // Saturating u16
+            // --------------
+            Micro_Op::Saturating_Add_U16(o) => saturating!(o, saturating_add as u16),
+            Micro_Op::Saturating_Sub_U16(o) => saturating!(o, saturating_sub as u16),
+            Micro_Op::Saturating_Mul_U16(o) => saturating!(o, saturating_mul as u16),
+            Micro_Op::Saturating_Div_U16(o) => saturating!(o, saturating_div as u16),
+
             // Saturating i32
             // --------------
             Micro_Op::Saturating_Add_I32(o) => saturating!(o, saturating_add as i32),
@@ -131,6 +159,34 @@ impl Virtual_Machine {
             Micro_Op::Saturating_Sub_U64(o) => saturating!(o, saturating_sub as u64),
             Micro_Op::Saturating_Mul_U64(o) => saturating!(o, saturating_mul as u64),
             Micro_Op::Saturating_Div_U64(o) => saturating!(o, saturating_div as u64),
+
+            // Overflowing i8
+            // ---------------
+            Micro_Op::Overflowing_Add_I8(o) => overflowing!(o, overflowing_add as i8),
+            Micro_Op::Overflowing_Sub_I8(o) => overflowing!(o, overflowing_sub as i8),
+            Micro_Op::Overflowing_Mul_I8(o) => overflowing!(o, overflowing_mul as i8),
+            Micro_Op::Overflowing_Div_I8(o) => overflowing!(o, overflowing_div as i8),
+
+            // Overflowing u8
+            // ---------------
+            Micro_Op::Overflowing_Add_U8(o) => overflowing!(o, overflowing_add as u8),
+            Micro_Op::Overflowing_Sub_U8(o) => overflowing!(o, overflowing_sub as u8),
+            Micro_Op::Overflowing_Mul_U8(o) => overflowing!(o, overflowing_mul as u8),
+            Micro_Op::Overflowing_Div_U8(o) => overflowing!(o, overflowing_div as u8),
+
+            // Overflowing i16
+            // ---------------
+            Micro_Op::Overflowing_Add_I16(o) => overflowing!(o, overflowing_add as i16),
+            Micro_Op::Overflowing_Sub_I16(o) => overflowing!(o, overflowing_sub as i16),
+            Micro_Op::Overflowing_Mul_I16(o) => overflowing!(o, overflowing_mul as i16),
+            Micro_Op::Overflowing_Div_I16(o) => overflowing!(o, overflowing_div as i16),
+
+            // Overflowing u16
+            // ---------------
+            Micro_Op::Overflowing_Add_U16(o) => overflowing!(o, overflowing_add as u16),
+            Micro_Op::Overflowing_Sub_U16(o) => overflowing!(o, overflowing_sub as u16),
+            Micro_Op::Overflowing_Mul_U16(o) => overflowing!(o, overflowing_mul as u16),
+            Micro_Op::Overflowing_Div_U16(o) => overflowing!(o, overflowing_div as u16),
 
             // Overflowing i32
             // ---------------
