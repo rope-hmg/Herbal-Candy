@@ -31,8 +31,8 @@ impl Virtual_Machine {
             .write(program.data.as_slice(), Memory_Address(0));
 
         while let Some(instruction) = program.code.get(self.instruction_pointer as usize) {
-            println!("------------------------------");
-            println!("Instruction: {:?}", instruction);
+            // println!("------------------------------");
+            // println!("Instruction: {:?}", instruction);
 
             match self.execute(*instruction) {
                 Some(next_instruction_pointer) => {
