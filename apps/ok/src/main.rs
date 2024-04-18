@@ -1,11 +1,10 @@
 #![allow(non_camel_case_types)]
 
+mod assembler;
 mod byte_code;
 mod memory;
 mod program;
 mod vm;
-
-use std::slice;
 
 use crate::{
     byte_code::{Instruction, Register, Three_Registers},
@@ -16,6 +15,8 @@ use crate::{
 
 fn main() {
     let mut vm = Virtual_Machine::new(1024 * 1024);
+
+    assembler::Assembler::new().assemble();
 
     let program = Program {
         data: vec![10, 0, 0, 0],

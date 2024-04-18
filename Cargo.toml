@@ -5,3 +5,4 @@ members = [
 ]
 
 [workspace.dependencies]
+logos = "0.14"
