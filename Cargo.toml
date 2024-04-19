@@ -6,4 +6,5 @@ members  = [
 ]
 
 [workspace.dependencies]
-logos = "0.14"
+byte_code = { path = "libs/byte_code" }
+logos     = "0.14"

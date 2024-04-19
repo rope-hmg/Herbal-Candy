@@ -10,6 +10,7 @@ version = "0.1.0"
 name = "assembler"
 version = "0.1.0"
 dependencies = [
+ "byte_code",
  "logos",
 ]
 
@@ -71,6 +72,9 @@ dependencies = [
 [[package]]
 name = "ok"
 version = "0.1.0"
+dependencies = [
+ "byte_code",
+]
 
 [[package]]
 name = "proc-macro2"
