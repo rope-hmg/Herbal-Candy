@@ -3,10 +3,6 @@
 version = 3
 
 [[package]]
-name = "alright"
-version = "0.1.0"
-
-[[package]]
 name = "assembler"
 version = "0.1.0"
 dependencies = [
@@ -70,13 +66,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ok"
-version = "0.1.0"
-dependencies = [
- "byte_code",
-]
-
-[[package]]
 name = "proc-macro2"
 version = "1.0.81"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -116,3 +105,10 @@ name = "unicode-ident"
 version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3354b9ac3fae1ff6755cb6db53683adb661634f67557942dea4facebec0fee4b"
+
+[[package]]
+name = "vm"
+version = "0.1.0"
+dependencies = [
+ "byte_code",
+]

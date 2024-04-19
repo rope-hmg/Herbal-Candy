@@ -4,4 +4,8 @@ A register based virtual machine written in Rust.
 
 Current status: **Very WIP**
 
-The project is structured as a workspace, but I'm not currently taking advantage of that. All the code is in the `apps/ok` package. As the project matures, the pieces that want to be split out will present themselves.
+The project is structured as a workspace with the following crates:
+
+- `apps/vm` - The virtual machine. (The crate name will change at some point)
+- `apps/assembler` - A simple assembler that converts a simple assembly language to bytecode.
+- `libs/byte_code` - A library that defines the bytecode format.
