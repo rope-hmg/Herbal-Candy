@@ -1,4 +1,4 @@
-use crate::byte_code::Instruction;
+use byte_code::Instruction;
 
 pub struct Program {
     pub data: Vec<u8>,

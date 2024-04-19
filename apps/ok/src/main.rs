@@ -1,46 +1,44 @@
 #![allow(non_camel_case_types)]
 
-mod byte_code;
 mod memory;
 mod program;
 mod vm;
 
-use crate::{
-    byte_code::{Instruction, Register, Three_Registers},
-    memory::Memory_Address,
-    program::Program,
-    vm::Virtual_Machine,
-};
+use byte_code::{I_Type, Instruction, Instruction_Variant, Op_Code};
+
+use crate::{memory::Memory_Address, program::Program, vm::Virtual_Machine};
 
 fn main() {
     let mut vm = Virtual_Machine::new(1024 * 1024);
 
     // assembler::Assembler::new().assemble();
+    // v_type 0b0000000000000000000000000000000000000000000000000000000000_000000
+    // r_type 0b00000000000000000000000000000000_0_0_0_00_0000000_0000000_0000000_000000
+    // i_type 0b00000000000000000000000000000000000_00_00000000000000_0000000_000000
 
     let program = Program {
         data: vec![10, 0, 0, 0],
-        code: vec![
-            Instruction::Call(2),
-            Instruction::Halt,
-            Instruction::Load_32(Register::General_Purpose(0), Memory_Address(0)),
-            Instruction::Move(Register::General_Purpose(2), Register::One),
-            Instruction::Saturating_Sub_I32(Three_Registers {
-                destination: Register::General_Purpose(0),
-                source_1: Register::General_Purpose(0),
-                source_2: Register::One,
-            }),
-            Instruction::Saturating_Add_I32(Three_Registers {
-                destination: Register::General_Purpose(3),
-                source_1: Register::General_Purpose(1),
-                source_2: Register::General_Purpose(2),
-            }),
-            Instruction::Move(Register::General_Purpose(1), Register::General_Purpose(2)),
-            Instruction::Move(Register::General_Purpose(2), Register::General_Purpose(3)),
-            Instruction::Jump_Not_Zero(4, Register::General_Purpose(0)),
-            Instruction::Return,
-        ],
+        code: [
+            0b00000000000000000000000000000000000_00_00000000000010_0000000_000001,
+            0b0000000000000000000000000000000000000000000000000000000000_000000,
+            0b00000000000000000000000000000000000_10_00000000000000_0000101_101100,
+            0b00000000000000000000000000000000_0_0_0_00_0000000_0000001_0000110_110100,
+            0b00000000000000000000000000000000_1_0_0_10_0000001_0000101_0000101_010101,
+            0b00000000000000000000000000000000_1_0_0_10_0000111_0000110_0001000_010100,
+            0b00000000000000000000000000000000_0_0_0_00_0000000_0000111_0000110_110100,
+            0b00000000000000000000000000000000_0_0_0_00_0000000_0001000_0000111_110100,
+            0b00000000000000000000000000000000000_00_00000000000100_0000101_000101,
+            0b0000000000000000000000000000000000000000000000000000000000_000011,
+        ]
+        .into_iter()
+        .map(Instruction::decode)
+        .collect(),
         start: 0,
     };
+
+    for i in program.code.iter() {
+        println!("{}", i);
+    }
 
     vm.run_program(&program);
 }
