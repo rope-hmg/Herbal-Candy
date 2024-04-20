@@ -106,8 +106,12 @@ impl Virtual_Machine {
             .code
             .get(self.register(Register::Instruction_Pointer) as usize)
         {
-            // println!("------------------------------");
-            // println!("Instruction: {:?}", instruction);
+            println!("------------------");
+            println!(
+                "{:X}: {}",
+                self.register(Register::Instruction_Pointer),
+                instruction
+            );
 
             match self.execute(instruction) {
                 Instruction_Pointer::Halt => break,
@@ -116,6 +120,11 @@ impl Virtual_Machine {
                     *self.register_mut(Register::Instruction_Pointer) = value;
                 },
             }
+
+            println!("r0: {}", self.register(Register::from_index(5)));
+            println!("r1: {}", self.register(Register::from_index(6)));
+            println!("r2: {}", self.register(Register::from_index(7)));
+            println!("r3: {}", self.register(Register::from_index(8)));
         }
     }
 

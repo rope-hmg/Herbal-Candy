@@ -183,12 +183,27 @@ impl Instruction_Variant {
 // TODO: Think of a better way for this to work.
 pub struct Instruction {
     pub op_code: Op_Code,
+    pub kind: Instruction_Kind,
     pub variant: Instruction_Variant,
 }
 
 impl fmt::Display for Instruction {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self.op_code)
+        write!(f, "{:?}", self.op_code)?;
+
+        match self.kind {
+            Instruction_Kind::R_Type => {
+                write!(f, " {:?}", self.r_type())?;
+            },
+
+            Instruction_Kind::I_Type => {
+                write!(f, " {:?}", self.i_type())?;
+            },
+
+            _ => {},
+        }
+
+        Ok(())
     }
 }
 
@@ -196,16 +211,18 @@ impl Instruction {
     pub fn decode(raw_instruction: u64) -> Self {
         let raw_op_code = (raw_instruction & 0x3F) as usize;
 
-        let (instruction_type, op_code) = INSTRUCTION_LOOKUP[raw_op_code];
+        let (kind, op_code) = INSTRUCTION_LOOKUP[raw_op_code];
 
-        match instruction_type {
+        match kind {
             Instruction_Kind::V_Type => Self {
                 op_code,
+                kind,
                 variant: Instruction_Variant { v_type: () },
             },
 
             Instruction_Kind::R_Type => Self {
                 op_code,
+                kind,
                 variant: Instruction_Variant {
                     r_type: R_Type::decode(raw_instruction),
                 },
@@ -213,6 +230,7 @@ impl Instruction {
 
             Instruction_Kind::I_Type => Self {
                 op_code,
+                kind,
                 variant: Instruction_Variant {
                     i_type: I_Type::decode(raw_instruction),
                 },
@@ -309,11 +327,15 @@ impl I_Type {
             register: Register::from_index(((raw_instruction >> 6) & 0x7F) as u8),
             bit_width: size,
             immediate_value: {
-                let small = (raw_instruction >> 13) & 0x3FFF;
-                let value = (raw_instruction >> 15) | small;
+                let lo = (raw_instruction >> 13) & 0x3FFF;
+                let hi = (raw_instruction >> 15) & 0x1FFFFFFFFC000;
+
+                let value = hi | lo;
+
+                println!("lo: {:X}, hi: {:X}, value: {:X}", lo, hi, value);
 
                 match size {
-                    Bit_Width::Eight => small & 0xFF,
+                    Bit_Width::Eight => lo & 0xFF,
                     Bit_Width::Sixteen => value & 0xFFFF,
                     Bit_Width::Thirty_Two => value & 0xFFFFFFFF,
                     Bit_Width::Sixty_Four => value,
@@ -342,7 +364,7 @@ pub enum Register {
 }
 
 impl Register {
-    fn from_index(index: u8) -> Self {
+    pub fn from_index(index: u8) -> Self {
         match index {
             0 => Register::Zero,
             1 => Register::One,
