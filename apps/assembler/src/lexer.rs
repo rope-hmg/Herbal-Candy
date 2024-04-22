@@ -1,5 +1,3 @@
-use std::ops::Range;
-
 use logos::{Lexer, Logos, SpannedIter};
 
 use crate::token::{Token, Token_Kind, Token_Value, SIGNED};
