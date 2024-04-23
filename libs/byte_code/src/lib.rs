@@ -1,399 +1,1387 @@
 #![allow(non_camel_case_types)]
 
-//         MSB                                                                                                                           LSB
-//         0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-// R-Type |immediate value                                                |S|F|-|siz|register 2   |register 1   |register 0   | op code   |
-// I-Type |immediate value                                                      |siz|immediate value            |register 0   | op code   |
-//
+mod bit_width;
+mod encoding;
+mod memory;
+mod register;
 
-use std::{fmt, hint::unreachable_unchecked};
+pub use crate::{
+    bit_width::Bit_Width,
+    encoding::{I_Type, R_Type},
+    memory::Memory_Address,
+    register::Register,
+};
+
+// TODO: Make the instructions data driven so that I can generate the code and documentation from
+// the same source.
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum Instruction_Kind {
-    V_Type,
-    R_Type,
-    I_Type,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Op_Code {
+#[rustfmt::skip]
+pub enum Instruction {
     // Control Flow
     // ------------
-    Halt, //
-
-    Call,          // I_Type (address in immediate)
-    Call_Register, // I_Type (address in register)
-    Return,        // V_Type
-
-    Jump,          // I_Type (address in immediate)
-    Jump_Not_Zero, // I_Type (address in immediate, condition in register 0 )
-    Jump_Zero,     // I_Type (address in immediate, condition in register 0 )
-
-    Jump_Register,          // I_Type (address in reigster)
-    Jump_Not_Zero_Register, // R_Type (address in register 0, condition in register 1)
-    Jump_Zero_Register,     // R_Type (address in register 0, condition in register 1)
+    Halt,
+    Call            (R_Type),
+    Return,
+    Call_Environment(I_Type),
+    Break,
+    Jump_And_Link   (R_Type),
+    Jump_Not_Zero   (R_Type),
+    Jump_Zero       (R_Type),
 
     // Comparison
     // ----------
-    Compare_Equal,         // R_Type
-    Compare_Not_Equal,     // R_Type
-    Compare_Less,          // R_Type
-    Compare_Greater,       // R_Type
-    Compare_Less_Equal,    // R_Type
-    Compare_Greater_Equal, // R_Type
-
-    // Arithmetic
-    // ----------
-    Saturating_Absolute,    // R_Type
-    Saturating_Negate,      // R_Type
-    Saturating_Power,       // R_Type
-    Saturating_Remainder,   // R_Type
-    Saturating_Add,         // R_Type
-    Saturating_Subtract,    // R_Type
-    Saturating_Multiply,    // R_Type
-    Saturating_Divide,      // R_Type
-    Saturating_Modulus,     // R_Type
-    Saturating_Shift_Left,  // R_Type
-    Saturating_Shift_Right, // R_Type
-
-    Overflowing_Absolute,    // R_Type
-    Overflowing_Negate,      // R_Type
-    Overflowing_Power,       // R_Type
-    Overflowing_Remainder,   // R_Type
-    Overflowing_Add,         // R_Type
-    Overflowing_Subtract,    // R_Type
-    Overflowing_Multiply,    // R_Type
-    Overflowing_Divide,      // R_Type
-    Overflowing_Modulus,     // R_Type
-    Overflowing_Shift_Left,  // R_Type
-    Overflowing_Shift_Right, // R_Type
+    Compare_Equal            (R_Type),
+    Compare_Equal_F32        (R_Type),
+    Compare_Equal_F64        (R_Type),
+    Compare_Not_Equal        (R_Type),
+    Compare_Not_Equal_F32    (R_Type),
+    Compare_Not_Equal_F64    (R_Type),
+    Compare_Less             (R_Type),
+    Compare_Less_F32         (R_Type),
+    Compare_Less_F64         (R_Type),
+    Compare_Less_Equal       (R_Type),
+    Compare_Less_Equal_F32   (R_Type),
+    Compare_Less_Equal_F64   (R_Type),
+    Compare_Greater          (R_Type),
+    Compare_Greater_F32      (R_Type),
+    Compare_Greater_F64      (R_Type),
+    Compare_Greater_Equal    (R_Type),
+    Compare_Greater_Equal_F32(R_Type),
+    Compare_Greater_Equal_F64(R_Type),
 
     // Bitwise
     // -------
-    And,          // R_Type
-    Or,           // R_Type
-    Xor,          // R_Type
-    Not,          // R_Type
-    Rotate_Left,  // R_Type
-    Rotate_Right, // R_Type
+    And_I8            (R_Type),
+    And_I16           (R_Type),
+    And_I32           (R_Type),
+    And_I64           (R_Type),
+    And_U8            (R_Type),
+    And_U16           (R_Type),
+    And_U32           (R_Type),
+    And_U64           (R_Type),
+    Or_I8             (R_Type),
+    Or_I16            (R_Type),
+    Or_I32            (R_Type),
+    Or_I64            (R_Type),
+    Or_U8             (R_Type),
+    Or_U16            (R_Type),
+    Or_U32            (R_Type),
+    Or_U64            (R_Type),
+    Xor_I8            (R_Type),
+    Xor_I16           (R_Type),
+    Xor_I32           (R_Type),
+    Xor_I64           (R_Type),
+    Xor_U8            (R_Type),
+    Xor_U16           (R_Type),
+    Xor_U32           (R_Type),
+    Xor_U64           (R_Type),
+    Not_I8            (R_Type),
+    Not_I16           (R_Type),
+    Not_I32           (R_Type),
+    Not_I64           (R_Type),
+    Not_U8            (R_Type),
+    Not_U16           (R_Type),
+    Not_U32           (R_Type),
+    Not_U64           (R_Type),
+    Shift_Left_I8     (R_Type),
+    Shift_Left_I16    (R_Type),
+    Shift_Left_I32    (R_Type),
+    Shift_Left_I64    (R_Type),
+    Shift_Left_U8     (R_Type),
+    Shift_Left_U16    (R_Type),
+    Shift_Left_U32    (R_Type),
+    Shift_Left_U64    (R_Type),
+    Shift_Right_I8    (R_Type),
+    Shift_Right_I16   (R_Type),
+    Shift_Right_I32   (R_Type),
+    Shift_Right_I64   (R_Type),
+    Shift_Right_U8    (R_Type),
+    Shift_Right_U16   (R_Type),
+    Shift_Right_U32   (R_Type),
+    Shift_Right_U64   (R_Type),
+    Rotate_Left_I8    (R_Type),
+    Rotate_Left_I16   (R_Type),
+    Rotate_Left_I32   (R_Type),
+    Rotate_Left_I64   (R_Type),
+    Rotate_Left_U8    (R_Type),
+    Rotate_Left_U16   (R_Type),
+    Rotate_Left_U32   (R_Type),
+    Rotate_Left_U64   (R_Type),
+    Rotate_Right_I8   (R_Type),
+    Rotate_Right_I16  (R_Type),
+    Rotate_Right_I32  (R_Type),
+    Rotate_Right_I64  (R_Type),
+    Rotate_Right_U8   (R_Type),
+    Rotate_Right_U16  (R_Type),
+    Rotate_Right_U32  (R_Type),
+    Rotate_Right_U64  (R_Type),
+    Count_Ones_I8     (R_Type),
+    Count_Ones_I16    (R_Type),
+    Count_Ones_I32    (R_Type),
+    Count_Ones_I64    (R_Type),
+    Count_Ones_U8     (R_Type),
+    Count_Ones_U16    (R_Type),
+    Count_Ones_U32    (R_Type),
+    Count_Ones_U64    (R_Type),
+    Leading_Ones_I8   (R_Type),
+    Leading_Ones_I16  (R_Type),
+    Leading_Ones_I32  (R_Type),
+    Leading_Ones_I64  (R_Type),
+    Leading_Ones_U8   (R_Type),
+    Leading_Ones_U16  (R_Type),
+    Leading_Ones_U32  (R_Type),
+    Leading_Ones_U64  (R_Type),
+    Trailing_Ones_I8  (R_Type),
+    Trailing_Ones_I16 (R_Type),
+    Trailing_Ones_I32 (R_Type),
+    Trailing_Ones_I64 (R_Type),
+    Trailing_Ones_U8  (R_Type),
+    Trailing_Ones_U16 (R_Type),
+    Trailing_Ones_U32 (R_Type),
+    Trailing_Ones_U64 (R_Type),
+    Count_Zeros_I8    (R_Type),
+    Count_Zeros_I16   (R_Type),
+    Count_Zeros_I32   (R_Type),
+    Count_Zeros_I64   (R_Type),
+    Count_Zeros_U8    (R_Type),
+    Count_Zeros_U16   (R_Type),
+    Count_Zeros_U32   (R_Type),
+    Count_Zeros_U64   (R_Type),
+    Leading_Zeros_I8  (R_Type),
+    Leading_Zeros_I16 (R_Type),
+    Leading_Zeros_I32 (R_Type),
+    Leading_Zeros_I64 (R_Type),
+    Leading_Zeros_U8  (R_Type),
+    Leading_Zeros_U16 (R_Type),
+    Leading_Zeros_U32 (R_Type),
+    Leading_Zeros_U64 (R_Type),
+    Trailing_Zeros_I8 (R_Type),
+    Trailing_Zeros_I16(R_Type),
+    Trailing_Zeros_I32(R_Type),
+    Trailing_Zeros_I64(R_Type),
+    Trailing_Zeros_U8 (R_Type),
+    Trailing_Zeros_U16(R_Type),
+    Trailing_Zeros_U32(R_Type),
+    Trailing_Zeros_U64(R_Type),
+    Reverse_Bytes_I8  (R_Type),
+    Reverse_Bytes_I16 (R_Type),
+    Reverse_Bytes_I32 (R_Type),
+    Reverse_Bytes_I64 (R_Type),
+    Reverse_Bytes_U8  (R_Type),
+    Reverse_Bytes_U16 (R_Type),
+    Reverse_Bytes_U32 (R_Type),
+    Reverse_Bytes_U64 (R_Type),
+    Reverse_Bits_I8   (R_Type),
+    Reverse_Bits_I16  (R_Type),
+    Reverse_Bits_I32  (R_Type),
+    Reverse_Bits_I64  (R_Type),
+    Reverse_Bits_U8   (R_Type),
+    Reverse_Bits_U16  (R_Type),
+    Reverse_Bits_U32  (R_Type),
+    Reverse_Bits_U64  (R_Type),
 
     // Memory
     // ------
-    Load,           // I_Type (address in immediate,  destination is register)
-    Load_Immediate, // I_Type (  value in immediate,  destination is register)
-    Load_Register,  // R_Type (address in register 1, destination is register 0)
-    Store,          // I_Type (address in immediate,  source is register)
-    Store_Register, // R_Type (address in reigster 1, source is register 0)
-    Push,           // I_Type (value in register)
-    Push_Immediate, // I_Type (value in immediate)
-    Pop,            // I_Type (destination is register)
-    Move,           // R_Type (source is register 1, destination is register 0)
+    Load           (R_Type),
+    Load_Immediate (I_Type),
+    Store          (R_Type),
+    Store_Immediate(I_Type),
+    Move           (R_Type),
+    Push           (I_Type),
+    Push_Immediate (I_Type),
+    Pop            (I_Type),
+
+    // Checked Arithmetic
+    // ------------------
+    Checked_Absolute_I8            (R_Type),
+    Checked_Absolute_I16           (R_Type),
+    Checked_Absolute_I32           (R_Type),
+    Checked_Absolute_I64           (R_Type),
+    Checked_Add_I8                 (R_Type),
+    Checked_Add_I16                (R_Type),
+    Checked_Add_I32                (R_Type),
+    Checked_Add_I64                (R_Type),
+    Checked_Add_U8                 (R_Type),
+    Checked_Add_U16                (R_Type),
+    Checked_Add_U32                (R_Type),
+    Checked_Add_U64                (R_Type),
+    Checked_Add_Unsigned_I8        (R_Type),
+    Checked_Add_Unsigned_I16       (R_Type),
+    Checked_Add_Unsigned_I32       (R_Type),
+    Checked_Add_Unsigned_I64       (R_Type),
+    Checked_Add_Signed_U8          (R_Type),
+    Checked_Add_Signed_U16         (R_Type),
+    Checked_Add_Signed_U32         (R_Type),
+    Checked_Add_Signed_U64         (R_Type),
+    Checked_Divide_I8              (R_Type),
+    Checked_Divide_I16             (R_Type),
+    Checked_Divide_I32             (R_Type),
+    Checked_Divide_I64             (R_Type),
+    Checked_Divide_U8              (R_Type),
+    Checked_Divide_U16             (R_Type),
+    Checked_Divide_U32             (R_Type),
+    Checked_Divide_U64             (R_Type),
+    Checked_Divide_Euclidean_I8    (R_Type),
+    Checked_Divide_Euclidean_I16   (R_Type),
+    Checked_Divide_Euclidean_I32   (R_Type),
+    Checked_Divide_Euclidean_I64   (R_Type),
+    Checked_Divide_Euclidean_U8    (R_Type),
+    Checked_Divide_Euclidean_U16   (R_Type),
+    Checked_Divide_Euclidean_U32   (R_Type),
+    Checked_Divide_Euclidean_U64   (R_Type),
+    Checked_Logarithm_I8           (R_Type),
+    Checked_Logarithm_I16          (R_Type),
+    Checked_Logarithm_I32          (R_Type),
+    Checked_Logarithm_I64          (R_Type),
+    Checked_Logarithm_U8           (R_Type),
+    Checked_Logarithm_U16          (R_Type),
+    Checked_Logarithm_U32          (R_Type),
+    Checked_Logarithm_U64          (R_Type),
+    Checked_Square_Root_I8         (R_Type),
+    Checked_Square_Root_I16        (R_Type),
+    Checked_Square_Root_I32        (R_Type),
+    Checked_Square_Root_I64        (R_Type),
+    Checked_Square_Root_U8         (R_Type),
+    Checked_Square_Root_U16        (R_Type),
+    Checked_Square_Root_U32        (R_Type),
+    Checked_Square_Root_U64        (R_Type),
+    Checked_Multiply_I8            (R_Type),
+    Checked_Multiply_I16           (R_Type),
+    Checked_Multiply_I32           (R_Type),
+    Checked_Multiply_I64           (R_Type),
+    Checked_Multiply_U8            (R_Type),
+    Checked_Multiply_U16           (R_Type),
+    Checked_Multiply_U32           (R_Type),
+    Checked_Multiply_U64           (R_Type),
+    Checked_Negate_I8              (R_Type),
+    Checked_Negate_I16             (R_Type),
+    Checked_Negate_I32             (R_Type),
+    Checked_Negate_I64             (R_Type),
+    Checked_Power_I8               (R_Type),
+    Checked_Power_I16              (R_Type),
+    Checked_Power_I32              (R_Type),
+    Checked_Power_I64              (R_Type),
+    Checked_Power_U8               (R_Type),
+    Checked_Power_U16              (R_Type),
+    Checked_Power_U32              (R_Type),
+    Checked_Power_U64              (R_Type),
+    Checked_Remainder_I8           (R_Type),
+    Checked_Remainder_I16          (R_Type),
+    Checked_Remainder_I32          (R_Type),
+    Checked_Remainder_I64          (R_Type),
+    Checked_Remainder_U8           (R_Type),
+    Checked_Remainder_U16          (R_Type),
+    Checked_Remainder_U32          (R_Type),
+    Checked_Remainder_U64          (R_Type),
+    Checked_Remainder_Euclidean_I8 (R_Type),
+    Checked_Remainder_Euclidean_I16(R_Type),
+    Checked_Remainder_Euclidean_I32(R_Type),
+    Checked_Remainder_Euclidean_I64(R_Type),
+    Checked_Remainder_Euclidean_U8 (R_Type),
+    Checked_Remainder_Euclidean_U16(R_Type),
+    Checked_Remainder_Euclidean_U32(R_Type),
+    Checked_Remainder_Euclidean_U64(R_Type),
+    Checked_Shift_Left_I8          (R_Type),
+    Checked_Shift_Left_I16         (R_Type),
+    Checked_Shift_Left_I32         (R_Type),
+    Checked_Shift_Left_I64         (R_Type),
+    Checked_Shift_Left_U8          (R_Type),
+    Checked_Shift_Left_U16         (R_Type),
+    Checked_Shift_Left_U32         (R_Type),
+    Checked_Shift_Left_U64         (R_Type),
+    Checked_Shift_Right_I8         (R_Type),
+    Checked_Shift_Right_I16        (R_Type),
+    Checked_Shift_Right_I32        (R_Type),
+    Checked_Shift_Right_I64        (R_Type),
+    Checked_Shift_Right_U8         (R_Type),
+    Checked_Shift_Right_U16        (R_Type),
+    Checked_Shift_Right_U32        (R_Type),
+    Checked_Shift_Right_U64        (R_Type),
+    Checked_Subtract_I8            (R_Type),
+    Checked_Subtract_I16           (R_Type),
+    Checked_Subtract_I32           (R_Type),
+    Checked_Subtract_I64           (R_Type),
+    Checked_Subtract_U8            (R_Type),
+    Checked_Subtract_U16           (R_Type),
+    Checked_Subtract_U32           (R_Type),
+    Checked_Subtract_U64           (R_Type),
+    Checked_Subtract_Unsigned_I8   (R_Type),
+    Checked_Subtract_Unsigned_I16  (R_Type),
+    Checked_Subtract_Unsigned_I32  (R_Type),
+    Checked_Subtract_Unsigned_I64  (R_Type),
+
+    // Overflowing Arithmetic
+    // ----------------------
+    Overflowing_Absolute_I8            (R_Type),
+    Overflowing_Absolute_I16           (R_Type),
+    Overflowing_Absolute_I32           (R_Type),
+    Overflowing_Absolute_I64           (R_Type),
+    Overflowing_Add_I8                 (R_Type),
+    Overflowing_Add_I16                (R_Type),
+    Overflowing_Add_I32                (R_Type),
+    Overflowing_Add_I64                (R_Type),
+    Overflowing_Add_U8                 (R_Type),
+    Overflowing_Add_U16                (R_Type),
+    Overflowing_Add_U32                (R_Type),
+    Overflowing_Add_U64                (R_Type),
+    Overflowing_Add_Unsigned_I8        (R_Type),
+    Overflowing_Add_Unsigned_I16       (R_Type),
+    Overflowing_Add_Unsigned_I32       (R_Type),
+    Overflowing_Add_Unsigned_I64       (R_Type),
+    Overflowing_Add_Signed_U8          (R_Type),
+    Overflowing_Add_Signed_U16         (R_Type),
+    Overflowing_Add_Signed_U32         (R_Type),
+    Overflowing_Add_Signed_U64         (R_Type),
+    Overflowing_Divide_I8              (R_Type),
+    Overflowing_Divide_I16             (R_Type),
+    Overflowing_Divide_I32             (R_Type),
+    Overflowing_Divide_I64             (R_Type),
+    Overflowing_Divide_U8              (R_Type),
+    Overflowing_Divide_U16             (R_Type),
+    Overflowing_Divide_U32             (R_Type),
+    Overflowing_Divide_U64             (R_Type),
+    Overflowing_Divide_Euclidean_I8    (R_Type),
+    Overflowing_Divide_Euclidean_I16   (R_Type),
+    Overflowing_Divide_Euclidean_I32   (R_Type),
+    Overflowing_Divide_Euclidean_I64   (R_Type),
+    Overflowing_Divide_Euclidean_U8    (R_Type),
+    Overflowing_Divide_Euclidean_U16   (R_Type),
+    Overflowing_Divide_Euclidean_U32   (R_Type),
+    Overflowing_Divide_Euclidean_U64   (R_Type),
+    Overflowing_Multiply_I8            (R_Type),
+    Overflowing_Multiply_I16           (R_Type),
+    Overflowing_Multiply_I32           (R_Type),
+    Overflowing_Multiply_I64           (R_Type),
+    Overflowing_Multiply_U8            (R_Type),
+    Overflowing_Multiply_U16           (R_Type),
+    Overflowing_Multiply_U32           (R_Type),
+    Overflowing_Multiply_U64           (R_Type),
+    Overflowing_Negate_I8              (R_Type),
+    Overflowing_Negate_I16             (R_Type),
+    Overflowing_Negate_I32             (R_Type),
+    Overflowing_Negate_I64             (R_Type),
+    Overflowing_Power_I8               (R_Type),
+    Overflowing_Power_I16              (R_Type),
+    Overflowing_Power_I32              (R_Type),
+    Overflowing_Power_I64              (R_Type),
+    Overflowing_Power_U8               (R_Type),
+    Overflowing_Power_U16              (R_Type),
+    Overflowing_Power_U32              (R_Type),
+    Overflowing_Power_U64              (R_Type),
+    Overflowing_Remainder_I8           (R_Type),
+    Overflowing_Remainder_I16          (R_Type),
+    Overflowing_Remainder_I32          (R_Type),
+    Overflowing_Remainder_I64          (R_Type),
+    Overflowing_Remainder_U8           (R_Type),
+    Overflowing_Remainder_U16          (R_Type),
+    Overflowing_Remainder_U32          (R_Type),
+    Overflowing_Remainder_U64          (R_Type),
+    Overflowing_Remainder_Euclidean_I8 (R_Type),
+    Overflowing_Remainder_Euclidean_I16(R_Type),
+    Overflowing_Remainder_Euclidean_I32(R_Type),
+    Overflowing_Remainder_Euclidean_I64(R_Type),
+    Overflowing_Remainder_Euclidean_U8 (R_Type),
+    Overflowing_Remainder_Euclidean_U16(R_Type),
+    Overflowing_Remainder_Euclidean_U32(R_Type),
+    Overflowing_Remainder_Euclidean_U64(R_Type),
+    Overflowing_Shift_Left_I8          (R_Type),
+    Overflowing_Shift_Left_I16         (R_Type),
+    Overflowing_Shift_Left_I32         (R_Type),
+    Overflowing_Shift_Left_I64         (R_Type),
+    Overflowing_Shift_Left_U8          (R_Type),
+    Overflowing_Shift_Left_U16         (R_Type),
+    Overflowing_Shift_Left_U32         (R_Type),
+    Overflowing_Shift_Left_U64         (R_Type),
+    Overflowing_Shift_Right_I8         (R_Type),
+    Overflowing_Shift_Right_I16        (R_Type),
+    Overflowing_Shift_Right_I32        (R_Type),
+    Overflowing_Shift_Right_I64        (R_Type),
+    Overflowing_Shift_Right_U8         (R_Type),
+    Overflowing_Shift_Right_U16        (R_Type),
+    Overflowing_Shift_Right_U32        (R_Type),
+    Overflowing_Shift_Right_U64        (R_Type),
+    Overflowing_Subtract_I8            (R_Type),
+    Overflowing_Subtract_I16           (R_Type),
+    Overflowing_Subtract_I32           (R_Type),
+    Overflowing_Subtract_I64           (R_Type),
+    Overflowing_Subtract_U8            (R_Type),
+    Overflowing_Subtract_U16           (R_Type),
+    Overflowing_Subtract_U32           (R_Type),
+    Overflowing_Subtract_U64           (R_Type),
+    Overflowing_Subtract_Unsigned_I8   (R_Type),
+    Overflowing_Subtract_Unsigned_I16  (R_Type),
+    Overflowing_Subtract_Unsigned_I32  (R_Type),
+    Overflowing_Subtract_Unsigned_I64  (R_Type),
+
+    // Saturating Arithmetic
+    // ---------------------
+    Saturating_Absolute_I8             (R_Type),
+    Saturating_Absolute_I16            (R_Type),
+    Saturating_Absolute_I32            (R_Type),
+    Saturating_Absolute_I64            (R_Type),
+    Saturating_Add_I8                  (R_Type),
+    Saturating_Add_I16                 (R_Type),
+    Saturating_Add_I32                 (R_Type),
+    Saturating_Add_I64                 (R_Type),
+    Saturating_Add_U8                  (R_Type),
+    Saturating_Add_U16                 (R_Type),
+    Saturating_Add_U32                 (R_Type),
+    Saturating_Add_U64                 (R_Type),
+    Saturating_Add_Unsigned_I8         (R_Type),
+    Saturating_Add_Unsigned_I16        (R_Type),
+    Saturating_Add_Unsigned_I32        (R_Type),
+    Saturating_Add_Unsigned_I64        (R_Type),
+    Saturating_Add_Signed_U8           (R_Type),
+    Saturating_Add_Signed_U16          (R_Type),
+    Saturating_Add_Signed_U32          (R_Type),
+    Saturating_Add_Signed_U64          (R_Type),
+    Saturating_Divide_I8               (R_Type),
+    Saturating_Divide_I16              (R_Type),
+    Saturating_Divide_I32              (R_Type),
+    Saturating_Divide_I64              (R_Type),
+    Saturating_Divide_U8               (R_Type),
+    Saturating_Divide_U16              (R_Type),
+    Saturating_Divide_U32              (R_Type),
+    Saturating_Divide_U64              (R_Type),
+    Saturating_Multiply_I8             (R_Type),
+    Saturating_Multiply_I16            (R_Type),
+    Saturating_Multiply_I32            (R_Type),
+    Saturating_Multiply_I64            (R_Type),
+    Saturating_Multiply_U8             (R_Type),
+    Saturating_Multiply_U16            (R_Type),
+    Saturating_Multiply_U32            (R_Type),
+    Saturating_Multiply_U64            (R_Type),
+    Saturating_Negate_I8               (R_Type),
+    Saturating_Negate_I16              (R_Type),
+    Saturating_Negate_I32              (R_Type),
+    Saturating_Negate_I64              (R_Type),
+    Saturating_Power_I8                (R_Type),
+    Saturating_Power_I16               (R_Type),
+    Saturating_Power_I32               (R_Type),
+    Saturating_Power_I64               (R_Type),
+    Saturating_Power_U8                (R_Type),
+    Saturating_Power_U16               (R_Type),
+    Saturating_Power_U32               (R_Type),
+    Saturating_Power_U64               (R_Type),
+    Saturating_Subtract_I8             (R_Type),
+    Saturating_Subtract_I16            (R_Type),
+    Saturating_Subtract_I32            (R_Type),
+    Saturating_Subtract_I64            (R_Type),
+    Saturating_Subtract_U8             (R_Type),
+    Saturating_Subtract_U16            (R_Type),
+    Saturating_Subtract_U32            (R_Type),
+    Saturating_Subtract_U64            (R_Type),
+    Saturating_Subtract_Unsigned_I8    (R_Type),
+    Saturating_Subtract_Unsigned_I16   (R_Type),
+    Saturating_Subtract_Unsigned_I32   (R_Type),
+    Saturating_Subtract_Unsigned_I64   (R_Type),
+
+    // Floating Point Arithmetic
+    // -------------------------
+    Absolute_F32           (R_Type),
+    Absolute_F64           (R_Type),
+    Add_F32                (R_Type),
+    Add_F64                (R_Type),
+    Divide_F32             (R_Type),
+    Divide_F64             (R_Type),
+    Divide_Euclidean_F32   (R_Type),
+    Divide_Euclidean_F64   (R_Type),
+    Logarithm_F32          (R_Type),
+    Logarithm_F64          (R_Type),
+    Square_Root_F32        (R_Type),
+    Square_Root_F64        (R_Type),
+    Multiply_F32           (R_Type),
+    Multiply_F64           (R_Type),
+    Negate_F32             (R_Type),
+    Negate_F64             (R_Type),
+    Power_F32              (R_Type),
+    Power_F64              (R_Type),
+    Remainder_F32          (R_Type),
+    Remainder_F64          (R_Type),
+    Remainder_Euclidean_F32(R_Type),
+    Remainder_Euclidean_F64(R_Type),
+    Cube_Root_F32          (R_Type),
+    Cube_Root_F64          (R_Type),
+    Subtract_F32           (R_Type),
+    Subtract_F64           (R_Type),
+
+    // Arithmetic Functions
+    // --------------------
+    // Signum_F32         (R_Type),
+    // Signum_F64         (R_Type),
+    // Signum_I8          (R_Type),
+    // Signum_I16         (R_Type),
+    // Signum_I32         (R_Type),
+    // Signum_I64         (R_Type),
+    // Min                (R_Type),
+    // Max                (R_Type),
+    // Midpoint           (R_Type),
+    // Is_Positive        (R_Type),
+    // Is_Negative        (R_Type),
+    // Absolute_Difference(R_Type),
 
     // Invalid
     // -------
-    Invalid,
-}
-
-static INSTRUCTION_LOOKUP: [(Instruction_Kind, Op_Code); 63] = [
-    (Instruction_Kind::V_Type, Op_Code::Halt),
-    (Instruction_Kind::I_Type, Op_Code::Call),
-    (Instruction_Kind::I_Type, Op_Code::Call_Register),
-    (Instruction_Kind::V_Type, Op_Code::Return),
-    (Instruction_Kind::I_Type, Op_Code::Jump),
-    (Instruction_Kind::I_Type, Op_Code::Jump_Not_Zero),
-    (Instruction_Kind::I_Type, Op_Code::Jump_Zero),
-    (Instruction_Kind::I_Type, Op_Code::Jump_Register),
-    (Instruction_Kind::R_Type, Op_Code::Jump_Not_Zero_Register),
-    (Instruction_Kind::R_Type, Op_Code::Jump_Zero_Register),
-    (Instruction_Kind::R_Type, Op_Code::Compare_Equal),
-    (Instruction_Kind::R_Type, Op_Code::Compare_Not_Equal),
-    (Instruction_Kind::R_Type, Op_Code::Compare_Less),
-    (Instruction_Kind::R_Type, Op_Code::Compare_Greater),
-    (Instruction_Kind::R_Type, Op_Code::Compare_Less_Equal),
-    (Instruction_Kind::R_Type, Op_Code::Compare_Greater_Equal),
-    (Instruction_Kind::R_Type, Op_Code::Saturating_Absolute),
-    (Instruction_Kind::R_Type, Op_Code::Saturating_Negate),
-    (Instruction_Kind::R_Type, Op_Code::Saturating_Power),
-    (Instruction_Kind::R_Type, Op_Code::Saturating_Remainder),
-    (Instruction_Kind::R_Type, Op_Code::Saturating_Add),
-    (Instruction_Kind::R_Type, Op_Code::Saturating_Subtract),
-    (Instruction_Kind::R_Type, Op_Code::Saturating_Multiply),
-    (Instruction_Kind::R_Type, Op_Code::Saturating_Divide),
-    (Instruction_Kind::R_Type, Op_Code::Saturating_Modulus),
-    (Instruction_Kind::R_Type, Op_Code::Saturating_Shift_Left),
-    (Instruction_Kind::R_Type, Op_Code::Saturating_Shift_Right),
-    (Instruction_Kind::R_Type, Op_Code::Overflowing_Absolute),
-    (Instruction_Kind::R_Type, Op_Code::Overflowing_Negate),
-    (Instruction_Kind::R_Type, Op_Code::Overflowing_Power),
-    (Instruction_Kind::R_Type, Op_Code::Overflowing_Remainder),
-    (Instruction_Kind::R_Type, Op_Code::Overflowing_Add),
-    (Instruction_Kind::R_Type, Op_Code::Overflowing_Subtract),
-    (Instruction_Kind::R_Type, Op_Code::Overflowing_Multiply),
-    (Instruction_Kind::R_Type, Op_Code::Overflowing_Divide),
-    (Instruction_Kind::R_Type, Op_Code::Overflowing_Modulus),
-    (Instruction_Kind::R_Type, Op_Code::Overflowing_Shift_Left),
-    (Instruction_Kind::R_Type, Op_Code::Overflowing_Shift_Right),
-    (Instruction_Kind::R_Type, Op_Code::And),
-    (Instruction_Kind::R_Type, Op_Code::Or),
-    (Instruction_Kind::R_Type, Op_Code::Xor),
-    (Instruction_Kind::R_Type, Op_Code::Not),
-    (Instruction_Kind::R_Type, Op_Code::Rotate_Left),
-    (Instruction_Kind::R_Type, Op_Code::Rotate_Right),
-    (Instruction_Kind::I_Type, Op_Code::Load),
-    (Instruction_Kind::I_Type, Op_Code::Load_Immediate),
-    (Instruction_Kind::R_Type, Op_Code::Load_Register),
-    (Instruction_Kind::I_Type, Op_Code::Store),
-    (Instruction_Kind::R_Type, Op_Code::Store_Register),
-    (Instruction_Kind::I_Type, Op_Code::Push),
-    (Instruction_Kind::I_Type, Op_Code::Push_Immediate),
-    (Instruction_Kind::I_Type, Op_Code::Pop),
-    (Instruction_Kind::R_Type, Op_Code::Move),
-    (Instruction_Kind::V_Type, Op_Code::Invalid),
-    (Instruction_Kind::V_Type, Op_Code::Invalid),
-    (Instruction_Kind::V_Type, Op_Code::Invalid),
-    (Instruction_Kind::V_Type, Op_Code::Invalid),
-    (Instruction_Kind::V_Type, Op_Code::Invalid),
-    (Instruction_Kind::V_Type, Op_Code::Invalid),
-    (Instruction_Kind::V_Type, Op_Code::Invalid),
-    (Instruction_Kind::V_Type, Op_Code::Invalid),
-    (Instruction_Kind::V_Type, Op_Code::Invalid),
-    (Instruction_Kind::V_Type, Op_Code::Invalid),
-];
-
-pub union Instruction_Variant {
-    v_type: (),
-    r_type: R_Type,
-    i_type: I_Type,
-}
-
-impl Instruction_Variant {
-    pub fn v_type() -> Self {
-        Self { v_type: () }
-    }
-
-    pub fn r_type(r_type: R_Type) -> Self {
-        Self { r_type }
-    }
-
-    pub fn i_type(i_type: I_Type) -> Self {
-        Self { i_type }
-    }
-}
-
-// TODO: Think of a better way for this to work.
-pub struct Instruction {
-    pub op_code: Op_Code,
-    pub kind: Instruction_Kind,
-    pub variant: Instruction_Variant,
-}
-
-impl fmt::Display for Instruction {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{:?}", self.op_code)?;
-
-        match self.kind {
-            Instruction_Kind::R_Type => {
-                write!(f, " {:?}", self.r_type())?;
-            },
-
-            Instruction_Kind::I_Type => {
-                write!(f, " {:?}", self.i_type())?;
-            },
-
-            _ => {},
-        }
-
-        Ok(())
-    }
+    Invalid(u32),
 }
 
 impl Instruction {
-    pub fn decode(raw_instruction: u64) -> Self {
-        let raw_op_code = (raw_instruction & 0x3F) as usize;
+    pub fn decode(i: u32) -> Instruction {
+        use Instruction::*;
 
-        let (kind, op_code) = INSTRUCTION_LOOKUP[raw_op_code];
+        let op_code = encoding::op_code(i) as u8;
+        let function = encoding::function(i) as u8;
 
-        match kind {
-            Instruction_Kind::V_Type => Self {
-                op_code,
-                kind,
-                variant: Instruction_Variant { v_type: () },
+        let rt = R_Type(i);
+        let it = I_Type(i);
+
+        let bit_width = rt.bit_width();
+        let f_flag = rt.f_flag();
+        let s_flag = rt.s_flag();
+
+        macro_rules! is_valid_destination {
+            ($instruction:ident($data:expr)) => {
+                // NOTE: `rt.register_0()` and `it.register()` decode the same bits from the
+                // instruction.
+                if rt.register_0().is_readonly() {
+                    Invalid(i)
+                } else {
+                    $instruction($data)
+                }
+            };
+        }
+
+        macro_rules! op {
+            (
+                $_i8:ident($i_i8:ident),
+                $_i16:ident($i_i16:ident),
+                $_i32:ident($i_i32:ident),
+                $_i64:ident($i_i64:ident),
+                $_u8:ident($i_u8:ident),
+                $_u16:ident($i_u16:ident),
+                $_u32:ident($i_u32:ident),
+                $_u64:ident($i_u64:ident),
+                $_f32:ident($i_f32:ident),
+                $_f64:ident($i_f64:ident),
+            ) => {
+                if f_flag {
+                    match bit_width {
+                        Bit_Width::Eight => Invalid(i),
+                        Bit_Width::Sixteen => Invalid(i),
+                        Bit_Width::Thirty_Two => is_valid_destination!($_f32($i_f32)),
+                        Bit_Width::Sixty_Four => is_valid_destination!($_f64($i_f64)),
+                    }
+                } else {
+                    if s_flag {
+                        match bit_width {
+                            Bit_Width::Eight => is_valid_destination!($_i8($i_i8)),
+                            Bit_Width::Sixteen => is_valid_destination!($_i16($i_i16)),
+                            Bit_Width::Thirty_Two => is_valid_destination!($_i32($i_i32)),
+                            Bit_Width::Sixty_Four => is_valid_destination!($_i64($i_i64)),
+                        }
+                    } else {
+                        match bit_width {
+                            Bit_Width::Eight => is_valid_destination!($_u8($i_u8)),
+                            Bit_Width::Sixteen => is_valid_destination!($_u16($i_u16)),
+                            Bit_Width::Thirty_Two => is_valid_destination!($_u32($i_u32)),
+                            Bit_Width::Sixty_Four => is_valid_destination!($_u64($i_u64)),
+                        }
+                    }
+                }
+            };
+        }
+
+        println!("------------------");
+        println!("{rt:?}");
+        println!("{it:?}");
+
+        match op_code {
+            // Control Flow
+            // ------------
+            0b000000 => match function {
+                0x0 => Halt,
+                0x1 => Call(rt),
+                0x2 => Return,
+                0x3 => Call_Environment(it),
+                0x4 => Break,
+                0x5 => is_valid_destination!(Jump_And_Link(rt)),
+                0x6 => is_valid_destination!(Jump_Not_Zero(rt)),
+                0x7 => is_valid_destination!(Jump_Zero(rt)),
+                _ => Invalid(i),
             },
 
-            Instruction_Kind::R_Type => Self {
-                op_code,
-                kind,
-                variant: Instruction_Variant {
-                    r_type: R_Type::decode(raw_instruction),
-                },
-            },
+            // Comparison
+            // ----------
+            0b000001 => {
+                macro_rules! compare {
+                    ($compare:ident, $compare_f32:ident, $compare_f64:ident) => {
+                        if f_flag {
+                            match bit_width {
+                                Bit_Width::Eight => Invalid(i),
+                                Bit_Width::Sixteen => Invalid(i),
+                                Bit_Width::Thirty_Two => is_valid_destination!($compare_f32(rt)),
+                                Bit_Width::Sixty_Four => is_valid_destination!($compare_f64(rt)),
+                            }
+                        } else {
+                            is_valid_destination!($compare(rt))
+                        }
+                    };
+                }
 
-            Instruction_Kind::I_Type => Self {
-                op_code,
-                kind,
-                variant: Instruction_Variant {
-                    i_type: I_Type::decode(raw_instruction),
-                },
-            },
-        }
-    }
-
-    pub fn op_code(&self) -> Op_Code {
-        self.op_code
-    }
-
-    // FIXME: This is wrong. Well, it'll work, but it's not good API design.
-    pub fn r_type(&self) -> &R_Type {
-        unsafe { &self.variant.r_type }
-    }
-
-    pub fn i_type(&self) -> &I_Type {
-        unsafe { &self.variant.i_type }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Bit_Width {
-    Eight,
-    Sixteen,
-    Thirty_Two,
-    Sixty_Four,
-}
-
-impl Bit_Width {
-    pub fn from_mask(mask: u8) -> Self {
-        match mask & 0x3 {
-            0b00 => Self::Eight,
-            0b01 => Self::Sixteen,
-            0b10 => Self::Thirty_Two,
-            0b11 => Self::Sixty_Four,
-            _ => unsafe { unreachable_unchecked() },
-        }
-    }
-
-    pub fn byte_count(&self) -> u8 {
-        match self {
-            Self::Eight => 1,
-            Self::Sixteen => 2,
-            Self::Thirty_Two => 4,
-            Self::Sixty_Four => 8,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct R_Type {
-    pub register_0: Register,
-    pub register_1: Register,
-    pub register_2: Register,
-    pub bit_width: Bit_Width,
-    pub is_float: bool,
-    pub is_signed: bool,
-    pub immediate_value: u64,
-}
-
-impl R_Type {
-    pub fn decode(raw_instruction: u64) -> Self {
-        Self {
-            register_0: Register::from_index(((raw_instruction >> 6) & 0x7F) as u8),
-            register_1: Register::from_index(((raw_instruction >> 13) & 0x7F) as u8),
-            register_2: Register::from_index(((raw_instruction >> 20) & 0x7F) as u8),
-            bit_width: {
-                let mask = ((raw_instruction >> 27) & 0x03) as u8;
-                let size = Bit_Width::from_mask(mask);
-
-                size
-            },
-            is_float: (raw_instruction & 0x40000000) != 0,
-            is_signed: (raw_instruction & 0x80000000) != 0,
-            immediate_value: raw_instruction >> 32,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub struct I_Type {
-    pub register: Register,
-    pub bit_width: Bit_Width,
-    pub immediate_value: u64,
-}
-
-impl I_Type {
-    pub fn decode(raw_instruction: u64) -> Self {
-        let mask = ((raw_instruction >> 27) & 0x03) as u8;
-        let size = Bit_Width::from_mask(mask);
-
-        Self {
-            register: Register::from_index(((raw_instruction >> 6) & 0x7F) as u8),
-            bit_width: size,
-            immediate_value: {
-                let lo = (raw_instruction >> 13) & 0x3FFF;
-                let hi = (raw_instruction >> 15) & 0x1FFFFFFFFC000;
-
-                let value = hi | lo;
-
-                println!("lo: {:X}, hi: {:X}, value: {:X}", lo, hi, value);
-
-                match size {
-                    Bit_Width::Eight => lo & 0xFF,
-                    Bit_Width::Sixteen => value & 0xFFFF,
-                    Bit_Width::Thirty_Two => value & 0xFFFFFFFF,
-                    Bit_Width::Sixty_Four => value,
+                match function {
+                    0x0 => compare!(Compare_Equal, Compare_Equal_F32, Compare_Equal_F64),
+                    0x1 => compare!(Compare_Not_Equal, Compare_Not_Equal_F32, Compare_Less_F64),
+                    0x2 => compare!(Compare_Less, Compare_Less_F32, Compare_Less_F64),
+                    0x3 => compare!(
+                        Compare_Less_Equal,
+                        Compare_Less_Equal_F32,
+                        Compare_Less_Equal_F64
+                    ),
+                    0x4 => compare!(Compare_Greater, Compare_Greater_F32, Compare_Greater_F64),
+                    0x5 => compare!(
+                        Compare_Greater_Equal,
+                        Compare_Greater_Equal_F32,
+                        Compare_Greater_Equal_F64
+                    ),
+                    _ => Invalid(i),
                 }
             },
+
+            // Bitwise
+            // -------
+            0b000010 => match function {
+                0x0 => op!(
+                    And_I8(rt),
+                    And_I16(rt),
+                    And_I32(rt),
+                    And_I64(rt),
+                    And_U8(rt),
+                    And_U16(rt),
+                    And_U32(rt),
+                    And_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x1 => op!(
+                    Or_I8(rt),
+                    Or_I16(rt),
+                    Or_I32(rt),
+                    Or_I64(rt),
+                    Or_U8(rt),
+                    Or_U16(rt),
+                    Or_U32(rt),
+                    Or_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x2 => op!(
+                    Xor_I8(rt),
+                    Xor_I16(rt),
+                    Xor_I32(rt),
+                    Xor_I64(rt),
+                    Xor_U8(rt),
+                    Xor_U16(rt),
+                    Xor_U32(rt),
+                    Xor_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x3 => op!(
+                    Not_I8(rt),
+                    Not_I16(rt),
+                    Not_I32(rt),
+                    Not_I64(rt),
+                    Not_U8(rt),
+                    Not_U16(rt),
+                    Not_U32(rt),
+                    Not_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x4 => op!(
+                    Shift_Left_I8(rt),
+                    Shift_Left_I16(rt),
+                    Shift_Left_I32(rt),
+                    Shift_Left_I64(rt),
+                    Shift_Left_U8(rt),
+                    Shift_Left_U16(rt),
+                    Shift_Left_U32(rt),
+                    Shift_Left_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x5 => op!(
+                    Shift_Right_I8(rt),
+                    Shift_Right_I16(rt),
+                    Shift_Right_I32(rt),
+                    Shift_Right_I64(rt),
+                    Shift_Right_U8(rt),
+                    Shift_Right_U16(rt),
+                    Shift_Right_U32(rt),
+                    Shift_Right_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x6 => op!(
+                    Rotate_Left_I8(rt),
+                    Rotate_Left_I16(rt),
+                    Rotate_Left_I32(rt),
+                    Rotate_Left_I64(rt),
+                    Rotate_Left_U8(rt),
+                    Rotate_Left_U16(rt),
+                    Rotate_Left_U32(rt),
+                    Rotate_Left_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x7 => op!(
+                    Rotate_Right_I8(rt),
+                    Rotate_Right_I16(rt),
+                    Rotate_Right_I32(rt),
+                    Rotate_Right_I64(rt),
+                    Rotate_Right_U8(rt),
+                    Rotate_Right_U16(rt),
+                    Rotate_Right_U32(rt),
+                    Rotate_Right_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x8 => op!(
+                    Count_Ones_I8(rt),
+                    Count_Ones_I16(rt),
+                    Count_Ones_I32(rt),
+                    Count_Ones_I64(rt),
+                    Count_Ones_U8(rt),
+                    Count_Ones_U16(rt),
+                    Count_Ones_U32(rt),
+                    Count_Ones_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x9 => op!(
+                    Leading_Ones_I8(rt),
+                    Leading_Ones_I16(rt),
+                    Leading_Ones_I32(rt),
+                    Leading_Ones_I64(rt),
+                    Leading_Ones_U8(rt),
+                    Leading_Ones_U16(rt),
+                    Leading_Ones_U32(rt),
+                    Leading_Ones_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xA => op!(
+                    Trailing_Ones_I8(rt),
+                    Trailing_Ones_I16(rt),
+                    Trailing_Ones_I32(rt),
+                    Trailing_Ones_I64(rt),
+                    Trailing_Ones_U8(rt),
+                    Trailing_Ones_U16(rt),
+                    Trailing_Ones_U32(rt),
+                    Trailing_Ones_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xB => op!(
+                    Count_Zeros_I8(rt),
+                    Count_Zeros_I16(rt),
+                    Count_Zeros_I32(rt),
+                    Count_Zeros_I64(rt),
+                    Count_Zeros_U8(rt),
+                    Count_Zeros_U16(rt),
+                    Count_Zeros_U32(rt),
+                    Count_Zeros_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xC => op!(
+                    Leading_Zeros_I8(rt),
+                    Leading_Zeros_I16(rt),
+                    Leading_Zeros_I32(rt),
+                    Leading_Zeros_I64(rt),
+                    Leading_Zeros_U8(rt),
+                    Leading_Zeros_U16(rt),
+                    Leading_Zeros_U32(rt),
+                    Leading_Zeros_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xD => op!(
+                    Trailing_Zeros_I8(rt),
+                    Trailing_Zeros_I16(rt),
+                    Trailing_Zeros_I32(rt),
+                    Trailing_Zeros_I64(rt),
+                    Trailing_Zeros_U8(rt),
+                    Trailing_Zeros_U16(rt),
+                    Trailing_Zeros_U32(rt),
+                    Trailing_Zeros_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xE => op!(
+                    Reverse_Bytes_I8(rt),
+                    Reverse_Bytes_I16(rt),
+                    Reverse_Bytes_I32(rt),
+                    Reverse_Bytes_I64(rt),
+                    Reverse_Bytes_U8(rt),
+                    Reverse_Bytes_U16(rt),
+                    Reverse_Bytes_U32(rt),
+                    Reverse_Bytes_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xF => op!(
+                    Reverse_Bits_I8(rt),
+                    Reverse_Bits_I16(rt),
+                    Reverse_Bits_I32(rt),
+                    Reverse_Bits_I64(rt),
+                    Reverse_Bits_U8(rt),
+                    Reverse_Bits_U16(rt),
+                    Reverse_Bits_U32(rt),
+                    Reverse_Bits_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                _ => Invalid(i),
+            },
+
+            // Memory
+            // ------
+            0b000011 => match function {
+                0x0 => is_valid_destination!(Load(rt)),
+                0x1 => {
+                    println!("here");
+                    is_valid_destination!(Load_Immediate(it))
+                },
+                0x2 => Store(rt),
+                0x3 => Store_Immediate(it),
+                0x4 => is_valid_destination!(Move(rt)),
+                0x5 => is_valid_destination!(Push(it)),
+                0x6 => is_valid_destination!(Push_Immediate(it)),
+                0x7 => is_valid_destination!(Pop(it)),
+                _ => Invalid(i),
+            },
+
+            // Checked Arithmetic
+            // ------------------
+            0b000100 => match function {
+                0x0 => op!(
+                    Checked_Absolute_I8(rt),
+                    Checked_Absolute_I16(rt),
+                    Checked_Absolute_I32(rt),
+                    Checked_Absolute_I64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x1 => op!(
+                    Checked_Add_I8(rt),
+                    Checked_Add_I16(rt),
+                    Checked_Add_I32(rt),
+                    Checked_Add_I64(rt),
+                    Checked_Add_U8(rt),
+                    Checked_Add_U16(rt),
+                    Checked_Add_U32(rt),
+                    Checked_Add_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x2 => op!(
+                    Checked_Add_Unsigned_I8(rt),
+                    Checked_Add_Unsigned_I16(rt),
+                    Checked_Add_Unsigned_I32(rt),
+                    Checked_Add_Unsigned_I64(rt),
+                    Checked_Add_Signed_U8(rt),
+                    Checked_Add_Signed_U16(rt),
+                    Checked_Add_Signed_U32(rt),
+                    Checked_Add_Signed_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x3 => op!(
+                    Checked_Divide_I8(rt),
+                    Checked_Divide_I16(rt),
+                    Checked_Divide_I32(rt),
+                    Checked_Divide_I64(rt),
+                    Checked_Divide_U8(rt),
+                    Checked_Divide_U16(rt),
+                    Checked_Divide_U32(rt),
+                    Checked_Divide_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x4 => op!(
+                    Checked_Divide_Euclidean_I8(rt),
+                    Checked_Divide_Euclidean_I16(rt),
+                    Checked_Divide_Euclidean_I32(rt),
+                    Checked_Divide_Euclidean_I64(rt),
+                    Checked_Divide_Euclidean_U8(rt),
+                    Checked_Divide_Euclidean_U16(rt),
+                    Checked_Divide_Euclidean_U32(rt),
+                    Checked_Divide_Euclidean_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x5 => op!(
+                    Checked_Logarithm_I8(rt),
+                    Checked_Logarithm_I16(rt),
+                    Checked_Logarithm_I32(rt),
+                    Checked_Logarithm_I64(rt),
+                    Checked_Logarithm_U8(rt),
+                    Checked_Logarithm_U16(rt),
+                    Checked_Logarithm_U32(rt),
+                    Checked_Logarithm_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x6 => op!(
+                    Checked_Square_Root_I8(rt),
+                    Checked_Square_Root_I16(rt),
+                    Checked_Square_Root_I32(rt),
+                    Checked_Square_Root_I64(rt),
+                    Checked_Square_Root_U8(rt),
+                    Checked_Square_Root_U16(rt),
+                    Checked_Square_Root_U32(rt),
+                    Checked_Square_Root_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x7 => op!(
+                    Checked_Multiply_I8(rt),
+                    Checked_Multiply_I16(rt),
+                    Checked_Multiply_I32(rt),
+                    Checked_Multiply_I64(rt),
+                    Checked_Multiply_U8(rt),
+                    Checked_Multiply_U16(rt),
+                    Checked_Multiply_U32(rt),
+                    Checked_Multiply_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x8 => op!(
+                    Checked_Negate_I8(rt),
+                    Checked_Negate_I16(rt),
+                    Checked_Negate_I32(rt),
+                    Checked_Negate_I64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x9 => op!(
+                    Checked_Power_I8(rt),
+                    Checked_Power_I16(rt),
+                    Checked_Power_I32(rt),
+                    Checked_Power_I64(rt),
+                    Checked_Power_U8(rt),
+                    Checked_Power_U16(rt),
+                    Checked_Power_U32(rt),
+                    Checked_Power_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xA => op!(
+                    Checked_Remainder_I8(rt),
+                    Checked_Remainder_I16(rt),
+                    Checked_Remainder_I32(rt),
+                    Checked_Remainder_I64(rt),
+                    Checked_Remainder_U8(rt),
+                    Checked_Remainder_U16(rt),
+                    Checked_Remainder_U32(rt),
+                    Checked_Remainder_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xB => op!(
+                    Checked_Remainder_Euclidean_I8(rt),
+                    Checked_Remainder_Euclidean_I16(rt),
+                    Checked_Remainder_Euclidean_I32(rt),
+                    Checked_Remainder_Euclidean_I64(rt),
+                    Checked_Remainder_Euclidean_U8(rt),
+                    Checked_Remainder_Euclidean_U16(rt),
+                    Checked_Remainder_Euclidean_U32(rt),
+                    Checked_Remainder_Euclidean_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xC => op!(
+                    Checked_Shift_Left_I8(rt),
+                    Checked_Shift_Left_I16(rt),
+                    Checked_Shift_Left_I32(rt),
+                    Checked_Shift_Left_I64(rt),
+                    Checked_Shift_Left_U8(rt),
+                    Checked_Shift_Left_U16(rt),
+                    Checked_Shift_Left_U32(rt),
+                    Checked_Shift_Left_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xD => op!(
+                    Checked_Shift_Right_I8(rt),
+                    Checked_Shift_Right_I16(rt),
+                    Checked_Shift_Right_I32(rt),
+                    Checked_Shift_Right_I64(rt),
+                    Checked_Shift_Right_U8(rt),
+                    Checked_Shift_Right_U16(rt),
+                    Checked_Shift_Right_U32(rt),
+                    Checked_Shift_Right_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xE => op!(
+                    Checked_Subtract_I8(rt),
+                    Checked_Subtract_I16(rt),
+                    Checked_Subtract_I32(rt),
+                    Checked_Subtract_I64(rt),
+                    Checked_Subtract_U8(rt),
+                    Checked_Subtract_U16(rt),
+                    Checked_Subtract_U32(rt),
+                    Checked_Subtract_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xF => op!(
+                    Checked_Subtract_Unsigned_I8(rt),
+                    Checked_Subtract_Unsigned_I16(rt),
+                    Checked_Subtract_Unsigned_I32(rt),
+                    Checked_Subtract_Unsigned_I64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                _ => Invalid(i),
+            },
+
+            // Overflowing Arithmetic
+            // ----------------------
+            0b000101 => match function {
+                0x0 => op!(
+                    Overflowing_Absolute_I8(rt),
+                    Overflowing_Absolute_I16(rt),
+                    Overflowing_Absolute_I32(rt),
+                    Overflowing_Absolute_I64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x1 => op!(
+                    Overflowing_Add_I8(rt),
+                    Overflowing_Add_I16(rt),
+                    Overflowing_Add_I32(rt),
+                    Overflowing_Add_I64(rt),
+                    Overflowing_Add_U8(rt),
+                    Overflowing_Add_U16(rt),
+                    Overflowing_Add_U32(rt),
+                    Overflowing_Add_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x2 => op!(
+                    Overflowing_Add_Unsigned_I8(rt),
+                    Overflowing_Add_Unsigned_I16(rt),
+                    Overflowing_Add_Unsigned_I32(rt),
+                    Overflowing_Add_Unsigned_I64(rt),
+                    Overflowing_Add_Signed_U8(rt),
+                    Overflowing_Add_Signed_U16(rt),
+                    Overflowing_Add_Signed_U32(rt),
+                    Overflowing_Add_Signed_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x3 => op!(
+                    Overflowing_Divide_I8(rt),
+                    Overflowing_Divide_I16(rt),
+                    Overflowing_Divide_I32(rt),
+                    Overflowing_Divide_I64(rt),
+                    Overflowing_Divide_U8(rt),
+                    Overflowing_Divide_U16(rt),
+                    Overflowing_Divide_U32(rt),
+                    Overflowing_Divide_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x4 => op!(
+                    Overflowing_Divide_Euclidean_I8(rt),
+                    Overflowing_Divide_Euclidean_I16(rt),
+                    Overflowing_Divide_Euclidean_I32(rt),
+                    Overflowing_Divide_Euclidean_I64(rt),
+                    Overflowing_Divide_Euclidean_U8(rt),
+                    Overflowing_Divide_Euclidean_U16(rt),
+                    Overflowing_Divide_Euclidean_U32(rt),
+                    Overflowing_Divide_Euclidean_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x7 => op!(
+                    Overflowing_Multiply_I8(rt),
+                    Overflowing_Multiply_I16(rt),
+                    Overflowing_Multiply_I32(rt),
+                    Overflowing_Multiply_I64(rt),
+                    Overflowing_Multiply_U8(rt),
+                    Overflowing_Multiply_U16(rt),
+                    Overflowing_Multiply_U32(rt),
+                    Overflowing_Multiply_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x8 => op!(
+                    Overflowing_Negate_I8(rt),
+                    Overflowing_Negate_I16(rt),
+                    Overflowing_Negate_I32(rt),
+                    Overflowing_Negate_I64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x9 => op!(
+                    Overflowing_Power_I8(rt),
+                    Overflowing_Power_I16(rt),
+                    Overflowing_Power_I32(rt),
+                    Overflowing_Power_I64(rt),
+                    Overflowing_Power_U8(rt),
+                    Overflowing_Power_U16(rt),
+                    Overflowing_Power_U32(rt),
+                    Overflowing_Power_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xA => op!(
+                    Overflowing_Remainder_I8(rt),
+                    Overflowing_Remainder_I16(rt),
+                    Overflowing_Remainder_I32(rt),
+                    Overflowing_Remainder_I64(rt),
+                    Overflowing_Remainder_U8(rt),
+                    Overflowing_Remainder_U16(rt),
+                    Overflowing_Remainder_U32(rt),
+                    Overflowing_Remainder_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xB => op!(
+                    Overflowing_Remainder_Euclidean_I8(rt),
+                    Overflowing_Remainder_Euclidean_I16(rt),
+                    Overflowing_Remainder_Euclidean_I32(rt),
+                    Overflowing_Remainder_Euclidean_I64(rt),
+                    Overflowing_Remainder_Euclidean_U8(rt),
+                    Overflowing_Remainder_Euclidean_U16(rt),
+                    Overflowing_Remainder_Euclidean_U32(rt),
+                    Overflowing_Remainder_Euclidean_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xC => op!(
+                    Overflowing_Shift_Left_I8(rt),
+                    Overflowing_Shift_Left_I16(rt),
+                    Overflowing_Shift_Left_I32(rt),
+                    Overflowing_Shift_Left_I64(rt),
+                    Overflowing_Shift_Left_U8(rt),
+                    Overflowing_Shift_Left_U16(rt),
+                    Overflowing_Shift_Left_U32(rt),
+                    Overflowing_Shift_Left_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xD => op!(
+                    Overflowing_Shift_Right_I8(rt),
+                    Overflowing_Shift_Right_I16(rt),
+                    Overflowing_Shift_Right_I32(rt),
+                    Overflowing_Shift_Right_I64(rt),
+                    Overflowing_Shift_Right_U8(rt),
+                    Overflowing_Shift_Right_U16(rt),
+                    Overflowing_Shift_Right_U32(rt),
+                    Overflowing_Shift_Right_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xE => op!(
+                    Overflowing_Subtract_I8(rt),
+                    Overflowing_Subtract_I16(rt),
+                    Overflowing_Subtract_I32(rt),
+                    Overflowing_Subtract_I64(rt),
+                    Overflowing_Subtract_U8(rt),
+                    Overflowing_Subtract_U16(rt),
+                    Overflowing_Subtract_U32(rt),
+                    Overflowing_Subtract_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xF => op!(
+                    Overflowing_Subtract_Unsigned_I8(rt),
+                    Overflowing_Subtract_Unsigned_I16(rt),
+                    Overflowing_Subtract_Unsigned_I32(rt),
+                    Overflowing_Subtract_Unsigned_I64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                _ => Invalid(i),
+            },
+
+            // Saturating Arithmetic
+            // ---------------------
+            0b000110 => match function {
+                0x0 => op!(
+                    Saturating_Absolute_I8(rt),
+                    Saturating_Absolute_I16(rt),
+                    Saturating_Absolute_I32(rt),
+                    Saturating_Absolute_I64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x1 => op!(
+                    Saturating_Add_I8(rt),
+                    Saturating_Add_I16(rt),
+                    Saturating_Add_I32(rt),
+                    Saturating_Add_I64(rt),
+                    Saturating_Add_U8(rt),
+                    Saturating_Add_U16(rt),
+                    Saturating_Add_U32(rt),
+                    Saturating_Add_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x2 => op!(
+                    Saturating_Add_Unsigned_I8(rt),
+                    Saturating_Add_Unsigned_I16(rt),
+                    Saturating_Add_Unsigned_I32(rt),
+                    Saturating_Add_Unsigned_I64(rt),
+                    Saturating_Add_Signed_U8(rt),
+                    Saturating_Add_Signed_U16(rt),
+                    Saturating_Add_Signed_U32(rt),
+                    Saturating_Add_Signed_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x3 => op!(
+                    Saturating_Divide_I8(rt),
+                    Saturating_Divide_I16(rt),
+                    Saturating_Divide_I32(rt),
+                    Saturating_Divide_I64(rt),
+                    Saturating_Divide_U8(rt),
+                    Saturating_Divide_U16(rt),
+                    Saturating_Divide_U32(rt),
+                    Saturating_Divide_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x7 => op!(
+                    Saturating_Multiply_I8(rt),
+                    Saturating_Multiply_I16(rt),
+                    Saturating_Multiply_I32(rt),
+                    Saturating_Multiply_I64(rt),
+                    Saturating_Multiply_U8(rt),
+                    Saturating_Multiply_U16(rt),
+                    Saturating_Multiply_U32(rt),
+                    Saturating_Multiply_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x8 => op!(
+                    Saturating_Negate_I8(rt),
+                    Saturating_Negate_I16(rt),
+                    Saturating_Negate_I32(rt),
+                    Saturating_Negate_I64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0x9 => op!(
+                    Saturating_Power_I8(rt),
+                    Saturating_Power_I16(rt),
+                    Saturating_Power_I32(rt),
+                    Saturating_Power_I64(rt),
+                    Saturating_Power_U8(rt),
+                    Saturating_Power_U16(rt),
+                    Saturating_Power_U32(rt),
+                    Saturating_Power_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xE => op!(
+                    Saturating_Subtract_I8(rt),
+                    Saturating_Subtract_I16(rt),
+                    Saturating_Subtract_I32(rt),
+                    Saturating_Subtract_I64(rt),
+                    Saturating_Subtract_U8(rt),
+                    Saturating_Subtract_U16(rt),
+                    Saturating_Subtract_U32(rt),
+                    Saturating_Subtract_U64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                0xF => op!(
+                    Saturating_Subtract_Unsigned_I8(rt),
+                    Saturating_Subtract_Unsigned_I16(rt),
+                    Saturating_Subtract_Unsigned_I32(rt),
+                    Saturating_Subtract_Unsigned_I64(rt),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                    Invalid(i),
+                ),
+                _ => Invalid(i),
+            },
+
+            // Floating Point Arithmetic
+            // -------------------------
+            0b000111 => {
+                macro_rules! fop {
+                    ($_f32:ident, $_f64:ident) => {
+                        match bit_width {
+                            Bit_Width::Eight => Invalid(i),
+                            Bit_Width::Sixteen => Invalid(i),
+                            Bit_Width::Thirty_Two => $_f32(rt),
+                            Bit_Width::Sixty_Four => $_f64(rt),
+                        }
+                    };
+                }
+
+                match function {
+                    0x0 => fop!(Absolute_F32, Absolute_F64),
+                    0x1 => fop!(Add_F32, Add_F64),
+                    0x3 => fop!(Divide_F32, Divide_F64),
+                    0x4 => fop!(Divide_Euclidean_F32, Divide_Euclidean_F64),
+                    0x5 => fop!(Logarithm_F32, Logarithm_F64),
+                    0x6 => fop!(Square_Root_F32, Square_Root_F64),
+                    0x7 => fop!(Multiply_F32, Multiply_F64),
+                    0x8 => fop!(Negate_F32, Negate_F64),
+                    0x9 => fop!(Power_F32, Power_F64),
+                    0xA => fop!(Remainder_F32, Remainder_F64),
+                    0xB => fop!(Remainder_Euclidean_F32, Remainder_Euclidean_F64),
+                    0xD => fop!(Cube_Root_F32, Cube_Root_F64),
+                    0xE => fop!(Subtract_F32, Subtract_F64),
+                    _ => Invalid(i),
+                }
+            },
+
+            _ => Invalid(i),
         }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Register {
-    /// readonly, always 0
-    Zero,
-    /// readonly, always 1
-    One,
-
-    /// readonly, stores the code offset of the currently executing instruction
-    Instruction_Pointer,
-    /// readonly, stores the memory address of the top of the stack
-    Stack_Pointer,
-    /// readonly, stores the memory address of the top of the frame
-    Frame_Pointer,
-
-    /// General Purpose Registers
-    General_Purpose(u8),
-}
-
-impl Register {
-    pub fn from_index(index: u8) -> Self {
-        match index {
-            0 => Register::Zero,
-            1 => Register::One,
-            2 => Register::Instruction_Pointer,
-            3 => Register::Stack_Pointer,
-            4 => Register::Frame_Pointer,
-            _ => Register::General_Purpose(index),
-        }
-    }
-
-    pub fn index(self) -> usize {
-        match self {
-            Register::Zero => 0,
-            Register::One => 1,
-            Register::Instruction_Pointer => 2,
-            Register::Stack_Pointer => 3,
-            Register::Frame_Pointer => 4,
-            Register::General_Purpose(index) => index as usize,
-        }
-    }
-
-    pub fn is_readonly(self) -> bool {
-        matches!(
-            self,
-            Register::Zero
-                | Register::One
-                | Register::Instruction_Pointer
-                | Register::Stack_Pointer
-                | Register::Frame_Pointer
-        )
     }
 }
