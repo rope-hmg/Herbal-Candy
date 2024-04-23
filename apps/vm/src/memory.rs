@@ -1,5 +1,7 @@
 use std::alloc::{alloc_zeroed, dealloc, Layout};
 
+use byte_code::Memory_Address;
+
 pub struct Memory {
     bytes: *mut u8,
     size: usize,
@@ -13,10 +15,10 @@ impl Memory {
         Self { bytes, size }
     }
 
-    #[inline(always)]
-    pub fn size(&self) -> usize {
-        self.size
-    }
+    // #[inline(always)]
+    // pub fn size(&self) -> usize {
+    //     self.size
+    // }
 
     #[inline(always)]
     pub fn read(&self, address: Memory_Address, data: &mut [u8]) {
@@ -54,7 +56,3 @@ impl Drop for Memory {
         unsafe { dealloc(self.bytes, layout) };
     }
 }
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-#[repr(transparent)]
-pub struct Memory_Address(pub u64);
