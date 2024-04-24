@@ -14,7 +14,7 @@ const FUNCT_MASK: u32 = 0xF;
 const RD_SHIFT: u32 = 10;
 const RS1_SHIFT: u32 = 16;
 const RS2_SHIFT: u32 = 22;
-const REG_MASK: u32 = 0x3F;
+pub const REG_MASK: u32 = 0x3F;
 
 // 0b00110000000000000000000000000000
 const SIZE_SHIFT: u32 = 28;

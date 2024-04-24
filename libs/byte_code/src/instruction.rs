@@ -5936,7 +5936,7 @@ mod tests {
     #[test]
     fn decode_Call() {
         assert_eq!(
-            Instruction::decode(25165952u32), Instruction::Call { rs2 :
+            Instruction::decode(50331776u32), Instruction::Call { rs2 :
             Register::General_Purpose(6), }
         );
     }
@@ -5944,13 +5944,13 @@ mod tests {
     fn encode_Call() {
         assert_eq!(
             Instruction::Call { rs2 : Register::General_Purpose(6), } .encode(),
-            25165952u32
+            50331776u32
         );
     }
     #[test]
     fn decode_Callr() {
         assert_eq!(
-            Instruction::decode(2172649600u32), Instruction::Callr { rs2 :
+            Instruction::decode(2197815424u32), Instruction::Callr { rs2 :
             Register::General_Purpose(6), }
         );
     }
@@ -5958,7 +5958,7 @@ mod tests {
     fn encode_Callr() {
         assert_eq!(
             Instruction::Callr { rs2 : Register::General_Purpose(6), } .encode(),
-            2172649600u32
+            2197815424u32
         );
     }
     #[test]
@@ -6000,7 +6000,7 @@ mod tests {
     #[test]
     fn decode_Jal() {
         assert_eq!(
-            Instruction::decode(25166272u32), Instruction::Jal { rs2 :
+            Instruction::decode(50332096u32), Instruction::Jal { rs2 :
             Register::General_Purpose(6), }
         );
     }
@@ -6008,13 +6008,13 @@ mod tests {
     fn encode_Jal() {
         assert_eq!(
             Instruction::Jal { rs2 : Register::General_Purpose(6), } .encode(),
-            25166272u32
+            50332096u32
         );
     }
     #[test]
     fn decode_Jalr() {
         assert_eq!(
-            Instruction::decode(2172649920u32), Instruction::Jalr { rs2 :
+            Instruction::decode(2197815744u32), Instruction::Jalr { rs2 :
             Register::General_Purpose(6), }
         );
     }
@@ -6022,7 +6022,7 @@ mod tests {
     fn encode_Jalr() {
         assert_eq!(
             Instruction::Jalr { rs2 : Register::General_Purpose(6), } .encode(),
-            2172649920u32
+            2197815744u32
         );
     }
     #[test]
@@ -6038,7 +6038,7 @@ mod tests {
     #[test]
     fn decode_Jnz() {
         assert_eq!(
-            Instruction::decode(25690688u32), Instruction::Jnz { rs1 :
+            Instruction::decode(51249728u32), Instruction::Jnz { rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
         );
     }
@@ -6046,13 +6046,13 @@ mod tests {
     fn encode_Jnz() {
         assert_eq!(
             Instruction::Jnz { rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(6), } .encode(), 25690688u32
+            Register::General_Purpose(6), } .encode(), 51249728u32
         );
     }
     #[test]
     fn decode_Jnzr() {
         assert_eq!(
-            Instruction::decode(2173174336u32), Instruction::Jnzr { rs1 :
+            Instruction::decode(2198733376u32), Instruction::Jnzr { rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
         );
     }
@@ -6060,13 +6060,13 @@ mod tests {
     fn encode_Jnzr() {
         assert_eq!(
             Instruction::Jnzr { rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(6), } .encode(), 2173174336u32
+            Register::General_Purpose(6), } .encode(), 2198733376u32
         );
     }
     #[test]
     fn decode_Jnzi() {
         assert_eq!(
-            Instruction::decode(4293924480u32), Instruction::Jnzi { rd :
+            Instruction::decode(4293930624u32), Instruction::Jnzi { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
@@ -6074,13 +6074,13 @@ mod tests {
     fn encode_Jnzi() {
         assert_eq!(
             Instruction::Jnzi { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293924480u32
+            .encode(), 4293930624u32
         );
     }
     #[test]
     fn decode_Jiz() {
         assert_eq!(
-            Instruction::decode(25690816u32), Instruction::Jiz { rs1 :
+            Instruction::decode(51249856u32), Instruction::Jiz { rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
         );
     }
@@ -6088,13 +6088,13 @@ mod tests {
     fn encode_Jiz() {
         assert_eq!(
             Instruction::Jiz { rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(6), } .encode(), 25690816u32
+            Register::General_Purpose(6), } .encode(), 51249856u32
         );
     }
     #[test]
     fn decode_Jizr() {
         assert_eq!(
-            Instruction::decode(2173174464u32), Instruction::Jizr { rs1 :
+            Instruction::decode(2198733504u32), Instruction::Jizr { rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
         );
     }
@@ -6102,13 +6102,13 @@ mod tests {
     fn encode_Jizr() {
         assert_eq!(
             Instruction::Jizr { rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(6), } .encode(), 2173174464u32
+            Register::General_Purpose(6), } .encode(), 2198733504u32
         );
     }
     #[test]
     fn decode_Jizi() {
         assert_eq!(
-            Instruction::decode(4293924608u32), Instruction::Jizi { rd :
+            Instruction::decode(4293930752u32), Instruction::Jizi { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
@@ -6116,13 +6116,13 @@ mod tests {
     fn encode_Jizi() {
         assert_eq!(
             Instruction::Jizi { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293924608u32
+            .encode(), 4293930752u32
         );
     }
     #[test]
     fn decode_Load() {
         assert_eq!(
-            Instruction::decode(805835777u32), Instruction::Load { rd :
+            Instruction::decode(806235137u32), Instruction::Load { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), size :
             64u8, }
         );
@@ -6131,13 +6131,13 @@ mod tests {
     fn encode_Load() {
         assert_eq!(
             Instruction::Load { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), size : 64u8, } .encode(), 805835777u32
+            Register::General_Purpose(8), size : 64u8, } .encode(), 806235137u32
         );
     }
     #[test]
     fn decode_Loadi() {
         assert_eq!(
-            Instruction::decode(4293923905u32), Instruction::Loadi { rd :
+            Instruction::decode(4293930049u32), Instruction::Loadi { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
@@ -6145,13 +6145,13 @@ mod tests {
     fn encode_Loadi() {
         assert_eq!(
             Instruction::Loadi { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293923905u32
+            .encode(), 4293930049u32
         );
     }
     #[test]
     fn decode_Store() {
         assert_eq!(
-            Instruction::decode(805835905u32), Instruction::Store { rd :
+            Instruction::decode(806235265u32), Instruction::Store { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), size :
             64u8, }
         );
@@ -6160,13 +6160,13 @@ mod tests {
     fn encode_Store() {
         assert_eq!(
             Instruction::Store { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), size : 64u8, } .encode(), 805835905u32
+            Register::General_Purpose(8), size : 64u8, } .encode(), 806235265u32
         );
     }
     #[test]
     fn decode_Storei() {
         assert_eq!(
-            Instruction::decode(4293924033u32), Instruction::Storei { rd :
+            Instruction::decode(4293930177u32), Instruction::Storei { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
@@ -6174,13 +6174,13 @@ mod tests {
     fn encode_Storei() {
         assert_eq!(
             Instruction::Storei { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293924033u32
+            .encode(), 4293930177u32
         );
     }
     #[test]
     fn decode_Move() {
         assert_eq!(
-            Instruction::decode(529665u32), Instruction::Move { rd :
+            Instruction::decode(929025u32), Instruction::Move { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -6188,20 +6188,20 @@ mod tests {
     fn encode_Move() {
         assert_eq!(
             Instruction::Move { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 529665u32
+            Register::General_Purpose(8), } .encode(), 929025u32
         );
     }
     #[test]
     fn decode_Push() {
         assert_eq!(
-            Instruction::decode(5441u32), Instruction::Push { rd :
+            Instruction::decode(11585u32), Instruction::Push { rd :
             Register::General_Purpose(5), }
         );
     }
     #[test]
     fn encode_Push() {
         assert_eq!(
-            Instruction::Push { rd : Register::General_Purpose(5), } .encode(), 5441u32
+            Instruction::Push { rd : Register::General_Purpose(5), } .encode(), 11585u32
         );
     }
     #[test]
@@ -6217,20 +6217,20 @@ mod tests {
     #[test]
     fn decode_Pop() {
         assert_eq!(
-            Instruction::decode(5569u32), Instruction::Pop { rd :
+            Instruction::decode(11713u32), Instruction::Pop { rd :
             Register::General_Purpose(5), }
         );
     }
     #[test]
     fn encode_Pop() {
         assert_eq!(
-            Instruction::Pop { rd : Register::General_Purpose(5), } .encode(), 5569u32
+            Instruction::Pop { rd : Register::General_Purpose(5), } .encode(), 11713u32
         );
     }
     #[test]
     fn decode_Ie() {
         assert_eq!(
-            Instruction::decode(25695234u32), Instruction::Ie { rd :
+            Instruction::decode(51260418u32), Instruction::Ie { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6240,13 +6240,13 @@ mod tests {
         assert_eq!(
             Instruction::Ie { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695234u32
+            .encode(), 51260418u32
         );
     }
     #[test]
     fn decode_Ie_f32() {
         assert_eq!(
-            Instruction::decode(1636307970u32), Instruction::Ie_f32 { rd :
+            Instruction::decode(1661873154u32), Instruction::Ie_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6256,13 +6256,13 @@ mod tests {
         assert_eq!(
             Instruction::Ie_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1636307970u32
+            .encode(), 1661873154u32
         );
     }
     #[test]
     fn decode_Ie_f64() {
         assert_eq!(
-            Instruction::decode(1904743426u32), Instruction::Ie_f64 { rd :
+            Instruction::decode(1930308610u32), Instruction::Ie_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6272,13 +6272,13 @@ mod tests {
         assert_eq!(
             Instruction::Ie_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1904743426u32
+            .encode(), 1930308610u32
         );
     }
     #[test]
     fn decode_Ne() {
         assert_eq!(
-            Instruction::decode(25695298u32), Instruction::Ne { rd :
+            Instruction::decode(51260482u32), Instruction::Ne { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6288,13 +6288,13 @@ mod tests {
         assert_eq!(
             Instruction::Ne { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695298u32
+            .encode(), 51260482u32
         );
     }
     #[test]
     fn decode_Ne_f32() {
         assert_eq!(
-            Instruction::decode(1636308034u32), Instruction::Ne_f32 { rd :
+            Instruction::decode(1661873218u32), Instruction::Ne_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6304,13 +6304,13 @@ mod tests {
         assert_eq!(
             Instruction::Ne_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1636308034u32
+            .encode(), 1661873218u32
         );
     }
     #[test]
     fn decode_Ne_f64() {
         assert_eq!(
-            Instruction::decode(1904743490u32), Instruction::Ne_f64 { rd :
+            Instruction::decode(1930308674u32), Instruction::Ne_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6320,13 +6320,13 @@ mod tests {
         assert_eq!(
             Instruction::Ne_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1904743490u32
+            .encode(), 1930308674u32
         );
     }
     #[test]
     fn decode_Lt() {
         assert_eq!(
-            Instruction::decode(25695362u32), Instruction::Lt { rd :
+            Instruction::decode(51260546u32), Instruction::Lt { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6336,13 +6336,13 @@ mod tests {
         assert_eq!(
             Instruction::Lt { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695362u32
+            .encode(), 51260546u32
         );
     }
     #[test]
     fn decode_Lt_f32() {
         assert_eq!(
-            Instruction::decode(1636308098u32), Instruction::Lt_f32 { rd :
+            Instruction::decode(1661873282u32), Instruction::Lt_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6352,13 +6352,13 @@ mod tests {
         assert_eq!(
             Instruction::Lt_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1636308098u32
+            .encode(), 1661873282u32
         );
     }
     #[test]
     fn decode_Lt_f64() {
         assert_eq!(
-            Instruction::decode(1904743554u32), Instruction::Lt_f64 { rd :
+            Instruction::decode(1930308738u32), Instruction::Lt_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6368,13 +6368,13 @@ mod tests {
         assert_eq!(
             Instruction::Lt_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1904743554u32
+            .encode(), 1930308738u32
         );
     }
     #[test]
     fn decode_Le() {
         assert_eq!(
-            Instruction::decode(25695426u32), Instruction::Le { rd :
+            Instruction::decode(51260610u32), Instruction::Le { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6384,13 +6384,13 @@ mod tests {
         assert_eq!(
             Instruction::Le { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695426u32
+            .encode(), 51260610u32
         );
     }
     #[test]
     fn decode_Le_f32() {
         assert_eq!(
-            Instruction::decode(1636308162u32), Instruction::Le_f32 { rd :
+            Instruction::decode(1661873346u32), Instruction::Le_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6400,13 +6400,13 @@ mod tests {
         assert_eq!(
             Instruction::Le_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1636308162u32
+            .encode(), 1661873346u32
         );
     }
     #[test]
     fn decode_Le_f64() {
         assert_eq!(
-            Instruction::decode(1904743618u32), Instruction::Le_f64 { rd :
+            Instruction::decode(1930308802u32), Instruction::Le_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6416,13 +6416,13 @@ mod tests {
         assert_eq!(
             Instruction::Le_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1904743618u32
+            .encode(), 1930308802u32
         );
     }
     #[test]
     fn decode_Gt() {
         assert_eq!(
-            Instruction::decode(25695490u32), Instruction::Gt { rd :
+            Instruction::decode(51260674u32), Instruction::Gt { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6432,13 +6432,13 @@ mod tests {
         assert_eq!(
             Instruction::Gt { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695490u32
+            .encode(), 51260674u32
         );
     }
     #[test]
     fn decode_Gt_f32() {
         assert_eq!(
-            Instruction::decode(1636308226u32), Instruction::Gt_f32 { rd :
+            Instruction::decode(1661873410u32), Instruction::Gt_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6448,13 +6448,13 @@ mod tests {
         assert_eq!(
             Instruction::Gt_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1636308226u32
+            .encode(), 1661873410u32
         );
     }
     #[test]
     fn decode_Gt_f64() {
         assert_eq!(
-            Instruction::decode(1904743682u32), Instruction::Gt_f64 { rd :
+            Instruction::decode(1930308866u32), Instruction::Gt_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6464,13 +6464,13 @@ mod tests {
         assert_eq!(
             Instruction::Gt_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1904743682u32
+            .encode(), 1930308866u32
         );
     }
     #[test]
     fn decode_Ge() {
         assert_eq!(
-            Instruction::decode(25695554u32), Instruction::Ge { rd :
+            Instruction::decode(51260738u32), Instruction::Ge { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6480,13 +6480,13 @@ mod tests {
         assert_eq!(
             Instruction::Ge { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695554u32
+            .encode(), 51260738u32
         );
     }
     #[test]
     fn decode_Ge_f32() {
         assert_eq!(
-            Instruction::decode(1636308290u32), Instruction::Ge_f32 { rd :
+            Instruction::decode(1661873474u32), Instruction::Ge_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6496,13 +6496,13 @@ mod tests {
         assert_eq!(
             Instruction::Ge_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1636308290u32
+            .encode(), 1661873474u32
         );
     }
     #[test]
     fn decode_Ge_f64() {
         assert_eq!(
-            Instruction::decode(1904743746u32), Instruction::Ge_f64 { rd :
+            Instruction::decode(1930308930u32), Instruction::Ge_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6512,13 +6512,13 @@ mod tests {
         assert_eq!(
             Instruction::Ge_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 1904743746u32
+            .encode(), 1930308930u32
         );
     }
     #[test]
     fn decode_And_i8() {
         assert_eq!(
-            Instruction::decode(2173178883u32), Instruction::And_i8 { rd :
+            Instruction::decode(2198744067u32), Instruction::And_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6528,13 +6528,13 @@ mod tests {
         assert_eq!(
             Instruction::And_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173178883u32
+            .encode(), 2198744067u32
         );
     }
     #[test]
     fn decode_And_i16() {
         assert_eq!(
-            Instruction::decode(2441614339u32), Instruction::And_i16 { rd :
+            Instruction::decode(2467179523u32), Instruction::And_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6544,13 +6544,13 @@ mod tests {
         assert_eq!(
             Instruction::And_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614339u32
+            .encode(), 2467179523u32
         );
     }
     #[test]
     fn decode_And_i32() {
         assert_eq!(
-            Instruction::decode(2710049795u32), Instruction::And_i32 { rd :
+            Instruction::decode(2735614979u32), Instruction::And_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6560,13 +6560,13 @@ mod tests {
         assert_eq!(
             Instruction::And_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049795u32
+            .encode(), 2735614979u32
         );
     }
     #[test]
     fn decode_And_i64() {
         assert_eq!(
-            Instruction::decode(2978485251u32), Instruction::And_i64 { rd :
+            Instruction::decode(3004050435u32), Instruction::And_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6576,13 +6576,13 @@ mod tests {
         assert_eq!(
             Instruction::And_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485251u32
+            .encode(), 3004050435u32
         );
     }
     #[test]
     fn decode_And_u8() {
         assert_eq!(
-            Instruction::decode(25695235u32), Instruction::And_u8 { rd :
+            Instruction::decode(51260419u32), Instruction::And_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6592,13 +6592,13 @@ mod tests {
         assert_eq!(
             Instruction::And_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695235u32
+            .encode(), 51260419u32
         );
     }
     #[test]
     fn decode_And_u16() {
         assert_eq!(
-            Instruction::decode(294130691u32), Instruction::And_u16 { rd :
+            Instruction::decode(319695875u32), Instruction::And_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6608,13 +6608,13 @@ mod tests {
         assert_eq!(
             Instruction::And_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130691u32
+            .encode(), 319695875u32
         );
     }
     #[test]
     fn decode_And_u32() {
         assert_eq!(
-            Instruction::decode(562566147u32), Instruction::And_u32 { rd :
+            Instruction::decode(588131331u32), Instruction::And_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6624,13 +6624,13 @@ mod tests {
         assert_eq!(
             Instruction::And_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566147u32
+            .encode(), 588131331u32
         );
     }
     #[test]
     fn decode_And_u64() {
         assert_eq!(
-            Instruction::decode(831001603u32), Instruction::And_u64 { rd :
+            Instruction::decode(856566787u32), Instruction::And_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6640,13 +6640,13 @@ mod tests {
         assert_eq!(
             Instruction::And_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001603u32
+            .encode(), 856566787u32
         );
     }
     #[test]
     fn decode_Or_i8() {
         assert_eq!(
-            Instruction::decode(2173178947u32), Instruction::Or_i8 { rd :
+            Instruction::decode(2198744131u32), Instruction::Or_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6656,13 +6656,13 @@ mod tests {
         assert_eq!(
             Instruction::Or_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173178947u32
+            .encode(), 2198744131u32
         );
     }
     #[test]
     fn decode_Or_i16() {
         assert_eq!(
-            Instruction::decode(2441614403u32), Instruction::Or_i16 { rd :
+            Instruction::decode(2467179587u32), Instruction::Or_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6672,13 +6672,13 @@ mod tests {
         assert_eq!(
             Instruction::Or_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614403u32
+            .encode(), 2467179587u32
         );
     }
     #[test]
     fn decode_Or_i32() {
         assert_eq!(
-            Instruction::decode(2710049859u32), Instruction::Or_i32 { rd :
+            Instruction::decode(2735615043u32), Instruction::Or_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6688,13 +6688,13 @@ mod tests {
         assert_eq!(
             Instruction::Or_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049859u32
+            .encode(), 2735615043u32
         );
     }
     #[test]
     fn decode_Or_i64() {
         assert_eq!(
-            Instruction::decode(2978485315u32), Instruction::Or_i64 { rd :
+            Instruction::decode(3004050499u32), Instruction::Or_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6704,13 +6704,13 @@ mod tests {
         assert_eq!(
             Instruction::Or_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485315u32
+            .encode(), 3004050499u32
         );
     }
     #[test]
     fn decode_Or_u8() {
         assert_eq!(
-            Instruction::decode(25695299u32), Instruction::Or_u8 { rd :
+            Instruction::decode(51260483u32), Instruction::Or_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6720,13 +6720,13 @@ mod tests {
         assert_eq!(
             Instruction::Or_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695299u32
+            .encode(), 51260483u32
         );
     }
     #[test]
     fn decode_Or_u16() {
         assert_eq!(
-            Instruction::decode(294130755u32), Instruction::Or_u16 { rd :
+            Instruction::decode(319695939u32), Instruction::Or_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6736,13 +6736,13 @@ mod tests {
         assert_eq!(
             Instruction::Or_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130755u32
+            .encode(), 319695939u32
         );
     }
     #[test]
     fn decode_Or_u32() {
         assert_eq!(
-            Instruction::decode(562566211u32), Instruction::Or_u32 { rd :
+            Instruction::decode(588131395u32), Instruction::Or_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6752,13 +6752,13 @@ mod tests {
         assert_eq!(
             Instruction::Or_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566211u32
+            .encode(), 588131395u32
         );
     }
     #[test]
     fn decode_Or_u64() {
         assert_eq!(
-            Instruction::decode(831001667u32), Instruction::Or_u64 { rd :
+            Instruction::decode(856566851u32), Instruction::Or_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6768,13 +6768,13 @@ mod tests {
         assert_eq!(
             Instruction::Or_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001667u32
+            .encode(), 856566851u32
         );
     }
     #[test]
     fn decode_Xor_i8() {
         assert_eq!(
-            Instruction::decode(2173179011u32), Instruction::Xor_i8 { rd :
+            Instruction::decode(2198744195u32), Instruction::Xor_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6784,13 +6784,13 @@ mod tests {
         assert_eq!(
             Instruction::Xor_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179011u32
+            .encode(), 2198744195u32
         );
     }
     #[test]
     fn decode_Xor_i16() {
         assert_eq!(
-            Instruction::decode(2441614467u32), Instruction::Xor_i16 { rd :
+            Instruction::decode(2467179651u32), Instruction::Xor_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6800,13 +6800,13 @@ mod tests {
         assert_eq!(
             Instruction::Xor_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614467u32
+            .encode(), 2467179651u32
         );
     }
     #[test]
     fn decode_Xor_i32() {
         assert_eq!(
-            Instruction::decode(2710049923u32), Instruction::Xor_i32 { rd :
+            Instruction::decode(2735615107u32), Instruction::Xor_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6816,13 +6816,13 @@ mod tests {
         assert_eq!(
             Instruction::Xor_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049923u32
+            .encode(), 2735615107u32
         );
     }
     #[test]
     fn decode_Xor_i64() {
         assert_eq!(
-            Instruction::decode(2978485379u32), Instruction::Xor_i64 { rd :
+            Instruction::decode(3004050563u32), Instruction::Xor_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6832,13 +6832,13 @@ mod tests {
         assert_eq!(
             Instruction::Xor_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485379u32
+            .encode(), 3004050563u32
         );
     }
     #[test]
     fn decode_Xor_u8() {
         assert_eq!(
-            Instruction::decode(25695363u32), Instruction::Xor_u8 { rd :
+            Instruction::decode(51260547u32), Instruction::Xor_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6848,13 +6848,13 @@ mod tests {
         assert_eq!(
             Instruction::Xor_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695363u32
+            .encode(), 51260547u32
         );
     }
     #[test]
     fn decode_Xor_u16() {
         assert_eq!(
-            Instruction::decode(294130819u32), Instruction::Xor_u16 { rd :
+            Instruction::decode(319696003u32), Instruction::Xor_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6864,13 +6864,13 @@ mod tests {
         assert_eq!(
             Instruction::Xor_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130819u32
+            .encode(), 319696003u32
         );
     }
     #[test]
     fn decode_Xor_u32() {
         assert_eq!(
-            Instruction::decode(562566275u32), Instruction::Xor_u32 { rd :
+            Instruction::decode(588131459u32), Instruction::Xor_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6880,13 +6880,13 @@ mod tests {
         assert_eq!(
             Instruction::Xor_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566275u32
+            .encode(), 588131459u32
         );
     }
     #[test]
     fn decode_Xor_u64() {
         assert_eq!(
-            Instruction::decode(831001731u32), Instruction::Xor_u64 { rd :
+            Instruction::decode(856566915u32), Instruction::Xor_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -6896,13 +6896,13 @@ mod tests {
         assert_eq!(
             Instruction::Xor_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001731u32
+            .encode(), 856566915u32
         );
     }
     #[test]
     fn decode_Not_i8() {
         assert_eq!(
-            Instruction::decode(2148013251u32), Instruction::Not_i8 { rd :
+            Instruction::decode(2148412611u32), Instruction::Not_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -6910,13 +6910,13 @@ mod tests {
     fn encode_Not_i8() {
         assert_eq!(
             Instruction::Not_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013251u32
+            Register::General_Purpose(8), } .encode(), 2148412611u32
         );
     }
     #[test]
     fn decode_Not_i16() {
         assert_eq!(
-            Instruction::decode(2416448707u32), Instruction::Not_i16 { rd :
+            Instruction::decode(2416848067u32), Instruction::Not_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -6924,13 +6924,13 @@ mod tests {
     fn encode_Not_i16() {
         assert_eq!(
             Instruction::Not_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416448707u32
+            Register::General_Purpose(8), } .encode(), 2416848067u32
         );
     }
     #[test]
     fn decode_Not_i32() {
         assert_eq!(
-            Instruction::decode(2684884163u32), Instruction::Not_i32 { rd :
+            Instruction::decode(2685283523u32), Instruction::Not_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -6938,13 +6938,13 @@ mod tests {
     fn encode_Not_i32() {
         assert_eq!(
             Instruction::Not_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884163u32
+            Register::General_Purpose(8), } .encode(), 2685283523u32
         );
     }
     #[test]
     fn decode_Not_i64() {
         assert_eq!(
-            Instruction::decode(2953319619u32), Instruction::Not_i64 { rd :
+            Instruction::decode(2953718979u32), Instruction::Not_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -6952,13 +6952,13 @@ mod tests {
     fn encode_Not_i64() {
         assert_eq!(
             Instruction::Not_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953319619u32
+            Register::General_Purpose(8), } .encode(), 2953718979u32
         );
     }
     #[test]
     fn decode_Not_u8() {
         assert_eq!(
-            Instruction::decode(529603u32), Instruction::Not_u8 { rd :
+            Instruction::decode(928963u32), Instruction::Not_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -6966,13 +6966,13 @@ mod tests {
     fn encode_Not_u8() {
         assert_eq!(
             Instruction::Not_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 529603u32
+            Register::General_Purpose(8), } .encode(), 928963u32
         );
     }
     #[test]
     fn decode_Not_u16() {
         assert_eq!(
-            Instruction::decode(268965059u32), Instruction::Not_u16 { rd :
+            Instruction::decode(269364419u32), Instruction::Not_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -6980,13 +6980,13 @@ mod tests {
     fn encode_Not_u16() {
         assert_eq!(
             Instruction::Not_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 268965059u32
+            Register::General_Purpose(8), } .encode(), 269364419u32
         );
     }
     #[test]
     fn decode_Not_u32() {
         assert_eq!(
-            Instruction::decode(537400515u32), Instruction::Not_u32 { rd :
+            Instruction::decode(537799875u32), Instruction::Not_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -6994,13 +6994,13 @@ mod tests {
     fn encode_Not_u32() {
         assert_eq!(
             Instruction::Not_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537400515u32
+            Register::General_Purpose(8), } .encode(), 537799875u32
         );
     }
     #[test]
     fn decode_Not_u64() {
         assert_eq!(
-            Instruction::decode(805835971u32), Instruction::Not_u64 { rd :
+            Instruction::decode(806235331u32), Instruction::Not_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7008,13 +7008,13 @@ mod tests {
     fn encode_Not_u64() {
         assert_eq!(
             Instruction::Not_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 805835971u32
+            Register::General_Purpose(8), } .encode(), 806235331u32
         );
     }
     #[test]
     fn decode_Shl_i8() {
         assert_eq!(
-            Instruction::decode(2173179139u32), Instruction::Shl_i8 { rd :
+            Instruction::decode(2198744323u32), Instruction::Shl_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7024,13 +7024,13 @@ mod tests {
         assert_eq!(
             Instruction::Shl_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179139u32
+            .encode(), 2198744323u32
         );
     }
     #[test]
     fn decode_Shl_i16() {
         assert_eq!(
-            Instruction::decode(2441614595u32), Instruction::Shl_i16 { rd :
+            Instruction::decode(2467179779u32), Instruction::Shl_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7040,13 +7040,13 @@ mod tests {
         assert_eq!(
             Instruction::Shl_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614595u32
+            .encode(), 2467179779u32
         );
     }
     #[test]
     fn decode_Shl_i32() {
         assert_eq!(
-            Instruction::decode(2710050051u32), Instruction::Shl_i32 { rd :
+            Instruction::decode(2735615235u32), Instruction::Shl_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7056,13 +7056,13 @@ mod tests {
         assert_eq!(
             Instruction::Shl_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050051u32
+            .encode(), 2735615235u32
         );
     }
     #[test]
     fn decode_Shl_i64() {
         assert_eq!(
-            Instruction::decode(2978485507u32), Instruction::Shl_i64 { rd :
+            Instruction::decode(3004050691u32), Instruction::Shl_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7072,13 +7072,13 @@ mod tests {
         assert_eq!(
             Instruction::Shl_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485507u32
+            .encode(), 3004050691u32
         );
     }
     #[test]
     fn decode_Shl_u8() {
         assert_eq!(
-            Instruction::decode(25695491u32), Instruction::Shl_u8 { rd :
+            Instruction::decode(51260675u32), Instruction::Shl_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7088,13 +7088,13 @@ mod tests {
         assert_eq!(
             Instruction::Shl_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695491u32
+            .encode(), 51260675u32
         );
     }
     #[test]
     fn decode_Shl_u16() {
         assert_eq!(
-            Instruction::decode(294130947u32), Instruction::Shl_u16 { rd :
+            Instruction::decode(319696131u32), Instruction::Shl_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7104,13 +7104,13 @@ mod tests {
         assert_eq!(
             Instruction::Shl_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130947u32
+            .encode(), 319696131u32
         );
     }
     #[test]
     fn decode_Shl_u32() {
         assert_eq!(
-            Instruction::decode(562566403u32), Instruction::Shl_u32 { rd :
+            Instruction::decode(588131587u32), Instruction::Shl_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7120,13 +7120,13 @@ mod tests {
         assert_eq!(
             Instruction::Shl_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566403u32
+            .encode(), 588131587u32
         );
     }
     #[test]
     fn decode_Shl_u64() {
         assert_eq!(
-            Instruction::decode(831001859u32), Instruction::Shl_u64 { rd :
+            Instruction::decode(856567043u32), Instruction::Shl_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7136,13 +7136,13 @@ mod tests {
         assert_eq!(
             Instruction::Shl_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001859u32
+            .encode(), 856567043u32
         );
     }
     #[test]
     fn decode_Shr_i8() {
         assert_eq!(
-            Instruction::decode(2173179203u32), Instruction::Shr_i8 { rd :
+            Instruction::decode(2198744387u32), Instruction::Shr_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7152,13 +7152,13 @@ mod tests {
         assert_eq!(
             Instruction::Shr_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179203u32
+            .encode(), 2198744387u32
         );
     }
     #[test]
     fn decode_Shr_i16() {
         assert_eq!(
-            Instruction::decode(2441614659u32), Instruction::Shr_i16 { rd :
+            Instruction::decode(2467179843u32), Instruction::Shr_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7168,13 +7168,13 @@ mod tests {
         assert_eq!(
             Instruction::Shr_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614659u32
+            .encode(), 2467179843u32
         );
     }
     #[test]
     fn decode_Shr_i32() {
         assert_eq!(
-            Instruction::decode(2710050115u32), Instruction::Shr_i32 { rd :
+            Instruction::decode(2735615299u32), Instruction::Shr_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7184,13 +7184,13 @@ mod tests {
         assert_eq!(
             Instruction::Shr_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050115u32
+            .encode(), 2735615299u32
         );
     }
     #[test]
     fn decode_Shr_i64() {
         assert_eq!(
-            Instruction::decode(2978485571u32), Instruction::Shr_i64 { rd :
+            Instruction::decode(3004050755u32), Instruction::Shr_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7200,13 +7200,13 @@ mod tests {
         assert_eq!(
             Instruction::Shr_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485571u32
+            .encode(), 3004050755u32
         );
     }
     #[test]
     fn decode_Shr_u8() {
         assert_eq!(
-            Instruction::decode(25695555u32), Instruction::Shr_u8 { rd :
+            Instruction::decode(51260739u32), Instruction::Shr_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7216,13 +7216,13 @@ mod tests {
         assert_eq!(
             Instruction::Shr_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695555u32
+            .encode(), 51260739u32
         );
     }
     #[test]
     fn decode_Shr_u16() {
         assert_eq!(
-            Instruction::decode(294131011u32), Instruction::Shr_u16 { rd :
+            Instruction::decode(319696195u32), Instruction::Shr_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7232,13 +7232,13 @@ mod tests {
         assert_eq!(
             Instruction::Shr_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131011u32
+            .encode(), 319696195u32
         );
     }
     #[test]
     fn decode_Shr_u32() {
         assert_eq!(
-            Instruction::decode(562566467u32), Instruction::Shr_u32 { rd :
+            Instruction::decode(588131651u32), Instruction::Shr_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7248,13 +7248,13 @@ mod tests {
         assert_eq!(
             Instruction::Shr_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566467u32
+            .encode(), 588131651u32
         );
     }
     #[test]
     fn decode_Shr_u64() {
         assert_eq!(
-            Instruction::decode(831001923u32), Instruction::Shr_u64 { rd :
+            Instruction::decode(856567107u32), Instruction::Shr_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7264,13 +7264,13 @@ mod tests {
         assert_eq!(
             Instruction::Shr_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001923u32
+            .encode(), 856567107u32
         );
     }
     #[test]
     fn decode_Rotl_i8() {
         assert_eq!(
-            Instruction::decode(2173179267u32), Instruction::Rotl_i8 { rd :
+            Instruction::decode(2198744451u32), Instruction::Rotl_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7280,13 +7280,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotl_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179267u32
+            .encode(), 2198744451u32
         );
     }
     #[test]
     fn decode_Rotl_i16() {
         assert_eq!(
-            Instruction::decode(2441614723u32), Instruction::Rotl_i16 { rd :
+            Instruction::decode(2467179907u32), Instruction::Rotl_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7296,13 +7296,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotl_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614723u32
+            .encode(), 2467179907u32
         );
     }
     #[test]
     fn decode_Rotl_i32() {
         assert_eq!(
-            Instruction::decode(2710050179u32), Instruction::Rotl_i32 { rd :
+            Instruction::decode(2735615363u32), Instruction::Rotl_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7312,13 +7312,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotl_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050179u32
+            .encode(), 2735615363u32
         );
     }
     #[test]
     fn decode_Rotl_i64() {
         assert_eq!(
-            Instruction::decode(2978485635u32), Instruction::Rotl_i64 { rd :
+            Instruction::decode(3004050819u32), Instruction::Rotl_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7328,13 +7328,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotl_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485635u32
+            .encode(), 3004050819u32
         );
     }
     #[test]
     fn decode_Rotl_u8() {
         assert_eq!(
-            Instruction::decode(25695619u32), Instruction::Rotl_u8 { rd :
+            Instruction::decode(51260803u32), Instruction::Rotl_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7344,13 +7344,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotl_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695619u32
+            .encode(), 51260803u32
         );
     }
     #[test]
     fn decode_Rotl_u16() {
         assert_eq!(
-            Instruction::decode(294131075u32), Instruction::Rotl_u16 { rd :
+            Instruction::decode(319696259u32), Instruction::Rotl_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7360,13 +7360,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotl_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131075u32
+            .encode(), 319696259u32
         );
     }
     #[test]
     fn decode_Rotl_u32() {
         assert_eq!(
-            Instruction::decode(562566531u32), Instruction::Rotl_u32 { rd :
+            Instruction::decode(588131715u32), Instruction::Rotl_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7376,13 +7376,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotl_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566531u32
+            .encode(), 588131715u32
         );
     }
     #[test]
     fn decode_Rotl_u64() {
         assert_eq!(
-            Instruction::decode(831001987u32), Instruction::Rotl_u64 { rd :
+            Instruction::decode(856567171u32), Instruction::Rotl_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7392,13 +7392,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotl_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001987u32
+            .encode(), 856567171u32
         );
     }
     #[test]
     fn decode_Rotr_i8() {
         assert_eq!(
-            Instruction::decode(2173179331u32), Instruction::Rotr_i8 { rd :
+            Instruction::decode(2198744515u32), Instruction::Rotr_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7408,13 +7408,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotr_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179331u32
+            .encode(), 2198744515u32
         );
     }
     #[test]
     fn decode_Rotr_i16() {
         assert_eq!(
-            Instruction::decode(2441614787u32), Instruction::Rotr_i16 { rd :
+            Instruction::decode(2467179971u32), Instruction::Rotr_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7424,13 +7424,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotr_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614787u32
+            .encode(), 2467179971u32
         );
     }
     #[test]
     fn decode_Rotr_i32() {
         assert_eq!(
-            Instruction::decode(2710050243u32), Instruction::Rotr_i32 { rd :
+            Instruction::decode(2735615427u32), Instruction::Rotr_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7440,13 +7440,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotr_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050243u32
+            .encode(), 2735615427u32
         );
     }
     #[test]
     fn decode_Rotr_i64() {
         assert_eq!(
-            Instruction::decode(2978485699u32), Instruction::Rotr_i64 { rd :
+            Instruction::decode(3004050883u32), Instruction::Rotr_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7456,13 +7456,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotr_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485699u32
+            .encode(), 3004050883u32
         );
     }
     #[test]
     fn decode_Rotr_u8() {
         assert_eq!(
-            Instruction::decode(25695683u32), Instruction::Rotr_u8 { rd :
+            Instruction::decode(51260867u32), Instruction::Rotr_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7472,13 +7472,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotr_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695683u32
+            .encode(), 51260867u32
         );
     }
     #[test]
     fn decode_Rotr_u16() {
         assert_eq!(
-            Instruction::decode(294131139u32), Instruction::Rotr_u16 { rd :
+            Instruction::decode(319696323u32), Instruction::Rotr_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7488,13 +7488,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotr_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131139u32
+            .encode(), 319696323u32
         );
     }
     #[test]
     fn decode_Rotr_u32() {
         assert_eq!(
-            Instruction::decode(562566595u32), Instruction::Rotr_u32 { rd :
+            Instruction::decode(588131779u32), Instruction::Rotr_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7504,13 +7504,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotr_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566595u32
+            .encode(), 588131779u32
         );
     }
     #[test]
     fn decode_Rotr_u64() {
         assert_eq!(
-            Instruction::decode(831002051u32), Instruction::Rotr_u64 { rd :
+            Instruction::decode(856567235u32), Instruction::Rotr_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -7520,13 +7520,13 @@ mod tests {
         assert_eq!(
             Instruction::Rotr_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002051u32
+            .encode(), 856567235u32
         );
     }
     #[test]
     fn decode_Count_Ones_i8() {
         assert_eq!(
-            Instruction::decode(2148013571u32), Instruction::Count_Ones_i8 { rd :
+            Instruction::decode(2148412931u32), Instruction::Count_Ones_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7534,13 +7534,13 @@ mod tests {
     fn encode_Count_Ones_i8() {
         assert_eq!(
             Instruction::Count_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013571u32
+            Register::General_Purpose(8), } .encode(), 2148412931u32
         );
     }
     #[test]
     fn decode_Count_Ones_i16() {
         assert_eq!(
-            Instruction::decode(2416449027u32), Instruction::Count_Ones_i16 { rd :
+            Instruction::decode(2416848387u32), Instruction::Count_Ones_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7548,13 +7548,13 @@ mod tests {
     fn encode_Count_Ones_i16() {
         assert_eq!(
             Instruction::Count_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416449027u32
+            Register::General_Purpose(8), } .encode(), 2416848387u32
         );
     }
     #[test]
     fn decode_Count_Ones_i32() {
         assert_eq!(
-            Instruction::decode(2684884483u32), Instruction::Count_Ones_i32 { rd :
+            Instruction::decode(2685283843u32), Instruction::Count_Ones_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7562,13 +7562,13 @@ mod tests {
     fn encode_Count_Ones_i32() {
         assert_eq!(
             Instruction::Count_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884483u32
+            Register::General_Purpose(8), } .encode(), 2685283843u32
         );
     }
     #[test]
     fn decode_Count_Ones_i64() {
         assert_eq!(
-            Instruction::decode(2953319939u32), Instruction::Count_Ones_i64 { rd :
+            Instruction::decode(2953719299u32), Instruction::Count_Ones_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7576,13 +7576,13 @@ mod tests {
     fn encode_Count_Ones_i64() {
         assert_eq!(
             Instruction::Count_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953319939u32
+            Register::General_Purpose(8), } .encode(), 2953719299u32
         );
     }
     #[test]
     fn decode_Count_Ones_u8() {
         assert_eq!(
-            Instruction::decode(529923u32), Instruction::Count_Ones_u8 { rd :
+            Instruction::decode(929283u32), Instruction::Count_Ones_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7590,13 +7590,13 @@ mod tests {
     fn encode_Count_Ones_u8() {
         assert_eq!(
             Instruction::Count_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 529923u32
+            Register::General_Purpose(8), } .encode(), 929283u32
         );
     }
     #[test]
     fn decode_Count_Ones_u16() {
         assert_eq!(
-            Instruction::decode(268965379u32), Instruction::Count_Ones_u16 { rd :
+            Instruction::decode(269364739u32), Instruction::Count_Ones_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7604,13 +7604,13 @@ mod tests {
     fn encode_Count_Ones_u16() {
         assert_eq!(
             Instruction::Count_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 268965379u32
+            Register::General_Purpose(8), } .encode(), 269364739u32
         );
     }
     #[test]
     fn decode_Count_Ones_u32() {
         assert_eq!(
-            Instruction::decode(537400835u32), Instruction::Count_Ones_u32 { rd :
+            Instruction::decode(537800195u32), Instruction::Count_Ones_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7618,13 +7618,13 @@ mod tests {
     fn encode_Count_Ones_u32() {
         assert_eq!(
             Instruction::Count_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537400835u32
+            Register::General_Purpose(8), } .encode(), 537800195u32
         );
     }
     #[test]
     fn decode_Count_Ones_u64() {
         assert_eq!(
-            Instruction::decode(805836291u32), Instruction::Count_Ones_u64 { rd :
+            Instruction::decode(806235651u32), Instruction::Count_Ones_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7632,13 +7632,13 @@ mod tests {
     fn encode_Count_Ones_u64() {
         assert_eq!(
             Instruction::Count_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 805836291u32
+            Register::General_Purpose(8), } .encode(), 806235651u32
         );
     }
     #[test]
     fn decode_Leading_Ones_i8() {
         assert_eq!(
-            Instruction::decode(2148013635u32), Instruction::Leading_Ones_i8 { rd :
+            Instruction::decode(2148412995u32), Instruction::Leading_Ones_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7646,13 +7646,13 @@ mod tests {
     fn encode_Leading_Ones_i8() {
         assert_eq!(
             Instruction::Leading_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013635u32
+            Register::General_Purpose(8), } .encode(), 2148412995u32
         );
     }
     #[test]
     fn decode_Leading_Ones_i16() {
         assert_eq!(
-            Instruction::decode(2416449091u32), Instruction::Leading_Ones_i16 { rd :
+            Instruction::decode(2416848451u32), Instruction::Leading_Ones_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7660,13 +7660,13 @@ mod tests {
     fn encode_Leading_Ones_i16() {
         assert_eq!(
             Instruction::Leading_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416449091u32
+            Register::General_Purpose(8), } .encode(), 2416848451u32
         );
     }
     #[test]
     fn decode_Leading_Ones_i32() {
         assert_eq!(
-            Instruction::decode(2684884547u32), Instruction::Leading_Ones_i32 { rd :
+            Instruction::decode(2685283907u32), Instruction::Leading_Ones_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7674,13 +7674,13 @@ mod tests {
     fn encode_Leading_Ones_i32() {
         assert_eq!(
             Instruction::Leading_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884547u32
+            Register::General_Purpose(8), } .encode(), 2685283907u32
         );
     }
     #[test]
     fn decode_Leading_Ones_i64() {
         assert_eq!(
-            Instruction::decode(2953320003u32), Instruction::Leading_Ones_i64 { rd :
+            Instruction::decode(2953719363u32), Instruction::Leading_Ones_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7688,13 +7688,13 @@ mod tests {
     fn encode_Leading_Ones_i64() {
         assert_eq!(
             Instruction::Leading_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953320003u32
+            Register::General_Purpose(8), } .encode(), 2953719363u32
         );
     }
     #[test]
     fn decode_Leading_Ones_u8() {
         assert_eq!(
-            Instruction::decode(529987u32), Instruction::Leading_Ones_u8 { rd :
+            Instruction::decode(929347u32), Instruction::Leading_Ones_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7702,13 +7702,13 @@ mod tests {
     fn encode_Leading_Ones_u8() {
         assert_eq!(
             Instruction::Leading_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 529987u32
+            Register::General_Purpose(8), } .encode(), 929347u32
         );
     }
     #[test]
     fn decode_Leading_Ones_u16() {
         assert_eq!(
-            Instruction::decode(268965443u32), Instruction::Leading_Ones_u16 { rd :
+            Instruction::decode(269364803u32), Instruction::Leading_Ones_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7716,13 +7716,13 @@ mod tests {
     fn encode_Leading_Ones_u16() {
         assert_eq!(
             Instruction::Leading_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 268965443u32
+            Register::General_Purpose(8), } .encode(), 269364803u32
         );
     }
     #[test]
     fn decode_Leading_Ones_u32() {
         assert_eq!(
-            Instruction::decode(537400899u32), Instruction::Leading_Ones_u32 { rd :
+            Instruction::decode(537800259u32), Instruction::Leading_Ones_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7730,13 +7730,13 @@ mod tests {
     fn encode_Leading_Ones_u32() {
         assert_eq!(
             Instruction::Leading_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537400899u32
+            Register::General_Purpose(8), } .encode(), 537800259u32
         );
     }
     #[test]
     fn decode_Leading_Ones_u64() {
         assert_eq!(
-            Instruction::decode(805836355u32), Instruction::Leading_Ones_u64 { rd :
+            Instruction::decode(806235715u32), Instruction::Leading_Ones_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7744,13 +7744,13 @@ mod tests {
     fn encode_Leading_Ones_u64() {
         assert_eq!(
             Instruction::Leading_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 805836355u32
+            Register::General_Purpose(8), } .encode(), 806235715u32
         );
     }
     #[test]
     fn decode_Trailing_Ones_i8() {
         assert_eq!(
-            Instruction::decode(2148013699u32), Instruction::Trailing_Ones_i8 { rd :
+            Instruction::decode(2148413059u32), Instruction::Trailing_Ones_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7758,13 +7758,13 @@ mod tests {
     fn encode_Trailing_Ones_i8() {
         assert_eq!(
             Instruction::Trailing_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013699u32
+            Register::General_Purpose(8), } .encode(), 2148413059u32
         );
     }
     #[test]
     fn decode_Trailing_Ones_i16() {
         assert_eq!(
-            Instruction::decode(2416449155u32), Instruction::Trailing_Ones_i16 { rd :
+            Instruction::decode(2416848515u32), Instruction::Trailing_Ones_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7772,13 +7772,13 @@ mod tests {
     fn encode_Trailing_Ones_i16() {
         assert_eq!(
             Instruction::Trailing_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416449155u32
+            Register::General_Purpose(8), } .encode(), 2416848515u32
         );
     }
     #[test]
     fn decode_Trailing_Ones_i32() {
         assert_eq!(
-            Instruction::decode(2684884611u32), Instruction::Trailing_Ones_i32 { rd :
+            Instruction::decode(2685283971u32), Instruction::Trailing_Ones_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7786,13 +7786,13 @@ mod tests {
     fn encode_Trailing_Ones_i32() {
         assert_eq!(
             Instruction::Trailing_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884611u32
+            Register::General_Purpose(8), } .encode(), 2685283971u32
         );
     }
     #[test]
     fn decode_Trailing_Ones_i64() {
         assert_eq!(
-            Instruction::decode(2953320067u32), Instruction::Trailing_Ones_i64 { rd :
+            Instruction::decode(2953719427u32), Instruction::Trailing_Ones_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7800,13 +7800,13 @@ mod tests {
     fn encode_Trailing_Ones_i64() {
         assert_eq!(
             Instruction::Trailing_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953320067u32
+            Register::General_Purpose(8), } .encode(), 2953719427u32
         );
     }
     #[test]
     fn decode_Trailing_Ones_u8() {
         assert_eq!(
-            Instruction::decode(530051u32), Instruction::Trailing_Ones_u8 { rd :
+            Instruction::decode(929411u32), Instruction::Trailing_Ones_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7814,13 +7814,13 @@ mod tests {
     fn encode_Trailing_Ones_u8() {
         assert_eq!(
             Instruction::Trailing_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 530051u32
+            Register::General_Purpose(8), } .encode(), 929411u32
         );
     }
     #[test]
     fn decode_Trailing_Ones_u16() {
         assert_eq!(
-            Instruction::decode(268965507u32), Instruction::Trailing_Ones_u16 { rd :
+            Instruction::decode(269364867u32), Instruction::Trailing_Ones_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7828,13 +7828,13 @@ mod tests {
     fn encode_Trailing_Ones_u16() {
         assert_eq!(
             Instruction::Trailing_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 268965507u32
+            Register::General_Purpose(8), } .encode(), 269364867u32
         );
     }
     #[test]
     fn decode_Trailing_Ones_u32() {
         assert_eq!(
-            Instruction::decode(537400963u32), Instruction::Trailing_Ones_u32 { rd :
+            Instruction::decode(537800323u32), Instruction::Trailing_Ones_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7842,13 +7842,13 @@ mod tests {
     fn encode_Trailing_Ones_u32() {
         assert_eq!(
             Instruction::Trailing_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537400963u32
+            Register::General_Purpose(8), } .encode(), 537800323u32
         );
     }
     #[test]
     fn decode_Trailing_Ones_u64() {
         assert_eq!(
-            Instruction::decode(805836419u32), Instruction::Trailing_Ones_u64 { rd :
+            Instruction::decode(806235779u32), Instruction::Trailing_Ones_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7856,13 +7856,13 @@ mod tests {
     fn encode_Trailing_Ones_u64() {
         assert_eq!(
             Instruction::Trailing_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 805836419u32
+            Register::General_Purpose(8), } .encode(), 806235779u32
         );
     }
     #[test]
     fn decode_Count_Zeros_i8() {
         assert_eq!(
-            Instruction::decode(2148013763u32), Instruction::Count_Zeros_i8 { rd :
+            Instruction::decode(2148413123u32), Instruction::Count_Zeros_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7870,13 +7870,13 @@ mod tests {
     fn encode_Count_Zeros_i8() {
         assert_eq!(
             Instruction::Count_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013763u32
+            Register::General_Purpose(8), } .encode(), 2148413123u32
         );
     }
     #[test]
     fn decode_Count_Zeros_i16() {
         assert_eq!(
-            Instruction::decode(2416449219u32), Instruction::Count_Zeros_i16 { rd :
+            Instruction::decode(2416848579u32), Instruction::Count_Zeros_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7884,13 +7884,13 @@ mod tests {
     fn encode_Count_Zeros_i16() {
         assert_eq!(
             Instruction::Count_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416449219u32
+            Register::General_Purpose(8), } .encode(), 2416848579u32
         );
     }
     #[test]
     fn decode_Count_Zeros_i32() {
         assert_eq!(
-            Instruction::decode(2684884675u32), Instruction::Count_Zeros_i32 { rd :
+            Instruction::decode(2685284035u32), Instruction::Count_Zeros_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7898,13 +7898,13 @@ mod tests {
     fn encode_Count_Zeros_i32() {
         assert_eq!(
             Instruction::Count_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884675u32
+            Register::General_Purpose(8), } .encode(), 2685284035u32
         );
     }
     #[test]
     fn decode_Count_Zeros_i64() {
         assert_eq!(
-            Instruction::decode(2953320131u32), Instruction::Count_Zeros_i64 { rd :
+            Instruction::decode(2953719491u32), Instruction::Count_Zeros_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7912,13 +7912,13 @@ mod tests {
     fn encode_Count_Zeros_i64() {
         assert_eq!(
             Instruction::Count_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953320131u32
+            Register::General_Purpose(8), } .encode(), 2953719491u32
         );
     }
     #[test]
     fn decode_Count_Zeros_u8() {
         assert_eq!(
-            Instruction::decode(530115u32), Instruction::Count_Zeros_u8 { rd :
+            Instruction::decode(929475u32), Instruction::Count_Zeros_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7926,13 +7926,13 @@ mod tests {
     fn encode_Count_Zeros_u8() {
         assert_eq!(
             Instruction::Count_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 530115u32
+            Register::General_Purpose(8), } .encode(), 929475u32
         );
     }
     #[test]
     fn decode_Count_Zeros_u16() {
         assert_eq!(
-            Instruction::decode(268965571u32), Instruction::Count_Zeros_u16 { rd :
+            Instruction::decode(269364931u32), Instruction::Count_Zeros_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7940,13 +7940,13 @@ mod tests {
     fn encode_Count_Zeros_u16() {
         assert_eq!(
             Instruction::Count_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 268965571u32
+            Register::General_Purpose(8), } .encode(), 269364931u32
         );
     }
     #[test]
     fn decode_Count_Zeros_u32() {
         assert_eq!(
-            Instruction::decode(537401027u32), Instruction::Count_Zeros_u32 { rd :
+            Instruction::decode(537800387u32), Instruction::Count_Zeros_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7954,13 +7954,13 @@ mod tests {
     fn encode_Count_Zeros_u32() {
         assert_eq!(
             Instruction::Count_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537401027u32
+            Register::General_Purpose(8), } .encode(), 537800387u32
         );
     }
     #[test]
     fn decode_Count_Zeros_u64() {
         assert_eq!(
-            Instruction::decode(805836483u32), Instruction::Count_Zeros_u64 { rd :
+            Instruction::decode(806235843u32), Instruction::Count_Zeros_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7968,13 +7968,13 @@ mod tests {
     fn encode_Count_Zeros_u64() {
         assert_eq!(
             Instruction::Count_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 805836483u32
+            Register::General_Purpose(8), } .encode(), 806235843u32
         );
     }
     #[test]
     fn decode_Leading_Zeros_i8() {
         assert_eq!(
-            Instruction::decode(2148013827u32), Instruction::Leading_Zeros_i8 { rd :
+            Instruction::decode(2148413187u32), Instruction::Leading_Zeros_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7982,13 +7982,13 @@ mod tests {
     fn encode_Leading_Zeros_i8() {
         assert_eq!(
             Instruction::Leading_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013827u32
+            Register::General_Purpose(8), } .encode(), 2148413187u32
         );
     }
     #[test]
     fn decode_Leading_Zeros_i16() {
         assert_eq!(
-            Instruction::decode(2416449283u32), Instruction::Leading_Zeros_i16 { rd :
+            Instruction::decode(2416848643u32), Instruction::Leading_Zeros_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -7996,13 +7996,13 @@ mod tests {
     fn encode_Leading_Zeros_i16() {
         assert_eq!(
             Instruction::Leading_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416449283u32
+            Register::General_Purpose(8), } .encode(), 2416848643u32
         );
     }
     #[test]
     fn decode_Leading_Zeros_i32() {
         assert_eq!(
-            Instruction::decode(2684884739u32), Instruction::Leading_Zeros_i32 { rd :
+            Instruction::decode(2685284099u32), Instruction::Leading_Zeros_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8010,13 +8010,13 @@ mod tests {
     fn encode_Leading_Zeros_i32() {
         assert_eq!(
             Instruction::Leading_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884739u32
+            Register::General_Purpose(8), } .encode(), 2685284099u32
         );
     }
     #[test]
     fn decode_Leading_Zeros_i64() {
         assert_eq!(
-            Instruction::decode(2953320195u32), Instruction::Leading_Zeros_i64 { rd :
+            Instruction::decode(2953719555u32), Instruction::Leading_Zeros_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8024,13 +8024,13 @@ mod tests {
     fn encode_Leading_Zeros_i64() {
         assert_eq!(
             Instruction::Leading_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953320195u32
+            Register::General_Purpose(8), } .encode(), 2953719555u32
         );
     }
     #[test]
     fn decode_Leading_Zeros_u8() {
         assert_eq!(
-            Instruction::decode(530179u32), Instruction::Leading_Zeros_u8 { rd :
+            Instruction::decode(929539u32), Instruction::Leading_Zeros_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8038,13 +8038,13 @@ mod tests {
     fn encode_Leading_Zeros_u8() {
         assert_eq!(
             Instruction::Leading_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 530179u32
+            Register::General_Purpose(8), } .encode(), 929539u32
         );
     }
     #[test]
     fn decode_Leading_Zeros_u16() {
         assert_eq!(
-            Instruction::decode(268965635u32), Instruction::Leading_Zeros_u16 { rd :
+            Instruction::decode(269364995u32), Instruction::Leading_Zeros_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8052,13 +8052,13 @@ mod tests {
     fn encode_Leading_Zeros_u16() {
         assert_eq!(
             Instruction::Leading_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 268965635u32
+            Register::General_Purpose(8), } .encode(), 269364995u32
         );
     }
     #[test]
     fn decode_Leading_Zeros_u32() {
         assert_eq!(
-            Instruction::decode(537401091u32), Instruction::Leading_Zeros_u32 { rd :
+            Instruction::decode(537800451u32), Instruction::Leading_Zeros_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8066,13 +8066,13 @@ mod tests {
     fn encode_Leading_Zeros_u32() {
         assert_eq!(
             Instruction::Leading_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537401091u32
+            Register::General_Purpose(8), } .encode(), 537800451u32
         );
     }
     #[test]
     fn decode_Leading_Zeros_u64() {
         assert_eq!(
-            Instruction::decode(805836547u32), Instruction::Leading_Zeros_u64 { rd :
+            Instruction::decode(806235907u32), Instruction::Leading_Zeros_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8080,13 +8080,13 @@ mod tests {
     fn encode_Leading_Zeros_u64() {
         assert_eq!(
             Instruction::Leading_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 805836547u32
+            Register::General_Purpose(8), } .encode(), 806235907u32
         );
     }
     #[test]
     fn decode_Trailing_Zeros_i8() {
         assert_eq!(
-            Instruction::decode(2148013891u32), Instruction::Trailing_Zeros_i8 { rd :
+            Instruction::decode(2148413251u32), Instruction::Trailing_Zeros_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8094,13 +8094,13 @@ mod tests {
     fn encode_Trailing_Zeros_i8() {
         assert_eq!(
             Instruction::Trailing_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013891u32
+            Register::General_Purpose(8), } .encode(), 2148413251u32
         );
     }
     #[test]
     fn decode_Trailing_Zeros_i16() {
         assert_eq!(
-            Instruction::decode(2416449347u32), Instruction::Trailing_Zeros_i16 { rd :
+            Instruction::decode(2416848707u32), Instruction::Trailing_Zeros_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8108,13 +8108,13 @@ mod tests {
     fn encode_Trailing_Zeros_i16() {
         assert_eq!(
             Instruction::Trailing_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416449347u32
+            Register::General_Purpose(8), } .encode(), 2416848707u32
         );
     }
     #[test]
     fn decode_Trailing_Zeros_i32() {
         assert_eq!(
-            Instruction::decode(2684884803u32), Instruction::Trailing_Zeros_i32 { rd :
+            Instruction::decode(2685284163u32), Instruction::Trailing_Zeros_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8122,13 +8122,13 @@ mod tests {
     fn encode_Trailing_Zeros_i32() {
         assert_eq!(
             Instruction::Trailing_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884803u32
+            Register::General_Purpose(8), } .encode(), 2685284163u32
         );
     }
     #[test]
     fn decode_Trailing_Zeros_i64() {
         assert_eq!(
-            Instruction::decode(2953320259u32), Instruction::Trailing_Zeros_i64 { rd :
+            Instruction::decode(2953719619u32), Instruction::Trailing_Zeros_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8136,13 +8136,13 @@ mod tests {
     fn encode_Trailing_Zeros_i64() {
         assert_eq!(
             Instruction::Trailing_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953320259u32
+            Register::General_Purpose(8), } .encode(), 2953719619u32
         );
     }
     #[test]
     fn decode_Trailing_Zeros_u8() {
         assert_eq!(
-            Instruction::decode(530243u32), Instruction::Trailing_Zeros_u8 { rd :
+            Instruction::decode(929603u32), Instruction::Trailing_Zeros_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8150,13 +8150,13 @@ mod tests {
     fn encode_Trailing_Zeros_u8() {
         assert_eq!(
             Instruction::Trailing_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 530243u32
+            Register::General_Purpose(8), } .encode(), 929603u32
         );
     }
     #[test]
     fn decode_Trailing_Zeros_u16() {
         assert_eq!(
-            Instruction::decode(268965699u32), Instruction::Trailing_Zeros_u16 { rd :
+            Instruction::decode(269365059u32), Instruction::Trailing_Zeros_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8164,13 +8164,13 @@ mod tests {
     fn encode_Trailing_Zeros_u16() {
         assert_eq!(
             Instruction::Trailing_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 268965699u32
+            Register::General_Purpose(8), } .encode(), 269365059u32
         );
     }
     #[test]
     fn decode_Trailing_Zeros_u32() {
         assert_eq!(
-            Instruction::decode(537401155u32), Instruction::Trailing_Zeros_u32 { rd :
+            Instruction::decode(537800515u32), Instruction::Trailing_Zeros_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8178,13 +8178,13 @@ mod tests {
     fn encode_Trailing_Zeros_u32() {
         assert_eq!(
             Instruction::Trailing_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537401155u32
+            Register::General_Purpose(8), } .encode(), 537800515u32
         );
     }
     #[test]
     fn decode_Trailing_Zeros_u64() {
         assert_eq!(
-            Instruction::decode(805836611u32), Instruction::Trailing_Zeros_u64 { rd :
+            Instruction::decode(806235971u32), Instruction::Trailing_Zeros_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8192,13 +8192,13 @@ mod tests {
     fn encode_Trailing_Zeros_u64() {
         assert_eq!(
             Instruction::Trailing_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 805836611u32
+            Register::General_Purpose(8), } .encode(), 806235971u32
         );
     }
     #[test]
     fn decode_Reverse_Bytes_i8() {
         assert_eq!(
-            Instruction::decode(2148013955u32), Instruction::Reverse_Bytes_i8 { rd :
+            Instruction::decode(2148413315u32), Instruction::Reverse_Bytes_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8206,13 +8206,13 @@ mod tests {
     fn encode_Reverse_Bytes_i8() {
         assert_eq!(
             Instruction::Reverse_Bytes_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013955u32
+            Register::General_Purpose(8), } .encode(), 2148413315u32
         );
     }
     #[test]
     fn decode_Reverse_Bytes_i16() {
         assert_eq!(
-            Instruction::decode(2416449411u32), Instruction::Reverse_Bytes_i16 { rd :
+            Instruction::decode(2416848771u32), Instruction::Reverse_Bytes_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8220,13 +8220,13 @@ mod tests {
     fn encode_Reverse_Bytes_i16() {
         assert_eq!(
             Instruction::Reverse_Bytes_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416449411u32
+            Register::General_Purpose(8), } .encode(), 2416848771u32
         );
     }
     #[test]
     fn decode_Reverse_Bytes_i32() {
         assert_eq!(
-            Instruction::decode(2684884867u32), Instruction::Reverse_Bytes_i32 { rd :
+            Instruction::decode(2685284227u32), Instruction::Reverse_Bytes_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8234,13 +8234,13 @@ mod tests {
     fn encode_Reverse_Bytes_i32() {
         assert_eq!(
             Instruction::Reverse_Bytes_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884867u32
+            Register::General_Purpose(8), } .encode(), 2685284227u32
         );
     }
     #[test]
     fn decode_Reverse_Bytes_i64() {
         assert_eq!(
-            Instruction::decode(2953320323u32), Instruction::Reverse_Bytes_i64 { rd :
+            Instruction::decode(2953719683u32), Instruction::Reverse_Bytes_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8248,13 +8248,13 @@ mod tests {
     fn encode_Reverse_Bytes_i64() {
         assert_eq!(
             Instruction::Reverse_Bytes_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953320323u32
+            Register::General_Purpose(8), } .encode(), 2953719683u32
         );
     }
     #[test]
     fn decode_Reverse_Bytes_u8() {
         assert_eq!(
-            Instruction::decode(530307u32), Instruction::Reverse_Bytes_u8 { rd :
+            Instruction::decode(929667u32), Instruction::Reverse_Bytes_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8262,13 +8262,13 @@ mod tests {
     fn encode_Reverse_Bytes_u8() {
         assert_eq!(
             Instruction::Reverse_Bytes_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 530307u32
+            Register::General_Purpose(8), } .encode(), 929667u32
         );
     }
     #[test]
     fn decode_Reverse_Bytes_u16() {
         assert_eq!(
-            Instruction::decode(268965763u32), Instruction::Reverse_Bytes_u16 { rd :
+            Instruction::decode(269365123u32), Instruction::Reverse_Bytes_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8276,13 +8276,13 @@ mod tests {
     fn encode_Reverse_Bytes_u16() {
         assert_eq!(
             Instruction::Reverse_Bytes_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 268965763u32
+            Register::General_Purpose(8), } .encode(), 269365123u32
         );
     }
     #[test]
     fn decode_Reverse_Bytes_u32() {
         assert_eq!(
-            Instruction::decode(537401219u32), Instruction::Reverse_Bytes_u32 { rd :
+            Instruction::decode(537800579u32), Instruction::Reverse_Bytes_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8290,13 +8290,13 @@ mod tests {
     fn encode_Reverse_Bytes_u32() {
         assert_eq!(
             Instruction::Reverse_Bytes_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537401219u32
+            Register::General_Purpose(8), } .encode(), 537800579u32
         );
     }
     #[test]
     fn decode_Reverse_Bytes_u64() {
         assert_eq!(
-            Instruction::decode(805836675u32), Instruction::Reverse_Bytes_u64 { rd :
+            Instruction::decode(806236035u32), Instruction::Reverse_Bytes_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8304,13 +8304,13 @@ mod tests {
     fn encode_Reverse_Bytes_u64() {
         assert_eq!(
             Instruction::Reverse_Bytes_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 805836675u32
+            Register::General_Purpose(8), } .encode(), 806236035u32
         );
     }
     #[test]
     fn decode_Reverse_Bits_i8() {
         assert_eq!(
-            Instruction::decode(2148014019u32), Instruction::Reverse_Bits_i8 { rd :
+            Instruction::decode(2148413379u32), Instruction::Reverse_Bits_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8318,13 +8318,13 @@ mod tests {
     fn encode_Reverse_Bits_i8() {
         assert_eq!(
             Instruction::Reverse_Bits_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148014019u32
+            Register::General_Purpose(8), } .encode(), 2148413379u32
         );
     }
     #[test]
     fn decode_Reverse_Bits_i16() {
         assert_eq!(
-            Instruction::decode(2416449475u32), Instruction::Reverse_Bits_i16 { rd :
+            Instruction::decode(2416848835u32), Instruction::Reverse_Bits_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8332,13 +8332,13 @@ mod tests {
     fn encode_Reverse_Bits_i16() {
         assert_eq!(
             Instruction::Reverse_Bits_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416449475u32
+            Register::General_Purpose(8), } .encode(), 2416848835u32
         );
     }
     #[test]
     fn decode_Reverse_Bits_i32() {
         assert_eq!(
-            Instruction::decode(2684884931u32), Instruction::Reverse_Bits_i32 { rd :
+            Instruction::decode(2685284291u32), Instruction::Reverse_Bits_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8346,13 +8346,13 @@ mod tests {
     fn encode_Reverse_Bits_i32() {
         assert_eq!(
             Instruction::Reverse_Bits_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884931u32
+            Register::General_Purpose(8), } .encode(), 2685284291u32
         );
     }
     #[test]
     fn decode_Reverse_Bits_i64() {
         assert_eq!(
-            Instruction::decode(2953320387u32), Instruction::Reverse_Bits_i64 { rd :
+            Instruction::decode(2953719747u32), Instruction::Reverse_Bits_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8360,13 +8360,13 @@ mod tests {
     fn encode_Reverse_Bits_i64() {
         assert_eq!(
             Instruction::Reverse_Bits_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953320387u32
+            Register::General_Purpose(8), } .encode(), 2953719747u32
         );
     }
     #[test]
     fn decode_Reverse_Bits_u8() {
         assert_eq!(
-            Instruction::decode(530371u32), Instruction::Reverse_Bits_u8 { rd :
+            Instruction::decode(929731u32), Instruction::Reverse_Bits_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8374,13 +8374,13 @@ mod tests {
     fn encode_Reverse_Bits_u8() {
         assert_eq!(
             Instruction::Reverse_Bits_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 530371u32
+            Register::General_Purpose(8), } .encode(), 929731u32
         );
     }
     #[test]
     fn decode_Reverse_Bits_u16() {
         assert_eq!(
-            Instruction::decode(268965827u32), Instruction::Reverse_Bits_u16 { rd :
+            Instruction::decode(269365187u32), Instruction::Reverse_Bits_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8388,13 +8388,13 @@ mod tests {
     fn encode_Reverse_Bits_u16() {
         assert_eq!(
             Instruction::Reverse_Bits_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 268965827u32
+            Register::General_Purpose(8), } .encode(), 269365187u32
         );
     }
     #[test]
     fn decode_Reverse_Bits_u32() {
         assert_eq!(
-            Instruction::decode(537401283u32), Instruction::Reverse_Bits_u32 { rd :
+            Instruction::decode(537800643u32), Instruction::Reverse_Bits_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8402,13 +8402,13 @@ mod tests {
     fn encode_Reverse_Bits_u32() {
         assert_eq!(
             Instruction::Reverse_Bits_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537401283u32
+            Register::General_Purpose(8), } .encode(), 537800643u32
         );
     }
     #[test]
     fn decode_Reverse_Bits_u64() {
         assert_eq!(
-            Instruction::decode(805836739u32), Instruction::Reverse_Bits_u64 { rd :
+            Instruction::decode(806236099u32), Instruction::Reverse_Bits_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8416,13 +8416,13 @@ mod tests {
     fn encode_Reverse_Bits_u64() {
         assert_eq!(
             Instruction::Reverse_Bits_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 805836739u32
+            Register::General_Purpose(8), } .encode(), 806236099u32
         );
     }
     #[test]
     fn decode_C_Abs_i8() {
         assert_eq!(
-            Instruction::decode(2148013060u32), Instruction::C_Abs_i8 { rd :
+            Instruction::decode(2148412420u32), Instruction::C_Abs_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8430,13 +8430,13 @@ mod tests {
     fn encode_C_Abs_i8() {
         assert_eq!(
             Instruction::C_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013060u32
+            Register::General_Purpose(8), } .encode(), 2148412420u32
         );
     }
     #[test]
     fn decode_C_Abs_i16() {
         assert_eq!(
-            Instruction::decode(2416448516u32), Instruction::C_Abs_i16 { rd :
+            Instruction::decode(2416847876u32), Instruction::C_Abs_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8444,13 +8444,13 @@ mod tests {
     fn encode_C_Abs_i16() {
         assert_eq!(
             Instruction::C_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416448516u32
+            Register::General_Purpose(8), } .encode(), 2416847876u32
         );
     }
     #[test]
     fn decode_C_Abs_i32() {
         assert_eq!(
-            Instruction::decode(2684883972u32), Instruction::C_Abs_i32 { rd :
+            Instruction::decode(2685283332u32), Instruction::C_Abs_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8458,13 +8458,13 @@ mod tests {
     fn encode_C_Abs_i32() {
         assert_eq!(
             Instruction::C_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684883972u32
+            Register::General_Purpose(8), } .encode(), 2685283332u32
         );
     }
     #[test]
     fn decode_C_Abs_i64() {
         assert_eq!(
-            Instruction::decode(2953319428u32), Instruction::C_Abs_i64 { rd :
+            Instruction::decode(2953718788u32), Instruction::C_Abs_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -8472,13 +8472,13 @@ mod tests {
     fn encode_C_Abs_i64() {
         assert_eq!(
             Instruction::C_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953319428u32
+            Register::General_Purpose(8), } .encode(), 2953718788u32
         );
     }
     #[test]
     fn decode_C_Add_i8() {
         assert_eq!(
-            Instruction::decode(2173178948u32), Instruction::C_Add_i8 { rd :
+            Instruction::decode(2198744132u32), Instruction::C_Add_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8488,13 +8488,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173178948u32
+            .encode(), 2198744132u32
         );
     }
     #[test]
     fn decode_C_Add_i16() {
         assert_eq!(
-            Instruction::decode(2441614404u32), Instruction::C_Add_i16 { rd :
+            Instruction::decode(2467179588u32), Instruction::C_Add_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8504,13 +8504,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614404u32
+            .encode(), 2467179588u32
         );
     }
     #[test]
     fn decode_C_Add_i32() {
         assert_eq!(
-            Instruction::decode(2710049860u32), Instruction::C_Add_i32 { rd :
+            Instruction::decode(2735615044u32), Instruction::C_Add_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8520,13 +8520,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049860u32
+            .encode(), 2735615044u32
         );
     }
     #[test]
     fn decode_C_Add_i64() {
         assert_eq!(
-            Instruction::decode(2978485316u32), Instruction::C_Add_i64 { rd :
+            Instruction::decode(3004050500u32), Instruction::C_Add_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8536,13 +8536,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485316u32
+            .encode(), 3004050500u32
         );
     }
     #[test]
     fn decode_C_Add_u8() {
         assert_eq!(
-            Instruction::decode(25695300u32), Instruction::C_Add_u8 { rd :
+            Instruction::decode(51260484u32), Instruction::C_Add_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8552,13 +8552,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695300u32
+            .encode(), 51260484u32
         );
     }
     #[test]
     fn decode_C_Add_u16() {
         assert_eq!(
-            Instruction::decode(294130756u32), Instruction::C_Add_u16 { rd :
+            Instruction::decode(319695940u32), Instruction::C_Add_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8568,13 +8568,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130756u32
+            .encode(), 319695940u32
         );
     }
     #[test]
     fn decode_C_Add_u32() {
         assert_eq!(
-            Instruction::decode(562566212u32), Instruction::C_Add_u32 { rd :
+            Instruction::decode(588131396u32), Instruction::C_Add_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8584,13 +8584,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566212u32
+            .encode(), 588131396u32
         );
     }
     #[test]
     fn decode_C_Add_u64() {
         assert_eq!(
-            Instruction::decode(831001668u32), Instruction::C_Add_u64 { rd :
+            Instruction::decode(856566852u32), Instruction::C_Add_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8600,13 +8600,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001668u32
+            .encode(), 856566852u32
         );
     }
     #[test]
     fn decode_C_Add_U_i8() {
         assert_eq!(
-            Instruction::decode(2173179012u32), Instruction::C_Add_U_i8 { rd :
+            Instruction::decode(2198744196u32), Instruction::C_Add_U_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8616,13 +8616,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179012u32
+            .encode(), 2198744196u32
         );
     }
     #[test]
     fn decode_C_Add_U_i16() {
         assert_eq!(
-            Instruction::decode(2441614468u32), Instruction::C_Add_U_i16 { rd :
+            Instruction::decode(2467179652u32), Instruction::C_Add_U_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8632,13 +8632,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614468u32
+            .encode(), 2467179652u32
         );
     }
     #[test]
     fn decode_C_Add_U_i32() {
         assert_eq!(
-            Instruction::decode(2710049924u32), Instruction::C_Add_U_i32 { rd :
+            Instruction::decode(2735615108u32), Instruction::C_Add_U_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8648,13 +8648,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049924u32
+            .encode(), 2735615108u32
         );
     }
     #[test]
     fn decode_C_Add_U_i64() {
         assert_eq!(
-            Instruction::decode(2978485380u32), Instruction::C_Add_U_i64 { rd :
+            Instruction::decode(3004050564u32), Instruction::C_Add_U_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8664,13 +8664,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485380u32
+            .encode(), 3004050564u32
         );
     }
     #[test]
     fn decode_C_Add_S_u8() {
         assert_eq!(
-            Instruction::decode(25695364u32), Instruction::C_Add_S_u8 { rd :
+            Instruction::decode(51260548u32), Instruction::C_Add_S_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8680,13 +8680,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695364u32
+            .encode(), 51260548u32
         );
     }
     #[test]
     fn decode_C_Add_S_u16() {
         assert_eq!(
-            Instruction::decode(294130820u32), Instruction::C_Add_S_u16 { rd :
+            Instruction::decode(319696004u32), Instruction::C_Add_S_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8696,13 +8696,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_S_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130820u32
+            .encode(), 319696004u32
         );
     }
     #[test]
     fn decode_C_Add_S_u32() {
         assert_eq!(
-            Instruction::decode(562566276u32), Instruction::C_Add_S_u32 { rd :
+            Instruction::decode(588131460u32), Instruction::C_Add_S_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8712,13 +8712,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_S_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566276u32
+            .encode(), 588131460u32
         );
     }
     #[test]
     fn decode_C_Add_S_u64() {
         assert_eq!(
-            Instruction::decode(831001732u32), Instruction::C_Add_S_u64 { rd :
+            Instruction::decode(856566916u32), Instruction::C_Add_S_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8728,13 +8728,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Add_S_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001732u32
+            .encode(), 856566916u32
         );
     }
     #[test]
     fn decode_C_Div_i8() {
         assert_eq!(
-            Instruction::decode(2173179076u32), Instruction::C_Div_i8 { rd :
+            Instruction::decode(2198744260u32), Instruction::C_Div_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8744,13 +8744,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179076u32
+            .encode(), 2198744260u32
         );
     }
     #[test]
     fn decode_C_Div_i16() {
         assert_eq!(
-            Instruction::decode(2441614532u32), Instruction::C_Div_i16 { rd :
+            Instruction::decode(2467179716u32), Instruction::C_Div_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8760,13 +8760,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614532u32
+            .encode(), 2467179716u32
         );
     }
     #[test]
     fn decode_C_Div_i32() {
         assert_eq!(
-            Instruction::decode(2710049988u32), Instruction::C_Div_i32 { rd :
+            Instruction::decode(2735615172u32), Instruction::C_Div_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8776,13 +8776,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049988u32
+            .encode(), 2735615172u32
         );
     }
     #[test]
     fn decode_C_Div_i64() {
         assert_eq!(
-            Instruction::decode(2978485444u32), Instruction::C_Div_i64 { rd :
+            Instruction::decode(3004050628u32), Instruction::C_Div_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8792,13 +8792,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485444u32
+            .encode(), 3004050628u32
         );
     }
     #[test]
     fn decode_C_Div_u8() {
         assert_eq!(
-            Instruction::decode(25695428u32), Instruction::C_Div_u8 { rd :
+            Instruction::decode(51260612u32), Instruction::C_Div_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8808,13 +8808,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695428u32
+            .encode(), 51260612u32
         );
     }
     #[test]
     fn decode_C_Div_u16() {
         assert_eq!(
-            Instruction::decode(294130884u32), Instruction::C_Div_u16 { rd :
+            Instruction::decode(319696068u32), Instruction::C_Div_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8824,13 +8824,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130884u32
+            .encode(), 319696068u32
         );
     }
     #[test]
     fn decode_C_Div_u32() {
         assert_eq!(
-            Instruction::decode(562566340u32), Instruction::C_Div_u32 { rd :
+            Instruction::decode(588131524u32), Instruction::C_Div_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8840,13 +8840,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566340u32
+            .encode(), 588131524u32
         );
     }
     #[test]
     fn decode_C_Div_u64() {
         assert_eq!(
-            Instruction::decode(831001796u32), Instruction::C_Div_u64 { rd :
+            Instruction::decode(856566980u32), Instruction::C_Div_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8856,13 +8856,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001796u32
+            .encode(), 856566980u32
         );
     }
     #[test]
     fn decode_C_Div_E_i8() {
         assert_eq!(
-            Instruction::decode(2173179140u32), Instruction::C_Div_E_i8 { rd :
+            Instruction::decode(2198744324u32), Instruction::C_Div_E_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8872,13 +8872,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_E_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179140u32
+            .encode(), 2198744324u32
         );
     }
     #[test]
     fn decode_C_Div_E_i16() {
         assert_eq!(
-            Instruction::decode(2441614596u32), Instruction::C_Div_E_i16 { rd :
+            Instruction::decode(2467179780u32), Instruction::C_Div_E_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8888,13 +8888,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_E_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614596u32
+            .encode(), 2467179780u32
         );
     }
     #[test]
     fn decode_C_Div_E_i32() {
         assert_eq!(
-            Instruction::decode(2710050052u32), Instruction::C_Div_E_i32 { rd :
+            Instruction::decode(2735615236u32), Instruction::C_Div_E_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8904,13 +8904,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_E_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050052u32
+            .encode(), 2735615236u32
         );
     }
     #[test]
     fn decode_C_Div_E_i64() {
         assert_eq!(
-            Instruction::decode(2978485508u32), Instruction::C_Div_E_i64 { rd :
+            Instruction::decode(3004050692u32), Instruction::C_Div_E_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8920,13 +8920,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_E_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485508u32
+            .encode(), 3004050692u32
         );
     }
     #[test]
     fn decode_C_Div_E_u8() {
         assert_eq!(
-            Instruction::decode(25695492u32), Instruction::C_Div_E_u8 { rd :
+            Instruction::decode(51260676u32), Instruction::C_Div_E_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8936,13 +8936,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_E_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695492u32
+            .encode(), 51260676u32
         );
     }
     #[test]
     fn decode_C_Div_E_u16() {
         assert_eq!(
-            Instruction::decode(294130948u32), Instruction::C_Div_E_u16 { rd :
+            Instruction::decode(319696132u32), Instruction::C_Div_E_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8952,13 +8952,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_E_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130948u32
+            .encode(), 319696132u32
         );
     }
     #[test]
     fn decode_C_Div_E_u32() {
         assert_eq!(
-            Instruction::decode(562566404u32), Instruction::C_Div_E_u32 { rd :
+            Instruction::decode(588131588u32), Instruction::C_Div_E_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8968,13 +8968,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_E_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566404u32
+            .encode(), 588131588u32
         );
     }
     #[test]
     fn decode_C_Div_E_u64() {
         assert_eq!(
-            Instruction::decode(831001860u32), Instruction::C_Div_E_u64 { rd :
+            Instruction::decode(856567044u32), Instruction::C_Div_E_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -8984,13 +8984,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Div_E_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001860u32
+            .encode(), 856567044u32
         );
     }
     #[test]
     fn decode_C_Log_i8() {
         assert_eq!(
-            Instruction::decode(2173179204u32), Instruction::C_Log_i8 { rd :
+            Instruction::decode(2198744388u32), Instruction::C_Log_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9000,13 +9000,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Log_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179204u32
+            .encode(), 2198744388u32
         );
     }
     #[test]
     fn decode_C_Log_i16() {
         assert_eq!(
-            Instruction::decode(2441614660u32), Instruction::C_Log_i16 { rd :
+            Instruction::decode(2467179844u32), Instruction::C_Log_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9016,13 +9016,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Log_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614660u32
+            .encode(), 2467179844u32
         );
     }
     #[test]
     fn decode_C_Log_i32() {
         assert_eq!(
-            Instruction::decode(2710050116u32), Instruction::C_Log_i32 { rd :
+            Instruction::decode(2735615300u32), Instruction::C_Log_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9032,13 +9032,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Log_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050116u32
+            .encode(), 2735615300u32
         );
     }
     #[test]
     fn decode_C_Log_i64() {
         assert_eq!(
-            Instruction::decode(2978485572u32), Instruction::C_Log_i64 { rd :
+            Instruction::decode(3004050756u32), Instruction::C_Log_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9048,13 +9048,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Log_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485572u32
+            .encode(), 3004050756u32
         );
     }
     #[test]
     fn decode_C_Log_u8() {
         assert_eq!(
-            Instruction::decode(25695556u32), Instruction::C_Log_u8 { rd :
+            Instruction::decode(51260740u32), Instruction::C_Log_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9064,13 +9064,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Log_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695556u32
+            .encode(), 51260740u32
         );
     }
     #[test]
     fn decode_C_Log_u16() {
         assert_eq!(
-            Instruction::decode(294131012u32), Instruction::C_Log_u16 { rd :
+            Instruction::decode(319696196u32), Instruction::C_Log_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9080,13 +9080,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Log_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131012u32
+            .encode(), 319696196u32
         );
     }
     #[test]
     fn decode_C_Log_u32() {
         assert_eq!(
-            Instruction::decode(562566468u32), Instruction::C_Log_u32 { rd :
+            Instruction::decode(588131652u32), Instruction::C_Log_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9096,13 +9096,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Log_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566468u32
+            .encode(), 588131652u32
         );
     }
     #[test]
     fn decode_C_Log_u64() {
         assert_eq!(
-            Instruction::decode(831001924u32), Instruction::C_Log_u64 { rd :
+            Instruction::decode(856567108u32), Instruction::C_Log_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9112,13 +9112,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Log_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001924u32
+            .encode(), 856567108u32
         );
     }
     #[test]
     fn decode_C_Sqrt_i8() {
         assert_eq!(
-            Instruction::decode(2148013444u32), Instruction::C_Sqrt_i8 { rd :
+            Instruction::decode(2148412804u32), Instruction::C_Sqrt_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9126,13 +9126,13 @@ mod tests {
     fn encode_C_Sqrt_i8() {
         assert_eq!(
             Instruction::C_Sqrt_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013444u32
+            Register::General_Purpose(8), } .encode(), 2148412804u32
         );
     }
     #[test]
     fn decode_C_Sqrt_i16() {
         assert_eq!(
-            Instruction::decode(2416448900u32), Instruction::C_Sqrt_i16 { rd :
+            Instruction::decode(2416848260u32), Instruction::C_Sqrt_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9140,13 +9140,13 @@ mod tests {
     fn encode_C_Sqrt_i16() {
         assert_eq!(
             Instruction::C_Sqrt_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416448900u32
+            Register::General_Purpose(8), } .encode(), 2416848260u32
         );
     }
     #[test]
     fn decode_C_Sqrt_i32() {
         assert_eq!(
-            Instruction::decode(2684884356u32), Instruction::C_Sqrt_i32 { rd :
+            Instruction::decode(2685283716u32), Instruction::C_Sqrt_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9154,13 +9154,13 @@ mod tests {
     fn encode_C_Sqrt_i32() {
         assert_eq!(
             Instruction::C_Sqrt_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884356u32
+            Register::General_Purpose(8), } .encode(), 2685283716u32
         );
     }
     #[test]
     fn decode_C_Sqrt_i64() {
         assert_eq!(
-            Instruction::decode(2953319812u32), Instruction::C_Sqrt_i64 { rd :
+            Instruction::decode(2953719172u32), Instruction::C_Sqrt_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9168,13 +9168,13 @@ mod tests {
     fn encode_C_Sqrt_i64() {
         assert_eq!(
             Instruction::C_Sqrt_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953319812u32
+            Register::General_Purpose(8), } .encode(), 2953719172u32
         );
     }
     #[test]
     fn decode_C_Sqrt_u8() {
         assert_eq!(
-            Instruction::decode(529796u32), Instruction::C_Sqrt_u8 { rd :
+            Instruction::decode(929156u32), Instruction::C_Sqrt_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9182,13 +9182,13 @@ mod tests {
     fn encode_C_Sqrt_u8() {
         assert_eq!(
             Instruction::C_Sqrt_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 529796u32
+            Register::General_Purpose(8), } .encode(), 929156u32
         );
     }
     #[test]
     fn decode_C_Sqrt_u16() {
         assert_eq!(
-            Instruction::decode(268965252u32), Instruction::C_Sqrt_u16 { rd :
+            Instruction::decode(269364612u32), Instruction::C_Sqrt_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9196,13 +9196,13 @@ mod tests {
     fn encode_C_Sqrt_u16() {
         assert_eq!(
             Instruction::C_Sqrt_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 268965252u32
+            Register::General_Purpose(8), } .encode(), 269364612u32
         );
     }
     #[test]
     fn decode_C_Sqrt_u32() {
         assert_eq!(
-            Instruction::decode(537400708u32), Instruction::C_Sqrt_u32 { rd :
+            Instruction::decode(537800068u32), Instruction::C_Sqrt_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9210,13 +9210,13 @@ mod tests {
     fn encode_C_Sqrt_u32() {
         assert_eq!(
             Instruction::C_Sqrt_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537400708u32
+            Register::General_Purpose(8), } .encode(), 537800068u32
         );
     }
     #[test]
     fn decode_C_Sqrt_u64() {
         assert_eq!(
-            Instruction::decode(805836164u32), Instruction::C_Sqrt_u64 { rd :
+            Instruction::decode(806235524u32), Instruction::C_Sqrt_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9224,13 +9224,13 @@ mod tests {
     fn encode_C_Sqrt_u64() {
         assert_eq!(
             Instruction::C_Sqrt_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 805836164u32
+            Register::General_Purpose(8), } .encode(), 806235524u32
         );
     }
     #[test]
     fn decode_C_Mul_i8() {
         assert_eq!(
-            Instruction::decode(2173179332u32), Instruction::C_Mul_i8 { rd :
+            Instruction::decode(2198744516u32), Instruction::C_Mul_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9240,13 +9240,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179332u32
+            .encode(), 2198744516u32
         );
     }
     #[test]
     fn decode_C_Mul_i16() {
         assert_eq!(
-            Instruction::decode(2441614788u32), Instruction::C_Mul_i16 { rd :
+            Instruction::decode(2467179972u32), Instruction::C_Mul_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9256,13 +9256,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614788u32
+            .encode(), 2467179972u32
         );
     }
     #[test]
     fn decode_C_Mul_i32() {
         assert_eq!(
-            Instruction::decode(2710050244u32), Instruction::C_Mul_i32 { rd :
+            Instruction::decode(2735615428u32), Instruction::C_Mul_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9272,13 +9272,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050244u32
+            .encode(), 2735615428u32
         );
     }
     #[test]
     fn decode_C_Mul_i64() {
         assert_eq!(
-            Instruction::decode(2978485700u32), Instruction::C_Mul_i64 { rd :
+            Instruction::decode(3004050884u32), Instruction::C_Mul_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9288,13 +9288,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485700u32
+            .encode(), 3004050884u32
         );
     }
     #[test]
     fn decode_C_Mul_u8() {
         assert_eq!(
-            Instruction::decode(25695684u32), Instruction::C_Mul_u8 { rd :
+            Instruction::decode(51260868u32), Instruction::C_Mul_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9304,13 +9304,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695684u32
+            .encode(), 51260868u32
         );
     }
     #[test]
     fn decode_C_Mul_u16() {
         assert_eq!(
-            Instruction::decode(294131140u32), Instruction::C_Mul_u16 { rd :
+            Instruction::decode(319696324u32), Instruction::C_Mul_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9320,13 +9320,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131140u32
+            .encode(), 319696324u32
         );
     }
     #[test]
     fn decode_C_Mul_u32() {
         assert_eq!(
-            Instruction::decode(562566596u32), Instruction::C_Mul_u32 { rd :
+            Instruction::decode(588131780u32), Instruction::C_Mul_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9336,13 +9336,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566596u32
+            .encode(), 588131780u32
         );
     }
     #[test]
     fn decode_C_Mul_u64() {
         assert_eq!(
-            Instruction::decode(831002052u32), Instruction::C_Mul_u64 { rd :
+            Instruction::decode(856567236u32), Instruction::C_Mul_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9352,13 +9352,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002052u32
+            .encode(), 856567236u32
         );
     }
     #[test]
     fn decode_C_Neg_i8() {
         assert_eq!(
-            Instruction::decode(2148013572u32), Instruction::C_Neg_i8 { rd :
+            Instruction::decode(2148412932u32), Instruction::C_Neg_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9366,13 +9366,13 @@ mod tests {
     fn encode_C_Neg_i8() {
         assert_eq!(
             Instruction::C_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013572u32
+            Register::General_Purpose(8), } .encode(), 2148412932u32
         );
     }
     #[test]
     fn decode_C_Neg_i16() {
         assert_eq!(
-            Instruction::decode(2416449028u32), Instruction::C_Neg_i16 { rd :
+            Instruction::decode(2416848388u32), Instruction::C_Neg_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9380,13 +9380,13 @@ mod tests {
     fn encode_C_Neg_i16() {
         assert_eq!(
             Instruction::C_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416449028u32
+            Register::General_Purpose(8), } .encode(), 2416848388u32
         );
     }
     #[test]
     fn decode_C_Neg_i32() {
         assert_eq!(
-            Instruction::decode(2684884484u32), Instruction::C_Neg_i32 { rd :
+            Instruction::decode(2685283844u32), Instruction::C_Neg_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9394,13 +9394,13 @@ mod tests {
     fn encode_C_Neg_i32() {
         assert_eq!(
             Instruction::C_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884484u32
+            Register::General_Purpose(8), } .encode(), 2685283844u32
         );
     }
     #[test]
     fn decode_C_Neg_i64() {
         assert_eq!(
-            Instruction::decode(2953319940u32), Instruction::C_Neg_i64 { rd :
+            Instruction::decode(2953719300u32), Instruction::C_Neg_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -9408,13 +9408,13 @@ mod tests {
     fn encode_C_Neg_i64() {
         assert_eq!(
             Instruction::C_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953319940u32
+            Register::General_Purpose(8), } .encode(), 2953719300u32
         );
     }
     #[test]
     fn decode_C_Pow_i8() {
         assert_eq!(
-            Instruction::decode(2173179460u32), Instruction::C_Pow_i8 { rd :
+            Instruction::decode(2198744644u32), Instruction::C_Pow_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9424,13 +9424,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179460u32
+            .encode(), 2198744644u32
         );
     }
     #[test]
     fn decode_C_Pow_i16() {
         assert_eq!(
-            Instruction::decode(2441614916u32), Instruction::C_Pow_i16 { rd :
+            Instruction::decode(2467180100u32), Instruction::C_Pow_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9440,13 +9440,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614916u32
+            .encode(), 2467180100u32
         );
     }
     #[test]
     fn decode_C_Pow_i32() {
         assert_eq!(
-            Instruction::decode(2710050372u32), Instruction::C_Pow_i32 { rd :
+            Instruction::decode(2735615556u32), Instruction::C_Pow_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9456,13 +9456,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050372u32
+            .encode(), 2735615556u32
         );
     }
     #[test]
     fn decode_C_Pow_i64() {
         assert_eq!(
-            Instruction::decode(2978485828u32), Instruction::C_Pow_i64 { rd :
+            Instruction::decode(3004051012u32), Instruction::C_Pow_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9472,13 +9472,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485828u32
+            .encode(), 3004051012u32
         );
     }
     #[test]
     fn decode_C_Pow_u8() {
         assert_eq!(
-            Instruction::decode(25695812u32), Instruction::C_Pow_u8 { rd :
+            Instruction::decode(51260996u32), Instruction::C_Pow_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9488,13 +9488,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695812u32
+            .encode(), 51260996u32
         );
     }
     #[test]
     fn decode_C_Pow_u16() {
         assert_eq!(
-            Instruction::decode(294131268u32), Instruction::C_Pow_u16 { rd :
+            Instruction::decode(319696452u32), Instruction::C_Pow_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9504,13 +9504,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131268u32
+            .encode(), 319696452u32
         );
     }
     #[test]
     fn decode_C_Pow_u32() {
         assert_eq!(
-            Instruction::decode(562566724u32), Instruction::C_Pow_u32 { rd :
+            Instruction::decode(588131908u32), Instruction::C_Pow_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9520,13 +9520,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566724u32
+            .encode(), 588131908u32
         );
     }
     #[test]
     fn decode_C_Pow_u64() {
         assert_eq!(
-            Instruction::decode(831002180u32), Instruction::C_Pow_u64 { rd :
+            Instruction::decode(856567364u32), Instruction::C_Pow_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9536,13 +9536,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002180u32
+            .encode(), 856567364u32
         );
     }
     #[test]
     fn decode_C_Rem_i8() {
         assert_eq!(
-            Instruction::decode(2173179524u32), Instruction::C_Rem_i8 { rd :
+            Instruction::decode(2198744708u32), Instruction::C_Rem_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9552,13 +9552,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179524u32
+            .encode(), 2198744708u32
         );
     }
     #[test]
     fn decode_C_Rem_i16() {
         assert_eq!(
-            Instruction::decode(2441614980u32), Instruction::C_Rem_i16 { rd :
+            Instruction::decode(2467180164u32), Instruction::C_Rem_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9568,13 +9568,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614980u32
+            .encode(), 2467180164u32
         );
     }
     #[test]
     fn decode_C_Rem_i32() {
         assert_eq!(
-            Instruction::decode(2710050436u32), Instruction::C_Rem_i32 { rd :
+            Instruction::decode(2735615620u32), Instruction::C_Rem_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9584,13 +9584,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050436u32
+            .encode(), 2735615620u32
         );
     }
     #[test]
     fn decode_C_Rem_i64() {
         assert_eq!(
-            Instruction::decode(2978485892u32), Instruction::C_Rem_i64 { rd :
+            Instruction::decode(3004051076u32), Instruction::C_Rem_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9600,13 +9600,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485892u32
+            .encode(), 3004051076u32
         );
     }
     #[test]
     fn decode_C_Rem_u8() {
         assert_eq!(
-            Instruction::decode(25695876u32), Instruction::C_Rem_u8 { rd :
+            Instruction::decode(51261060u32), Instruction::C_Rem_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9616,13 +9616,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695876u32
+            .encode(), 51261060u32
         );
     }
     #[test]
     fn decode_C_Rem_u16() {
         assert_eq!(
-            Instruction::decode(294131332u32), Instruction::C_Rem_u16 { rd :
+            Instruction::decode(319696516u32), Instruction::C_Rem_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9632,13 +9632,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131332u32
+            .encode(), 319696516u32
         );
     }
     #[test]
     fn decode_C_Rem_u32() {
         assert_eq!(
-            Instruction::decode(562566788u32), Instruction::C_Rem_u32 { rd :
+            Instruction::decode(588131972u32), Instruction::C_Rem_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9648,13 +9648,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566788u32
+            .encode(), 588131972u32
         );
     }
     #[test]
     fn decode_C_Rem_u64() {
         assert_eq!(
-            Instruction::decode(831002244u32), Instruction::C_Rem_u64 { rd :
+            Instruction::decode(856567428u32), Instruction::C_Rem_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9664,13 +9664,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002244u32
+            .encode(), 856567428u32
         );
     }
     #[test]
     fn decode_C_Rem_E_i8() {
         assert_eq!(
-            Instruction::decode(2173179588u32), Instruction::C_Rem_E_i8 { rd :
+            Instruction::decode(2198744772u32), Instruction::C_Rem_E_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9680,13 +9680,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_E_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179588u32
+            .encode(), 2198744772u32
         );
     }
     #[test]
     fn decode_C_Rem_E_i16() {
         assert_eq!(
-            Instruction::decode(2441615044u32), Instruction::C_Rem_E_i16 { rd :
+            Instruction::decode(2467180228u32), Instruction::C_Rem_E_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9696,13 +9696,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_E_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615044u32
+            .encode(), 2467180228u32
         );
     }
     #[test]
     fn decode_C_Rem_E_i32() {
         assert_eq!(
-            Instruction::decode(2710050500u32), Instruction::C_Rem_E_i32 { rd :
+            Instruction::decode(2735615684u32), Instruction::C_Rem_E_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9712,13 +9712,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_E_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050500u32
+            .encode(), 2735615684u32
         );
     }
     #[test]
     fn decode_C_Rem_E_i64() {
         assert_eq!(
-            Instruction::decode(2978485956u32), Instruction::C_Rem_E_i64 { rd :
+            Instruction::decode(3004051140u32), Instruction::C_Rem_E_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9728,13 +9728,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_E_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485956u32
+            .encode(), 3004051140u32
         );
     }
     #[test]
     fn decode_C_Rem_E_u8() {
         assert_eq!(
-            Instruction::decode(25695940u32), Instruction::C_Rem_E_u8 { rd :
+            Instruction::decode(51261124u32), Instruction::C_Rem_E_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9744,13 +9744,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_E_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695940u32
+            .encode(), 51261124u32
         );
     }
     #[test]
     fn decode_C_Rem_E_u16() {
         assert_eq!(
-            Instruction::decode(294131396u32), Instruction::C_Rem_E_u16 { rd :
+            Instruction::decode(319696580u32), Instruction::C_Rem_E_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9760,13 +9760,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_E_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131396u32
+            .encode(), 319696580u32
         );
     }
     #[test]
     fn decode_C_Rem_E_u32() {
         assert_eq!(
-            Instruction::decode(562566852u32), Instruction::C_Rem_E_u32 { rd :
+            Instruction::decode(588132036u32), Instruction::C_Rem_E_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9776,13 +9776,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_E_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566852u32
+            .encode(), 588132036u32
         );
     }
     #[test]
     fn decode_C_Rem_E_u64() {
         assert_eq!(
-            Instruction::decode(831002308u32), Instruction::C_Rem_E_u64 { rd :
+            Instruction::decode(856567492u32), Instruction::C_Rem_E_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9792,13 +9792,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Rem_E_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002308u32
+            .encode(), 856567492u32
         );
     }
     #[test]
     fn decode_C_Shl_i8() {
         assert_eq!(
-            Instruction::decode(2173179652u32), Instruction::C_Shl_i8 { rd :
+            Instruction::decode(2198744836u32), Instruction::C_Shl_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9808,13 +9808,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shl_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179652u32
+            .encode(), 2198744836u32
         );
     }
     #[test]
     fn decode_C_Shl_i16() {
         assert_eq!(
-            Instruction::decode(2441615108u32), Instruction::C_Shl_i16 { rd :
+            Instruction::decode(2467180292u32), Instruction::C_Shl_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9824,13 +9824,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shl_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615108u32
+            .encode(), 2467180292u32
         );
     }
     #[test]
     fn decode_C_Shl_i32() {
         assert_eq!(
-            Instruction::decode(2710050564u32), Instruction::C_Shl_i32 { rd :
+            Instruction::decode(2735615748u32), Instruction::C_Shl_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9840,13 +9840,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shl_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050564u32
+            .encode(), 2735615748u32
         );
     }
     #[test]
     fn decode_C_Shl_i64() {
         assert_eq!(
-            Instruction::decode(2978486020u32), Instruction::C_Shl_i64 { rd :
+            Instruction::decode(3004051204u32), Instruction::C_Shl_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9856,13 +9856,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shl_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978486020u32
+            .encode(), 3004051204u32
         );
     }
     #[test]
     fn decode_C_Shl_u8() {
         assert_eq!(
-            Instruction::decode(25696004u32), Instruction::C_Shl_u8 { rd :
+            Instruction::decode(51261188u32), Instruction::C_Shl_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9872,13 +9872,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shl_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25696004u32
+            .encode(), 51261188u32
         );
     }
     #[test]
     fn decode_C_Shl_u16() {
         assert_eq!(
-            Instruction::decode(294131460u32), Instruction::C_Shl_u16 { rd :
+            Instruction::decode(319696644u32), Instruction::C_Shl_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9888,13 +9888,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shl_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131460u32
+            .encode(), 319696644u32
         );
     }
     #[test]
     fn decode_C_Shl_u32() {
         assert_eq!(
-            Instruction::decode(562566916u32), Instruction::C_Shl_u32 { rd :
+            Instruction::decode(588132100u32), Instruction::C_Shl_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9904,13 +9904,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shl_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566916u32
+            .encode(), 588132100u32
         );
     }
     #[test]
     fn decode_C_Shl_u64() {
         assert_eq!(
-            Instruction::decode(831002372u32), Instruction::C_Shl_u64 { rd :
+            Instruction::decode(856567556u32), Instruction::C_Shl_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9920,13 +9920,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shl_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002372u32
+            .encode(), 856567556u32
         );
     }
     #[test]
     fn decode_C_Shr_i8() {
         assert_eq!(
-            Instruction::decode(2173179716u32), Instruction::C_Shr_i8 { rd :
+            Instruction::decode(2198744900u32), Instruction::C_Shr_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9936,13 +9936,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shr_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179716u32
+            .encode(), 2198744900u32
         );
     }
     #[test]
     fn decode_C_Shr_i16() {
         assert_eq!(
-            Instruction::decode(2441615172u32), Instruction::C_Shr_i16 { rd :
+            Instruction::decode(2467180356u32), Instruction::C_Shr_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9952,13 +9952,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shr_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615172u32
+            .encode(), 2467180356u32
         );
     }
     #[test]
     fn decode_C_Shr_i32() {
         assert_eq!(
-            Instruction::decode(2710050628u32), Instruction::C_Shr_i32 { rd :
+            Instruction::decode(2735615812u32), Instruction::C_Shr_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9968,13 +9968,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shr_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050628u32
+            .encode(), 2735615812u32
         );
     }
     #[test]
     fn decode_C_Shr_i64() {
         assert_eq!(
-            Instruction::decode(2978486084u32), Instruction::C_Shr_i64 { rd :
+            Instruction::decode(3004051268u32), Instruction::C_Shr_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -9984,13 +9984,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shr_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978486084u32
+            .encode(), 3004051268u32
         );
     }
     #[test]
     fn decode_C_Shr_u8() {
         assert_eq!(
-            Instruction::decode(25696068u32), Instruction::C_Shr_u8 { rd :
+            Instruction::decode(51261252u32), Instruction::C_Shr_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10000,13 +10000,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shr_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25696068u32
+            .encode(), 51261252u32
         );
     }
     #[test]
     fn decode_C_Shr_u16() {
         assert_eq!(
-            Instruction::decode(294131524u32), Instruction::C_Shr_u16 { rd :
+            Instruction::decode(319696708u32), Instruction::C_Shr_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10016,13 +10016,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shr_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131524u32
+            .encode(), 319696708u32
         );
     }
     #[test]
     fn decode_C_Shr_u32() {
         assert_eq!(
-            Instruction::decode(562566980u32), Instruction::C_Shr_u32 { rd :
+            Instruction::decode(588132164u32), Instruction::C_Shr_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10032,13 +10032,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shr_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566980u32
+            .encode(), 588132164u32
         );
     }
     #[test]
     fn decode_C_Shr_u64() {
         assert_eq!(
-            Instruction::decode(831002436u32), Instruction::C_Shr_u64 { rd :
+            Instruction::decode(856567620u32), Instruction::C_Shr_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10048,13 +10048,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Shr_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002436u32
+            .encode(), 856567620u32
         );
     }
     #[test]
     fn decode_C_Sub_i8() {
         assert_eq!(
-            Instruction::decode(2173179780u32), Instruction::C_Sub_i8 { rd :
+            Instruction::decode(2198744964u32), Instruction::C_Sub_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10064,13 +10064,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179780u32
+            .encode(), 2198744964u32
         );
     }
     #[test]
     fn decode_C_Sub_i16() {
         assert_eq!(
-            Instruction::decode(2441615236u32), Instruction::C_Sub_i16 { rd :
+            Instruction::decode(2467180420u32), Instruction::C_Sub_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10080,13 +10080,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615236u32
+            .encode(), 2467180420u32
         );
     }
     #[test]
     fn decode_C_Sub_i32() {
         assert_eq!(
-            Instruction::decode(2710050692u32), Instruction::C_Sub_i32 { rd :
+            Instruction::decode(2735615876u32), Instruction::C_Sub_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10096,13 +10096,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050692u32
+            .encode(), 2735615876u32
         );
     }
     #[test]
     fn decode_C_Sub_i64() {
         assert_eq!(
-            Instruction::decode(2978486148u32), Instruction::C_Sub_i64 { rd :
+            Instruction::decode(3004051332u32), Instruction::C_Sub_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10112,13 +10112,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978486148u32
+            .encode(), 3004051332u32
         );
     }
     #[test]
     fn decode_C_Sub_u8() {
         assert_eq!(
-            Instruction::decode(25696132u32), Instruction::C_Sub_u8 { rd :
+            Instruction::decode(51261316u32), Instruction::C_Sub_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10128,13 +10128,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25696132u32
+            .encode(), 51261316u32
         );
     }
     #[test]
     fn decode_C_Sub_u16() {
         assert_eq!(
-            Instruction::decode(294131588u32), Instruction::C_Sub_u16 { rd :
+            Instruction::decode(319696772u32), Instruction::C_Sub_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10144,13 +10144,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131588u32
+            .encode(), 319696772u32
         );
     }
     #[test]
     fn decode_C_Sub_u32() {
         assert_eq!(
-            Instruction::decode(562567044u32), Instruction::C_Sub_u32 { rd :
+            Instruction::decode(588132228u32), Instruction::C_Sub_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10160,13 +10160,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562567044u32
+            .encode(), 588132228u32
         );
     }
     #[test]
     fn decode_C_Sub_u64() {
         assert_eq!(
-            Instruction::decode(831002500u32), Instruction::C_Sub_u64 { rd :
+            Instruction::decode(856567684u32), Instruction::C_Sub_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10176,13 +10176,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002500u32
+            .encode(), 856567684u32
         );
     }
     #[test]
     fn decode_C_Sub_U_i8() {
         assert_eq!(
-            Instruction::decode(2173179844u32), Instruction::C_Sub_U_i8 { rd :
+            Instruction::decode(2198745028u32), Instruction::C_Sub_U_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10192,13 +10192,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179844u32
+            .encode(), 2198745028u32
         );
     }
     #[test]
     fn decode_C_Sub_U_i16() {
         assert_eq!(
-            Instruction::decode(2441615300u32), Instruction::C_Sub_U_i16 { rd :
+            Instruction::decode(2467180484u32), Instruction::C_Sub_U_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10208,13 +10208,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615300u32
+            .encode(), 2467180484u32
         );
     }
     #[test]
     fn decode_C_Sub_U_i32() {
         assert_eq!(
-            Instruction::decode(2710050756u32), Instruction::C_Sub_U_i32 { rd :
+            Instruction::decode(2735615940u32), Instruction::C_Sub_U_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10224,13 +10224,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050756u32
+            .encode(), 2735615940u32
         );
     }
     #[test]
     fn decode_C_Sub_U_i64() {
         assert_eq!(
-            Instruction::decode(2978486212u32), Instruction::C_Sub_U_i64 { rd :
+            Instruction::decode(3004051396u32), Instruction::C_Sub_U_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10240,13 +10240,13 @@ mod tests {
         assert_eq!(
             Instruction::C_Sub_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978486212u32
+            .encode(), 3004051396u32
         );
     }
     #[test]
     fn decode_O_Abs_i8() {
         assert_eq!(
-            Instruction::decode(2148013061u32), Instruction::O_Abs_i8 { rd :
+            Instruction::decode(2148412421u32), Instruction::O_Abs_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -10254,13 +10254,13 @@ mod tests {
     fn encode_O_Abs_i8() {
         assert_eq!(
             Instruction::O_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013061u32
+            Register::General_Purpose(8), } .encode(), 2148412421u32
         );
     }
     #[test]
     fn decode_O_Abs_i16() {
         assert_eq!(
-            Instruction::decode(2416448517u32), Instruction::O_Abs_i16 { rd :
+            Instruction::decode(2416847877u32), Instruction::O_Abs_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -10268,13 +10268,13 @@ mod tests {
     fn encode_O_Abs_i16() {
         assert_eq!(
             Instruction::O_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416448517u32
+            Register::General_Purpose(8), } .encode(), 2416847877u32
         );
     }
     #[test]
     fn decode_O_Abs_i32() {
         assert_eq!(
-            Instruction::decode(2684883973u32), Instruction::O_Abs_i32 { rd :
+            Instruction::decode(2685283333u32), Instruction::O_Abs_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -10282,13 +10282,13 @@ mod tests {
     fn encode_O_Abs_i32() {
         assert_eq!(
             Instruction::O_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684883973u32
+            Register::General_Purpose(8), } .encode(), 2685283333u32
         );
     }
     #[test]
     fn decode_O_Abs_i64() {
         assert_eq!(
-            Instruction::decode(2953319429u32), Instruction::O_Abs_i64 { rd :
+            Instruction::decode(2953718789u32), Instruction::O_Abs_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -10296,13 +10296,13 @@ mod tests {
     fn encode_O_Abs_i64() {
         assert_eq!(
             Instruction::O_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953319429u32
+            Register::General_Purpose(8), } .encode(), 2953718789u32
         );
     }
     #[test]
     fn decode_O_Add_i8() {
         assert_eq!(
-            Instruction::decode(2173178949u32), Instruction::O_Add_i8 { rd :
+            Instruction::decode(2198744133u32), Instruction::O_Add_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10312,13 +10312,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173178949u32
+            .encode(), 2198744133u32
         );
     }
     #[test]
     fn decode_O_Add_i16() {
         assert_eq!(
-            Instruction::decode(2441614405u32), Instruction::O_Add_i16 { rd :
+            Instruction::decode(2467179589u32), Instruction::O_Add_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10328,13 +10328,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614405u32
+            .encode(), 2467179589u32
         );
     }
     #[test]
     fn decode_O_Add_i32() {
         assert_eq!(
-            Instruction::decode(2710049861u32), Instruction::O_Add_i32 { rd :
+            Instruction::decode(2735615045u32), Instruction::O_Add_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10344,13 +10344,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049861u32
+            .encode(), 2735615045u32
         );
     }
     #[test]
     fn decode_O_Add_i64() {
         assert_eq!(
-            Instruction::decode(2978485317u32), Instruction::O_Add_i64 { rd :
+            Instruction::decode(3004050501u32), Instruction::O_Add_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10360,13 +10360,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485317u32
+            .encode(), 3004050501u32
         );
     }
     #[test]
     fn decode_O_Add_u8() {
         assert_eq!(
-            Instruction::decode(25695301u32), Instruction::O_Add_u8 { rd :
+            Instruction::decode(51260485u32), Instruction::O_Add_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10376,13 +10376,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695301u32
+            .encode(), 51260485u32
         );
     }
     #[test]
     fn decode_O_Add_u16() {
         assert_eq!(
-            Instruction::decode(294130757u32), Instruction::O_Add_u16 { rd :
+            Instruction::decode(319695941u32), Instruction::O_Add_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10392,13 +10392,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130757u32
+            .encode(), 319695941u32
         );
     }
     #[test]
     fn decode_O_Add_u32() {
         assert_eq!(
-            Instruction::decode(562566213u32), Instruction::O_Add_u32 { rd :
+            Instruction::decode(588131397u32), Instruction::O_Add_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10408,13 +10408,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566213u32
+            .encode(), 588131397u32
         );
     }
     #[test]
     fn decode_O_Add_u64() {
         assert_eq!(
-            Instruction::decode(831001669u32), Instruction::O_Add_u64 { rd :
+            Instruction::decode(856566853u32), Instruction::O_Add_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10424,13 +10424,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001669u32
+            .encode(), 856566853u32
         );
     }
     #[test]
     fn decode_O_Add_U_i8() {
         assert_eq!(
-            Instruction::decode(2173179013u32), Instruction::O_Add_U_i8 { rd :
+            Instruction::decode(2198744197u32), Instruction::O_Add_U_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10440,13 +10440,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179013u32
+            .encode(), 2198744197u32
         );
     }
     #[test]
     fn decode_O_Add_U_i16() {
         assert_eq!(
-            Instruction::decode(2441614469u32), Instruction::O_Add_U_i16 { rd :
+            Instruction::decode(2467179653u32), Instruction::O_Add_U_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10456,13 +10456,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614469u32
+            .encode(), 2467179653u32
         );
     }
     #[test]
     fn decode_O_Add_U_i32() {
         assert_eq!(
-            Instruction::decode(2710049925u32), Instruction::O_Add_U_i32 { rd :
+            Instruction::decode(2735615109u32), Instruction::O_Add_U_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10472,13 +10472,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049925u32
+            .encode(), 2735615109u32
         );
     }
     #[test]
     fn decode_O_Add_U_i64() {
         assert_eq!(
-            Instruction::decode(2978485381u32), Instruction::O_Add_U_i64 { rd :
+            Instruction::decode(3004050565u32), Instruction::O_Add_U_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10488,13 +10488,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485381u32
+            .encode(), 3004050565u32
         );
     }
     #[test]
     fn decode_O_Add_S_u8() {
         assert_eq!(
-            Instruction::decode(25695365u32), Instruction::O_Add_S_u8 { rd :
+            Instruction::decode(51260549u32), Instruction::O_Add_S_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10504,13 +10504,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695365u32
+            .encode(), 51260549u32
         );
     }
     #[test]
     fn decode_O_Add_S_u16() {
         assert_eq!(
-            Instruction::decode(294130821u32), Instruction::O_Add_S_u16 { rd :
+            Instruction::decode(319696005u32), Instruction::O_Add_S_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10520,13 +10520,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_S_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130821u32
+            .encode(), 319696005u32
         );
     }
     #[test]
     fn decode_O_Add_S_u32() {
         assert_eq!(
-            Instruction::decode(562566277u32), Instruction::O_Add_S_u32 { rd :
+            Instruction::decode(588131461u32), Instruction::O_Add_S_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10536,13 +10536,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_S_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566277u32
+            .encode(), 588131461u32
         );
     }
     #[test]
     fn decode_O_Add_S_u64() {
         assert_eq!(
-            Instruction::decode(831001733u32), Instruction::O_Add_S_u64 { rd :
+            Instruction::decode(856566917u32), Instruction::O_Add_S_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10552,13 +10552,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Add_S_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001733u32
+            .encode(), 856566917u32
         );
     }
     #[test]
     fn decode_O_Div_i8() {
         assert_eq!(
-            Instruction::decode(2173179077u32), Instruction::O_Div_i8 { rd :
+            Instruction::decode(2198744261u32), Instruction::O_Div_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10568,13 +10568,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179077u32
+            .encode(), 2198744261u32
         );
     }
     #[test]
     fn decode_O_Div_i16() {
         assert_eq!(
-            Instruction::decode(2441614533u32), Instruction::O_Div_i16 { rd :
+            Instruction::decode(2467179717u32), Instruction::O_Div_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10584,13 +10584,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614533u32
+            .encode(), 2467179717u32
         );
     }
     #[test]
     fn decode_O_Div_i32() {
         assert_eq!(
-            Instruction::decode(2710049989u32), Instruction::O_Div_i32 { rd :
+            Instruction::decode(2735615173u32), Instruction::O_Div_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10600,13 +10600,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049989u32
+            .encode(), 2735615173u32
         );
     }
     #[test]
     fn decode_O_Div_i64() {
         assert_eq!(
-            Instruction::decode(2978485445u32), Instruction::O_Div_i64 { rd :
+            Instruction::decode(3004050629u32), Instruction::O_Div_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10616,13 +10616,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485445u32
+            .encode(), 3004050629u32
         );
     }
     #[test]
     fn decode_O_Div_u8() {
         assert_eq!(
-            Instruction::decode(25695429u32), Instruction::O_Div_u8 { rd :
+            Instruction::decode(51260613u32), Instruction::O_Div_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10632,13 +10632,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695429u32
+            .encode(), 51260613u32
         );
     }
     #[test]
     fn decode_O_Div_u16() {
         assert_eq!(
-            Instruction::decode(294130885u32), Instruction::O_Div_u16 { rd :
+            Instruction::decode(319696069u32), Instruction::O_Div_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10648,13 +10648,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130885u32
+            .encode(), 319696069u32
         );
     }
     #[test]
     fn decode_O_Div_u32() {
         assert_eq!(
-            Instruction::decode(562566341u32), Instruction::O_Div_u32 { rd :
+            Instruction::decode(588131525u32), Instruction::O_Div_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10664,13 +10664,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566341u32
+            .encode(), 588131525u32
         );
     }
     #[test]
     fn decode_O_Div_u64() {
         assert_eq!(
-            Instruction::decode(831001797u32), Instruction::O_Div_u64 { rd :
+            Instruction::decode(856566981u32), Instruction::O_Div_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10680,13 +10680,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001797u32
+            .encode(), 856566981u32
         );
     }
     #[test]
     fn decode_O_Div_E_i8() {
         assert_eq!(
-            Instruction::decode(2173179141u32), Instruction::O_Div_E_i8 { rd :
+            Instruction::decode(2198744325u32), Instruction::O_Div_E_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10696,13 +10696,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_E_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179141u32
+            .encode(), 2198744325u32
         );
     }
     #[test]
     fn decode_O_Div_E_i16() {
         assert_eq!(
-            Instruction::decode(2441614597u32), Instruction::O_Div_E_i16 { rd :
+            Instruction::decode(2467179781u32), Instruction::O_Div_E_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10712,13 +10712,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_E_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614597u32
+            .encode(), 2467179781u32
         );
     }
     #[test]
     fn decode_O_Div_E_i32() {
         assert_eq!(
-            Instruction::decode(2710050053u32), Instruction::O_Div_E_i32 { rd :
+            Instruction::decode(2735615237u32), Instruction::O_Div_E_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10728,13 +10728,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_E_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050053u32
+            .encode(), 2735615237u32
         );
     }
     #[test]
     fn decode_O_Div_E_i64() {
         assert_eq!(
-            Instruction::decode(2978485509u32), Instruction::O_Div_E_i64 { rd :
+            Instruction::decode(3004050693u32), Instruction::O_Div_E_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10744,13 +10744,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_E_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485509u32
+            .encode(), 3004050693u32
         );
     }
     #[test]
     fn decode_O_Div_E_u8() {
         assert_eq!(
-            Instruction::decode(25695493u32), Instruction::O_Div_E_u8 { rd :
+            Instruction::decode(51260677u32), Instruction::O_Div_E_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10760,13 +10760,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_E_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695493u32
+            .encode(), 51260677u32
         );
     }
     #[test]
     fn decode_O_Div_E_u16() {
         assert_eq!(
-            Instruction::decode(294130949u32), Instruction::O_Div_E_u16 { rd :
+            Instruction::decode(319696133u32), Instruction::O_Div_E_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10776,13 +10776,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_E_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130949u32
+            .encode(), 319696133u32
         );
     }
     #[test]
     fn decode_O_Div_E_u32() {
         assert_eq!(
-            Instruction::decode(562566405u32), Instruction::O_Div_E_u32 { rd :
+            Instruction::decode(588131589u32), Instruction::O_Div_E_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10792,13 +10792,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_E_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566405u32
+            .encode(), 588131589u32
         );
     }
     #[test]
     fn decode_O_Div_E_u64() {
         assert_eq!(
-            Instruction::decode(831001861u32), Instruction::O_Div_E_u64 { rd :
+            Instruction::decode(856567045u32), Instruction::O_Div_E_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10808,13 +10808,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Div_E_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001861u32
+            .encode(), 856567045u32
         );
     }
     #[test]
     fn decode_O_Mul_i8() {
         assert_eq!(
-            Instruction::decode(2173179333u32), Instruction::O_Mul_i8 { rd :
+            Instruction::decode(2198744517u32), Instruction::O_Mul_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10824,13 +10824,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179333u32
+            .encode(), 2198744517u32
         );
     }
     #[test]
     fn decode_O_Mul_i16() {
         assert_eq!(
-            Instruction::decode(2441614789u32), Instruction::O_Mul_i16 { rd :
+            Instruction::decode(2467179973u32), Instruction::O_Mul_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10840,13 +10840,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614789u32
+            .encode(), 2467179973u32
         );
     }
     #[test]
     fn decode_O_Mul_i32() {
         assert_eq!(
-            Instruction::decode(2710050245u32), Instruction::O_Mul_i32 { rd :
+            Instruction::decode(2735615429u32), Instruction::O_Mul_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10856,13 +10856,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050245u32
+            .encode(), 2735615429u32
         );
     }
     #[test]
     fn decode_O_Mul_i64() {
         assert_eq!(
-            Instruction::decode(2978485701u32), Instruction::O_Mul_i64 { rd :
+            Instruction::decode(3004050885u32), Instruction::O_Mul_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10872,13 +10872,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485701u32
+            .encode(), 3004050885u32
         );
     }
     #[test]
     fn decode_O_Mul_u8() {
         assert_eq!(
-            Instruction::decode(25695685u32), Instruction::O_Mul_u8 { rd :
+            Instruction::decode(51260869u32), Instruction::O_Mul_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10888,13 +10888,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695685u32
+            .encode(), 51260869u32
         );
     }
     #[test]
     fn decode_O_Mul_u16() {
         assert_eq!(
-            Instruction::decode(294131141u32), Instruction::O_Mul_u16 { rd :
+            Instruction::decode(319696325u32), Instruction::O_Mul_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10904,13 +10904,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131141u32
+            .encode(), 319696325u32
         );
     }
     #[test]
     fn decode_O_Mul_u32() {
         assert_eq!(
-            Instruction::decode(562566597u32), Instruction::O_Mul_u32 { rd :
+            Instruction::decode(588131781u32), Instruction::O_Mul_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10920,13 +10920,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566597u32
+            .encode(), 588131781u32
         );
     }
     #[test]
     fn decode_O_Mul_u64() {
         assert_eq!(
-            Instruction::decode(831002053u32), Instruction::O_Mul_u64 { rd :
+            Instruction::decode(856567237u32), Instruction::O_Mul_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -10936,13 +10936,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002053u32
+            .encode(), 856567237u32
         );
     }
     #[test]
     fn decode_O_Neg_i8() {
         assert_eq!(
-            Instruction::decode(2148013573u32), Instruction::O_Neg_i8 { rd :
+            Instruction::decode(2148412933u32), Instruction::O_Neg_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -10950,13 +10950,13 @@ mod tests {
     fn encode_O_Neg_i8() {
         assert_eq!(
             Instruction::O_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013573u32
+            Register::General_Purpose(8), } .encode(), 2148412933u32
         );
     }
     #[test]
     fn decode_O_Neg_i16() {
         assert_eq!(
-            Instruction::decode(2416449029u32), Instruction::O_Neg_i16 { rd :
+            Instruction::decode(2416848389u32), Instruction::O_Neg_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -10964,13 +10964,13 @@ mod tests {
     fn encode_O_Neg_i16() {
         assert_eq!(
             Instruction::O_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416449029u32
+            Register::General_Purpose(8), } .encode(), 2416848389u32
         );
     }
     #[test]
     fn decode_O_Neg_i32() {
         assert_eq!(
-            Instruction::decode(2684884485u32), Instruction::O_Neg_i32 { rd :
+            Instruction::decode(2685283845u32), Instruction::O_Neg_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -10978,13 +10978,13 @@ mod tests {
     fn encode_O_Neg_i32() {
         assert_eq!(
             Instruction::O_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884485u32
+            Register::General_Purpose(8), } .encode(), 2685283845u32
         );
     }
     #[test]
     fn decode_O_Neg_i64() {
         assert_eq!(
-            Instruction::decode(2953319941u32), Instruction::O_Neg_i64 { rd :
+            Instruction::decode(2953719301u32), Instruction::O_Neg_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -10992,13 +10992,13 @@ mod tests {
     fn encode_O_Neg_i64() {
         assert_eq!(
             Instruction::O_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953319941u32
+            Register::General_Purpose(8), } .encode(), 2953719301u32
         );
     }
     #[test]
     fn decode_O_Pow_i8() {
         assert_eq!(
-            Instruction::decode(2173179461u32), Instruction::O_Pow_i8 { rd :
+            Instruction::decode(2198744645u32), Instruction::O_Pow_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11008,13 +11008,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179461u32
+            .encode(), 2198744645u32
         );
     }
     #[test]
     fn decode_O_Pow_i16() {
         assert_eq!(
-            Instruction::decode(2441614917u32), Instruction::O_Pow_i16 { rd :
+            Instruction::decode(2467180101u32), Instruction::O_Pow_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11024,13 +11024,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614917u32
+            .encode(), 2467180101u32
         );
     }
     #[test]
     fn decode_O_Pow_i32() {
         assert_eq!(
-            Instruction::decode(2710050373u32), Instruction::O_Pow_i32 { rd :
+            Instruction::decode(2735615557u32), Instruction::O_Pow_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11040,13 +11040,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050373u32
+            .encode(), 2735615557u32
         );
     }
     #[test]
     fn decode_O_Pow_i64() {
         assert_eq!(
-            Instruction::decode(2978485829u32), Instruction::O_Pow_i64 { rd :
+            Instruction::decode(3004051013u32), Instruction::O_Pow_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11056,13 +11056,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485829u32
+            .encode(), 3004051013u32
         );
     }
     #[test]
     fn decode_O_Pow_u8() {
         assert_eq!(
-            Instruction::decode(25695813u32), Instruction::O_Pow_u8 { rd :
+            Instruction::decode(51260997u32), Instruction::O_Pow_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11072,13 +11072,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695813u32
+            .encode(), 51260997u32
         );
     }
     #[test]
     fn decode_O_Pow_u16() {
         assert_eq!(
-            Instruction::decode(294131269u32), Instruction::O_Pow_u16 { rd :
+            Instruction::decode(319696453u32), Instruction::O_Pow_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11088,13 +11088,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131269u32
+            .encode(), 319696453u32
         );
     }
     #[test]
     fn decode_O_Pow_u32() {
         assert_eq!(
-            Instruction::decode(562566725u32), Instruction::O_Pow_u32 { rd :
+            Instruction::decode(588131909u32), Instruction::O_Pow_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11104,13 +11104,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566725u32
+            .encode(), 588131909u32
         );
     }
     #[test]
     fn decode_O_Pow_u64() {
         assert_eq!(
-            Instruction::decode(831002181u32), Instruction::O_Pow_u64 { rd :
+            Instruction::decode(856567365u32), Instruction::O_Pow_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11120,13 +11120,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002181u32
+            .encode(), 856567365u32
         );
     }
     #[test]
     fn decode_O_Rem_i8() {
         assert_eq!(
-            Instruction::decode(2173179525u32), Instruction::O_Rem_i8 { rd :
+            Instruction::decode(2198744709u32), Instruction::O_Rem_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11136,13 +11136,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179525u32
+            .encode(), 2198744709u32
         );
     }
     #[test]
     fn decode_O_Rem_i16() {
         assert_eq!(
-            Instruction::decode(2441614981u32), Instruction::O_Rem_i16 { rd :
+            Instruction::decode(2467180165u32), Instruction::O_Rem_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11152,13 +11152,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614981u32
+            .encode(), 2467180165u32
         );
     }
     #[test]
     fn decode_O_Rem_i32() {
         assert_eq!(
-            Instruction::decode(2710050437u32), Instruction::O_Rem_i32 { rd :
+            Instruction::decode(2735615621u32), Instruction::O_Rem_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11168,13 +11168,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050437u32
+            .encode(), 2735615621u32
         );
     }
     #[test]
     fn decode_O_Rem_i64() {
         assert_eq!(
-            Instruction::decode(2978485893u32), Instruction::O_Rem_i64 { rd :
+            Instruction::decode(3004051077u32), Instruction::O_Rem_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11184,13 +11184,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485893u32
+            .encode(), 3004051077u32
         );
     }
     #[test]
     fn decode_O_Rem_u8() {
         assert_eq!(
-            Instruction::decode(25695877u32), Instruction::O_Rem_u8 { rd :
+            Instruction::decode(51261061u32), Instruction::O_Rem_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11200,13 +11200,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695877u32
+            .encode(), 51261061u32
         );
     }
     #[test]
     fn decode_O_Rem_u16() {
         assert_eq!(
-            Instruction::decode(294131333u32), Instruction::O_Rem_u16 { rd :
+            Instruction::decode(319696517u32), Instruction::O_Rem_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11216,13 +11216,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131333u32
+            .encode(), 319696517u32
         );
     }
     #[test]
     fn decode_O_Rem_u32() {
         assert_eq!(
-            Instruction::decode(562566789u32), Instruction::O_Rem_u32 { rd :
+            Instruction::decode(588131973u32), Instruction::O_Rem_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11232,13 +11232,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566789u32
+            .encode(), 588131973u32
         );
     }
     #[test]
     fn decode_O_Rem_u64() {
         assert_eq!(
-            Instruction::decode(831002245u32), Instruction::O_Rem_u64 { rd :
+            Instruction::decode(856567429u32), Instruction::O_Rem_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11248,13 +11248,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002245u32
+            .encode(), 856567429u32
         );
     }
     #[test]
     fn decode_O_Rem_E_i8() {
         assert_eq!(
-            Instruction::decode(2173179589u32), Instruction::O_Rem_E_i8 { rd :
+            Instruction::decode(2198744773u32), Instruction::O_Rem_E_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11264,13 +11264,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_E_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179589u32
+            .encode(), 2198744773u32
         );
     }
     #[test]
     fn decode_O_Rem_E_i16() {
         assert_eq!(
-            Instruction::decode(2441615045u32), Instruction::O_Rem_E_i16 { rd :
+            Instruction::decode(2467180229u32), Instruction::O_Rem_E_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11280,13 +11280,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_E_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615045u32
+            .encode(), 2467180229u32
         );
     }
     #[test]
     fn decode_O_Rem_E_i32() {
         assert_eq!(
-            Instruction::decode(2710050501u32), Instruction::O_Rem_E_i32 { rd :
+            Instruction::decode(2735615685u32), Instruction::O_Rem_E_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11296,13 +11296,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_E_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050501u32
+            .encode(), 2735615685u32
         );
     }
     #[test]
     fn decode_O_Rem_E_i64() {
         assert_eq!(
-            Instruction::decode(2978485957u32), Instruction::O_Rem_E_i64 { rd :
+            Instruction::decode(3004051141u32), Instruction::O_Rem_E_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11312,13 +11312,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_E_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485957u32
+            .encode(), 3004051141u32
         );
     }
     #[test]
     fn decode_O_Rem_E_u8() {
         assert_eq!(
-            Instruction::decode(25695941u32), Instruction::O_Rem_E_u8 { rd :
+            Instruction::decode(51261125u32), Instruction::O_Rem_E_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11328,13 +11328,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_E_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695941u32
+            .encode(), 51261125u32
         );
     }
     #[test]
     fn decode_O_Rem_E_u16() {
         assert_eq!(
-            Instruction::decode(294131397u32), Instruction::O_Rem_E_u16 { rd :
+            Instruction::decode(319696581u32), Instruction::O_Rem_E_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11344,13 +11344,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_E_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131397u32
+            .encode(), 319696581u32
         );
     }
     #[test]
     fn decode_O_Rem_E_u32() {
         assert_eq!(
-            Instruction::decode(562566853u32), Instruction::O_Rem_E_u32 { rd :
+            Instruction::decode(588132037u32), Instruction::O_Rem_E_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11360,13 +11360,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_E_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566853u32
+            .encode(), 588132037u32
         );
     }
     #[test]
     fn decode_O_Rem_E_u64() {
         assert_eq!(
-            Instruction::decode(831002309u32), Instruction::O_Rem_E_u64 { rd :
+            Instruction::decode(856567493u32), Instruction::O_Rem_E_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11376,13 +11376,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Rem_E_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002309u32
+            .encode(), 856567493u32
         );
     }
     #[test]
     fn decode_O_Shl_i8() {
         assert_eq!(
-            Instruction::decode(2173179653u32), Instruction::O_Shl_i8 { rd :
+            Instruction::decode(2198744837u32), Instruction::O_Shl_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11392,13 +11392,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shl_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179653u32
+            .encode(), 2198744837u32
         );
     }
     #[test]
     fn decode_O_Shl_i16() {
         assert_eq!(
-            Instruction::decode(2441615109u32), Instruction::O_Shl_i16 { rd :
+            Instruction::decode(2467180293u32), Instruction::O_Shl_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11408,13 +11408,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shl_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615109u32
+            .encode(), 2467180293u32
         );
     }
     #[test]
     fn decode_O_Shl_i32() {
         assert_eq!(
-            Instruction::decode(2710050565u32), Instruction::O_Shl_i32 { rd :
+            Instruction::decode(2735615749u32), Instruction::O_Shl_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11424,13 +11424,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shl_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050565u32
+            .encode(), 2735615749u32
         );
     }
     #[test]
     fn decode_O_Shl_i64() {
         assert_eq!(
-            Instruction::decode(2978486021u32), Instruction::O_Shl_i64 { rd :
+            Instruction::decode(3004051205u32), Instruction::O_Shl_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11440,13 +11440,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shl_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978486021u32
+            .encode(), 3004051205u32
         );
     }
     #[test]
     fn decode_O_Shl_u8() {
         assert_eq!(
-            Instruction::decode(25696005u32), Instruction::O_Shl_u8 { rd :
+            Instruction::decode(51261189u32), Instruction::O_Shl_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11456,13 +11456,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shl_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25696005u32
+            .encode(), 51261189u32
         );
     }
     #[test]
     fn decode_O_Shl_u16() {
         assert_eq!(
-            Instruction::decode(294131461u32), Instruction::O_Shl_u16 { rd :
+            Instruction::decode(319696645u32), Instruction::O_Shl_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11472,13 +11472,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shl_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131461u32
+            .encode(), 319696645u32
         );
     }
     #[test]
     fn decode_O_Shl_u32() {
         assert_eq!(
-            Instruction::decode(562566917u32), Instruction::O_Shl_u32 { rd :
+            Instruction::decode(588132101u32), Instruction::O_Shl_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11488,13 +11488,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shl_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566917u32
+            .encode(), 588132101u32
         );
     }
     #[test]
     fn decode_O_Shl_u64() {
         assert_eq!(
-            Instruction::decode(831002373u32), Instruction::O_Shl_u64 { rd :
+            Instruction::decode(856567557u32), Instruction::O_Shl_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11504,13 +11504,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shl_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002373u32
+            .encode(), 856567557u32
         );
     }
     #[test]
     fn decode_O_Shr_i8() {
         assert_eq!(
-            Instruction::decode(2173179717u32), Instruction::O_Shr_i8 { rd :
+            Instruction::decode(2198744901u32), Instruction::O_Shr_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11520,13 +11520,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shr_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179717u32
+            .encode(), 2198744901u32
         );
     }
     #[test]
     fn decode_O_Shr_i16() {
         assert_eq!(
-            Instruction::decode(2441615173u32), Instruction::O_Shr_i16 { rd :
+            Instruction::decode(2467180357u32), Instruction::O_Shr_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11536,13 +11536,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shr_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615173u32
+            .encode(), 2467180357u32
         );
     }
     #[test]
     fn decode_O_Shr_i32() {
         assert_eq!(
-            Instruction::decode(2710050629u32), Instruction::O_Shr_i32 { rd :
+            Instruction::decode(2735615813u32), Instruction::O_Shr_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11552,13 +11552,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shr_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050629u32
+            .encode(), 2735615813u32
         );
     }
     #[test]
     fn decode_O_Shr_i64() {
         assert_eq!(
-            Instruction::decode(2978486085u32), Instruction::O_Shr_i64 { rd :
+            Instruction::decode(3004051269u32), Instruction::O_Shr_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11568,13 +11568,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shr_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978486085u32
+            .encode(), 3004051269u32
         );
     }
     #[test]
     fn decode_O_Shr_u8() {
         assert_eq!(
-            Instruction::decode(25696069u32), Instruction::O_Shr_u8 { rd :
+            Instruction::decode(51261253u32), Instruction::O_Shr_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11584,13 +11584,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shr_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25696069u32
+            .encode(), 51261253u32
         );
     }
     #[test]
     fn decode_O_Shr_u16() {
         assert_eq!(
-            Instruction::decode(294131525u32), Instruction::O_Shr_u16 { rd :
+            Instruction::decode(319696709u32), Instruction::O_Shr_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11600,13 +11600,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shr_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131525u32
+            .encode(), 319696709u32
         );
     }
     #[test]
     fn decode_O_Shr_u32() {
         assert_eq!(
-            Instruction::decode(562566981u32), Instruction::O_Shr_u32 { rd :
+            Instruction::decode(588132165u32), Instruction::O_Shr_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11616,13 +11616,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shr_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566981u32
+            .encode(), 588132165u32
         );
     }
     #[test]
     fn decode_O_Shr_u64() {
         assert_eq!(
-            Instruction::decode(831002437u32), Instruction::O_Shr_u64 { rd :
+            Instruction::decode(856567621u32), Instruction::O_Shr_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11632,13 +11632,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Shr_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002437u32
+            .encode(), 856567621u32
         );
     }
     #[test]
     fn decode_O_Sub_i8() {
         assert_eq!(
-            Instruction::decode(2173179781u32), Instruction::O_Sub_i8 { rd :
+            Instruction::decode(2198744965u32), Instruction::O_Sub_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11648,13 +11648,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179781u32
+            .encode(), 2198744965u32
         );
     }
     #[test]
     fn decode_O_Sub_i16() {
         assert_eq!(
-            Instruction::decode(2441615237u32), Instruction::O_Sub_i16 { rd :
+            Instruction::decode(2467180421u32), Instruction::O_Sub_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11664,13 +11664,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615237u32
+            .encode(), 2467180421u32
         );
     }
     #[test]
     fn decode_O_Sub_i32() {
         assert_eq!(
-            Instruction::decode(2710050693u32), Instruction::O_Sub_i32 { rd :
+            Instruction::decode(2735615877u32), Instruction::O_Sub_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11680,13 +11680,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050693u32
+            .encode(), 2735615877u32
         );
     }
     #[test]
     fn decode_O_Sub_i64() {
         assert_eq!(
-            Instruction::decode(2978486149u32), Instruction::O_Sub_i64 { rd :
+            Instruction::decode(3004051333u32), Instruction::O_Sub_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11696,13 +11696,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978486149u32
+            .encode(), 3004051333u32
         );
     }
     #[test]
     fn decode_O_Sub_u8() {
         assert_eq!(
-            Instruction::decode(25696133u32), Instruction::O_Sub_u8 { rd :
+            Instruction::decode(51261317u32), Instruction::O_Sub_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11712,13 +11712,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25696133u32
+            .encode(), 51261317u32
         );
     }
     #[test]
     fn decode_O_Sub_u16() {
         assert_eq!(
-            Instruction::decode(294131589u32), Instruction::O_Sub_u16 { rd :
+            Instruction::decode(319696773u32), Instruction::O_Sub_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11728,13 +11728,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131589u32
+            .encode(), 319696773u32
         );
     }
     #[test]
     fn decode_O_Sub_u32() {
         assert_eq!(
-            Instruction::decode(562567045u32), Instruction::O_Sub_u32 { rd :
+            Instruction::decode(588132229u32), Instruction::O_Sub_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11744,13 +11744,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562567045u32
+            .encode(), 588132229u32
         );
     }
     #[test]
     fn decode_O_Sub_u64() {
         assert_eq!(
-            Instruction::decode(831002501u32), Instruction::O_Sub_u64 { rd :
+            Instruction::decode(856567685u32), Instruction::O_Sub_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11760,13 +11760,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002501u32
+            .encode(), 856567685u32
         );
     }
     #[test]
     fn decode_O_Sub_U_i8() {
         assert_eq!(
-            Instruction::decode(2173179845u32), Instruction::O_Sub_U_i8 { rd :
+            Instruction::decode(2198745029u32), Instruction::O_Sub_U_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11776,13 +11776,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179845u32
+            .encode(), 2198745029u32
         );
     }
     #[test]
     fn decode_O_Sub_U_i16() {
         assert_eq!(
-            Instruction::decode(2441615301u32), Instruction::O_Sub_U_i16 { rd :
+            Instruction::decode(2467180485u32), Instruction::O_Sub_U_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11792,13 +11792,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615301u32
+            .encode(), 2467180485u32
         );
     }
     #[test]
     fn decode_O_Sub_U_i32() {
         assert_eq!(
-            Instruction::decode(2710050757u32), Instruction::O_Sub_U_i32 { rd :
+            Instruction::decode(2735615941u32), Instruction::O_Sub_U_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11808,13 +11808,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050757u32
+            .encode(), 2735615941u32
         );
     }
     #[test]
     fn decode_O_Sub_U_i64() {
         assert_eq!(
-            Instruction::decode(2978486213u32), Instruction::O_Sub_U_i64 { rd :
+            Instruction::decode(3004051397u32), Instruction::O_Sub_U_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11824,13 +11824,13 @@ mod tests {
         assert_eq!(
             Instruction::O_Sub_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978486213u32
+            .encode(), 3004051397u32
         );
     }
     #[test]
     fn decode_S_Abs_i8() {
         assert_eq!(
-            Instruction::decode(2148013062u32), Instruction::S_Abs_i8 { rd :
+            Instruction::decode(2148412422u32), Instruction::S_Abs_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -11838,13 +11838,13 @@ mod tests {
     fn encode_S_Abs_i8() {
         assert_eq!(
             Instruction::S_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013062u32
+            Register::General_Purpose(8), } .encode(), 2148412422u32
         );
     }
     #[test]
     fn decode_S_Abs_i16() {
         assert_eq!(
-            Instruction::decode(2416448518u32), Instruction::S_Abs_i16 { rd :
+            Instruction::decode(2416847878u32), Instruction::S_Abs_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -11852,13 +11852,13 @@ mod tests {
     fn encode_S_Abs_i16() {
         assert_eq!(
             Instruction::S_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416448518u32
+            Register::General_Purpose(8), } .encode(), 2416847878u32
         );
     }
     #[test]
     fn decode_S_Abs_i32() {
         assert_eq!(
-            Instruction::decode(2684883974u32), Instruction::S_Abs_i32 { rd :
+            Instruction::decode(2685283334u32), Instruction::S_Abs_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -11866,13 +11866,13 @@ mod tests {
     fn encode_S_Abs_i32() {
         assert_eq!(
             Instruction::S_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684883974u32
+            Register::General_Purpose(8), } .encode(), 2685283334u32
         );
     }
     #[test]
     fn decode_S_Abs_i64() {
         assert_eq!(
-            Instruction::decode(2953319430u32), Instruction::S_Abs_i64 { rd :
+            Instruction::decode(2953718790u32), Instruction::S_Abs_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -11880,13 +11880,13 @@ mod tests {
     fn encode_S_Abs_i64() {
         assert_eq!(
             Instruction::S_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953319430u32
+            Register::General_Purpose(8), } .encode(), 2953718790u32
         );
     }
     #[test]
     fn decode_S_Add_i8() {
         assert_eq!(
-            Instruction::decode(2173178950u32), Instruction::S_Add_i8 { rd :
+            Instruction::decode(2198744134u32), Instruction::S_Add_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11896,13 +11896,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173178950u32
+            .encode(), 2198744134u32
         );
     }
     #[test]
     fn decode_S_Add_i16() {
         assert_eq!(
-            Instruction::decode(2441614406u32), Instruction::S_Add_i16 { rd :
+            Instruction::decode(2467179590u32), Instruction::S_Add_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11912,13 +11912,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614406u32
+            .encode(), 2467179590u32
         );
     }
     #[test]
     fn decode_S_Add_i32() {
         assert_eq!(
-            Instruction::decode(2710049862u32), Instruction::S_Add_i32 { rd :
+            Instruction::decode(2735615046u32), Instruction::S_Add_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11928,13 +11928,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049862u32
+            .encode(), 2735615046u32
         );
     }
     #[test]
     fn decode_S_Add_i64() {
         assert_eq!(
-            Instruction::decode(2978485318u32), Instruction::S_Add_i64 { rd :
+            Instruction::decode(3004050502u32), Instruction::S_Add_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11944,13 +11944,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485318u32
+            .encode(), 3004050502u32
         );
     }
     #[test]
     fn decode_S_Add_u8() {
         assert_eq!(
-            Instruction::decode(25695302u32), Instruction::S_Add_u8 { rd :
+            Instruction::decode(51260486u32), Instruction::S_Add_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11960,13 +11960,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695302u32
+            .encode(), 51260486u32
         );
     }
     #[test]
     fn decode_S_Add_u16() {
         assert_eq!(
-            Instruction::decode(294130758u32), Instruction::S_Add_u16 { rd :
+            Instruction::decode(319695942u32), Instruction::S_Add_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11976,13 +11976,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130758u32
+            .encode(), 319695942u32
         );
     }
     #[test]
     fn decode_S_Add_u32() {
         assert_eq!(
-            Instruction::decode(562566214u32), Instruction::S_Add_u32 { rd :
+            Instruction::decode(588131398u32), Instruction::S_Add_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -11992,13 +11992,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566214u32
+            .encode(), 588131398u32
         );
     }
     #[test]
     fn decode_S_Add_u64() {
         assert_eq!(
-            Instruction::decode(831001670u32), Instruction::S_Add_u64 { rd :
+            Instruction::decode(856566854u32), Instruction::S_Add_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12008,13 +12008,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001670u32
+            .encode(), 856566854u32
         );
     }
     #[test]
     fn decode_S_Add_U_i8() {
         assert_eq!(
-            Instruction::decode(2173179014u32), Instruction::S_Add_U_i8 { rd :
+            Instruction::decode(2198744198u32), Instruction::S_Add_U_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12024,13 +12024,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179014u32
+            .encode(), 2198744198u32
         );
     }
     #[test]
     fn decode_S_Add_U_i16() {
         assert_eq!(
-            Instruction::decode(2441614470u32), Instruction::S_Add_U_i16 { rd :
+            Instruction::decode(2467179654u32), Instruction::S_Add_U_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12040,13 +12040,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614470u32
+            .encode(), 2467179654u32
         );
     }
     #[test]
     fn decode_S_Add_U_i32() {
         assert_eq!(
-            Instruction::decode(2710049926u32), Instruction::S_Add_U_i32 { rd :
+            Instruction::decode(2735615110u32), Instruction::S_Add_U_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12056,13 +12056,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049926u32
+            .encode(), 2735615110u32
         );
     }
     #[test]
     fn decode_S_Add_U_i64() {
         assert_eq!(
-            Instruction::decode(2978485382u32), Instruction::S_Add_U_i64 { rd :
+            Instruction::decode(3004050566u32), Instruction::S_Add_U_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12072,13 +12072,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485382u32
+            .encode(), 3004050566u32
         );
     }
     #[test]
     fn decode_S_Add_S_u8() {
         assert_eq!(
-            Instruction::decode(25695366u32), Instruction::S_Add_S_u8 { rd :
+            Instruction::decode(51260550u32), Instruction::S_Add_S_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12088,13 +12088,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695366u32
+            .encode(), 51260550u32
         );
     }
     #[test]
     fn decode_S_Add_S_u16() {
         assert_eq!(
-            Instruction::decode(294130822u32), Instruction::S_Add_S_u16 { rd :
+            Instruction::decode(319696006u32), Instruction::S_Add_S_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12104,13 +12104,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_S_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130822u32
+            .encode(), 319696006u32
         );
     }
     #[test]
     fn decode_S_Add_S_u32() {
         assert_eq!(
-            Instruction::decode(562566278u32), Instruction::S_Add_S_u32 { rd :
+            Instruction::decode(588131462u32), Instruction::S_Add_S_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12120,13 +12120,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_S_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566278u32
+            .encode(), 588131462u32
         );
     }
     #[test]
     fn decode_S_Add_S_u64() {
         assert_eq!(
-            Instruction::decode(831001734u32), Instruction::S_Add_S_u64 { rd :
+            Instruction::decode(856566918u32), Instruction::S_Add_S_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12136,13 +12136,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Add_S_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001734u32
+            .encode(), 856566918u32
         );
     }
     #[test]
     fn decode_S_Div_i8() {
         assert_eq!(
-            Instruction::decode(2173179078u32), Instruction::S_Div_i8 { rd :
+            Instruction::decode(2198744262u32), Instruction::S_Div_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12152,13 +12152,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Div_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179078u32
+            .encode(), 2198744262u32
         );
     }
     #[test]
     fn decode_S_Div_i16() {
         assert_eq!(
-            Instruction::decode(2441614534u32), Instruction::S_Div_i16 { rd :
+            Instruction::decode(2467179718u32), Instruction::S_Div_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12168,13 +12168,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Div_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614534u32
+            .encode(), 2467179718u32
         );
     }
     #[test]
     fn decode_S_Div_i32() {
         assert_eq!(
-            Instruction::decode(2710049990u32), Instruction::S_Div_i32 { rd :
+            Instruction::decode(2735615174u32), Instruction::S_Div_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12184,13 +12184,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Div_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710049990u32
+            .encode(), 2735615174u32
         );
     }
     #[test]
     fn decode_S_Div_i64() {
         assert_eq!(
-            Instruction::decode(2978485446u32), Instruction::S_Div_i64 { rd :
+            Instruction::decode(3004050630u32), Instruction::S_Div_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12200,13 +12200,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Div_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485446u32
+            .encode(), 3004050630u32
         );
     }
     #[test]
     fn decode_S_Div_u8() {
         assert_eq!(
-            Instruction::decode(25695430u32), Instruction::S_Div_u8 { rd :
+            Instruction::decode(51260614u32), Instruction::S_Div_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12216,13 +12216,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Div_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695430u32
+            .encode(), 51260614u32
         );
     }
     #[test]
     fn decode_S_Div_u16() {
         assert_eq!(
-            Instruction::decode(294130886u32), Instruction::S_Div_u16 { rd :
+            Instruction::decode(319696070u32), Instruction::S_Div_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12232,13 +12232,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Div_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294130886u32
+            .encode(), 319696070u32
         );
     }
     #[test]
     fn decode_S_Div_u32() {
         assert_eq!(
-            Instruction::decode(562566342u32), Instruction::S_Div_u32 { rd :
+            Instruction::decode(588131526u32), Instruction::S_Div_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12248,13 +12248,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Div_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566342u32
+            .encode(), 588131526u32
         );
     }
     #[test]
     fn decode_S_Div_u64() {
         assert_eq!(
-            Instruction::decode(831001798u32), Instruction::S_Div_u64 { rd :
+            Instruction::decode(856566982u32), Instruction::S_Div_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12264,13 +12264,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Div_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831001798u32
+            .encode(), 856566982u32
         );
     }
     #[test]
     fn decode_S_Mul_i8() {
         assert_eq!(
-            Instruction::decode(2173179334u32), Instruction::S_Mul_i8 { rd :
+            Instruction::decode(2198744518u32), Instruction::S_Mul_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12280,13 +12280,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179334u32
+            .encode(), 2198744518u32
         );
     }
     #[test]
     fn decode_S_Mul_i16() {
         assert_eq!(
-            Instruction::decode(2441614790u32), Instruction::S_Mul_i16 { rd :
+            Instruction::decode(2467179974u32), Instruction::S_Mul_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12296,13 +12296,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614790u32
+            .encode(), 2467179974u32
         );
     }
     #[test]
     fn decode_S_Mul_i32() {
         assert_eq!(
-            Instruction::decode(2710050246u32), Instruction::S_Mul_i32 { rd :
+            Instruction::decode(2735615430u32), Instruction::S_Mul_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12312,13 +12312,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050246u32
+            .encode(), 2735615430u32
         );
     }
     #[test]
     fn decode_S_Mul_i64() {
         assert_eq!(
-            Instruction::decode(2978485702u32), Instruction::S_Mul_i64 { rd :
+            Instruction::decode(3004050886u32), Instruction::S_Mul_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12328,13 +12328,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485702u32
+            .encode(), 3004050886u32
         );
     }
     #[test]
     fn decode_S_Mul_u8() {
         assert_eq!(
-            Instruction::decode(25695686u32), Instruction::S_Mul_u8 { rd :
+            Instruction::decode(51260870u32), Instruction::S_Mul_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12344,13 +12344,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695686u32
+            .encode(), 51260870u32
         );
     }
     #[test]
     fn decode_S_Mul_u16() {
         assert_eq!(
-            Instruction::decode(294131142u32), Instruction::S_Mul_u16 { rd :
+            Instruction::decode(319696326u32), Instruction::S_Mul_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12360,13 +12360,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131142u32
+            .encode(), 319696326u32
         );
     }
     #[test]
     fn decode_S_Mul_u32() {
         assert_eq!(
-            Instruction::decode(562566598u32), Instruction::S_Mul_u32 { rd :
+            Instruction::decode(588131782u32), Instruction::S_Mul_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12376,13 +12376,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566598u32
+            .encode(), 588131782u32
         );
     }
     #[test]
     fn decode_S_Mul_u64() {
         assert_eq!(
-            Instruction::decode(831002054u32), Instruction::S_Mul_u64 { rd :
+            Instruction::decode(856567238u32), Instruction::S_Mul_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12392,13 +12392,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002054u32
+            .encode(), 856567238u32
         );
     }
     #[test]
     fn decode_S_Neg_i8() {
         assert_eq!(
-            Instruction::decode(2148013574u32), Instruction::S_Neg_i8 { rd :
+            Instruction::decode(2148412934u32), Instruction::S_Neg_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -12406,13 +12406,13 @@ mod tests {
     fn encode_S_Neg_i8() {
         assert_eq!(
             Instruction::S_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148013574u32
+            Register::General_Purpose(8), } .encode(), 2148412934u32
         );
     }
     #[test]
     fn decode_S_Neg_i16() {
         assert_eq!(
-            Instruction::decode(2416449030u32), Instruction::S_Neg_i16 { rd :
+            Instruction::decode(2416848390u32), Instruction::S_Neg_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -12420,13 +12420,13 @@ mod tests {
     fn encode_S_Neg_i16() {
         assert_eq!(
             Instruction::S_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416449030u32
+            Register::General_Purpose(8), } .encode(), 2416848390u32
         );
     }
     #[test]
     fn decode_S_Neg_i32() {
         assert_eq!(
-            Instruction::decode(2684884486u32), Instruction::S_Neg_i32 { rd :
+            Instruction::decode(2685283846u32), Instruction::S_Neg_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -12434,13 +12434,13 @@ mod tests {
     fn encode_S_Neg_i32() {
         assert_eq!(
             Instruction::S_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2684884486u32
+            Register::General_Purpose(8), } .encode(), 2685283846u32
         );
     }
     #[test]
     fn decode_S_Neg_i64() {
         assert_eq!(
-            Instruction::decode(2953319942u32), Instruction::S_Neg_i64 { rd :
+            Instruction::decode(2953719302u32), Instruction::S_Neg_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -12448,13 +12448,13 @@ mod tests {
     fn encode_S_Neg_i64() {
         assert_eq!(
             Instruction::S_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953319942u32
+            Register::General_Purpose(8), } .encode(), 2953719302u32
         );
     }
     #[test]
     fn decode_S_Pow_i8() {
         assert_eq!(
-            Instruction::decode(2173179462u32), Instruction::S_Pow_i8 { rd :
+            Instruction::decode(2198744646u32), Instruction::S_Pow_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12464,13 +12464,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179462u32
+            .encode(), 2198744646u32
         );
     }
     #[test]
     fn decode_S_Pow_i16() {
         assert_eq!(
-            Instruction::decode(2441614918u32), Instruction::S_Pow_i16 { rd :
+            Instruction::decode(2467180102u32), Instruction::S_Pow_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12480,13 +12480,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441614918u32
+            .encode(), 2467180102u32
         );
     }
     #[test]
     fn decode_S_Pow_i32() {
         assert_eq!(
-            Instruction::decode(2710050374u32), Instruction::S_Pow_i32 { rd :
+            Instruction::decode(2735615558u32), Instruction::S_Pow_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12496,13 +12496,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050374u32
+            .encode(), 2735615558u32
         );
     }
     #[test]
     fn decode_S_Pow_i64() {
         assert_eq!(
-            Instruction::decode(2978485830u32), Instruction::S_Pow_i64 { rd :
+            Instruction::decode(3004051014u32), Instruction::S_Pow_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12512,13 +12512,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978485830u32
+            .encode(), 3004051014u32
         );
     }
     #[test]
     fn decode_S_Pow_u8() {
         assert_eq!(
-            Instruction::decode(25695814u32), Instruction::S_Pow_u8 { rd :
+            Instruction::decode(51260998u32), Instruction::S_Pow_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12528,13 +12528,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695814u32
+            .encode(), 51260998u32
         );
     }
     #[test]
     fn decode_S_Pow_u16() {
         assert_eq!(
-            Instruction::decode(294131270u32), Instruction::S_Pow_u16 { rd :
+            Instruction::decode(319696454u32), Instruction::S_Pow_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12544,13 +12544,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131270u32
+            .encode(), 319696454u32
         );
     }
     #[test]
     fn decode_S_Pow_u32() {
         assert_eq!(
-            Instruction::decode(562566726u32), Instruction::S_Pow_u32 { rd :
+            Instruction::decode(588131910u32), Instruction::S_Pow_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12560,13 +12560,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562566726u32
+            .encode(), 588131910u32
         );
     }
     #[test]
     fn decode_S_Pow_u64() {
         assert_eq!(
-            Instruction::decode(831002182u32), Instruction::S_Pow_u64 { rd :
+            Instruction::decode(856567366u32), Instruction::S_Pow_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12576,13 +12576,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002182u32
+            .encode(), 856567366u32
         );
     }
     #[test]
     fn decode_S_Sub_i8() {
         assert_eq!(
-            Instruction::decode(2173179782u32), Instruction::S_Sub_i8 { rd :
+            Instruction::decode(2198744966u32), Instruction::S_Sub_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12592,13 +12592,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179782u32
+            .encode(), 2198744966u32
         );
     }
     #[test]
     fn decode_S_Sub_i16() {
         assert_eq!(
-            Instruction::decode(2441615238u32), Instruction::S_Sub_i16 { rd :
+            Instruction::decode(2467180422u32), Instruction::S_Sub_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12608,13 +12608,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615238u32
+            .encode(), 2467180422u32
         );
     }
     #[test]
     fn decode_S_Sub_i32() {
         assert_eq!(
-            Instruction::decode(2710050694u32), Instruction::S_Sub_i32 { rd :
+            Instruction::decode(2735615878u32), Instruction::S_Sub_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12624,13 +12624,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050694u32
+            .encode(), 2735615878u32
         );
     }
     #[test]
     fn decode_S_Sub_i64() {
         assert_eq!(
-            Instruction::decode(2978486150u32), Instruction::S_Sub_i64 { rd :
+            Instruction::decode(3004051334u32), Instruction::S_Sub_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12640,13 +12640,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978486150u32
+            .encode(), 3004051334u32
         );
     }
     #[test]
     fn decode_S_Sub_u8() {
         assert_eq!(
-            Instruction::decode(25696134u32), Instruction::S_Sub_u8 { rd :
+            Instruction::decode(51261318u32), Instruction::S_Sub_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12656,13 +12656,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25696134u32
+            .encode(), 51261318u32
         );
     }
     #[test]
     fn decode_S_Sub_u16() {
         assert_eq!(
-            Instruction::decode(294131590u32), Instruction::S_Sub_u16 { rd :
+            Instruction::decode(319696774u32), Instruction::S_Sub_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12672,13 +12672,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 294131590u32
+            .encode(), 319696774u32
         );
     }
     #[test]
     fn decode_S_Sub_u32() {
         assert_eq!(
-            Instruction::decode(562567046u32), Instruction::S_Sub_u32 { rd :
+            Instruction::decode(588132230u32), Instruction::S_Sub_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12688,13 +12688,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 562567046u32
+            .encode(), 588132230u32
         );
     }
     #[test]
     fn decode_S_Sub_u64() {
         assert_eq!(
-            Instruction::decode(831002502u32), Instruction::S_Sub_u64 { rd :
+            Instruction::decode(856567686u32), Instruction::S_Sub_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12704,13 +12704,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 831002502u32
+            .encode(), 856567686u32
         );
     }
     #[test]
     fn decode_S_Sub_U_i8() {
         assert_eq!(
-            Instruction::decode(2173179846u32), Instruction::S_Sub_U_i8 { rd :
+            Instruction::decode(2198745030u32), Instruction::S_Sub_U_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12720,13 +12720,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179846u32
+            .encode(), 2198745030u32
         );
     }
     #[test]
     fn decode_S_Sub_U_i16() {
         assert_eq!(
-            Instruction::decode(2441615302u32), Instruction::S_Sub_U_i16 { rd :
+            Instruction::decode(2467180486u32), Instruction::S_Sub_U_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12736,13 +12736,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2441615302u32
+            .encode(), 2467180486u32
         );
     }
     #[test]
     fn decode_S_Sub_U_i32() {
         assert_eq!(
-            Instruction::decode(2710050758u32), Instruction::S_Sub_U_i32 { rd :
+            Instruction::decode(2735615942u32), Instruction::S_Sub_U_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12752,13 +12752,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2710050758u32
+            .encode(), 2735615942u32
         );
     }
     #[test]
     fn decode_S_Sub_U_i64() {
         assert_eq!(
-            Instruction::decode(2978486214u32), Instruction::S_Sub_U_i64 { rd :
+            Instruction::decode(3004051398u32), Instruction::S_Sub_U_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12768,13 +12768,13 @@ mod tests {
         assert_eq!(
             Instruction::S_Sub_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2978486214u32
+            .encode(), 3004051398u32
         );
     }
     #[test]
     fn decode_Abs_f32() {
         assert_eq!(
-            Instruction::decode(3758625799u32), Instruction::Abs_f32 { rd :
+            Instruction::decode(3759025159u32), Instruction::Abs_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -12782,13 +12782,13 @@ mod tests {
     fn encode_Abs_f32() {
         assert_eq!(
             Instruction::Abs_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 3758625799u32
+            Register::General_Purpose(8), } .encode(), 3759025159u32
         );
     }
     #[test]
     fn decode_Abs_f64() {
         assert_eq!(
-            Instruction::decode(4027061255u32), Instruction::Abs_f64 { rd :
+            Instruction::decode(4027460615u32), Instruction::Abs_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -12796,13 +12796,13 @@ mod tests {
     fn encode_Abs_f64() {
         assert_eq!(
             Instruction::Abs_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 4027061255u32
+            Register::General_Purpose(8), } .encode(), 4027460615u32
         );
     }
     #[test]
     fn decode_Add_f32() {
         assert_eq!(
-            Instruction::decode(3783791687u32), Instruction::Add_f32 { rd :
+            Instruction::decode(3809356871u32), Instruction::Add_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12812,13 +12812,13 @@ mod tests {
         assert_eq!(
             Instruction::Add_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 3783791687u32
+            .encode(), 3809356871u32
         );
     }
     #[test]
     fn decode_Add_f64() {
         assert_eq!(
-            Instruction::decode(4052227143u32), Instruction::Add_f64 { rd :
+            Instruction::decode(4077792327u32), Instruction::Add_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12828,13 +12828,13 @@ mod tests {
         assert_eq!(
             Instruction::Add_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 4052227143u32
+            .encode(), 4077792327u32
         );
     }
     #[test]
     fn decode_Div_f32() {
         assert_eq!(
-            Instruction::decode(3783791815u32), Instruction::Div_f32 { rd :
+            Instruction::decode(3809356999u32), Instruction::Div_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12844,13 +12844,13 @@ mod tests {
         assert_eq!(
             Instruction::Div_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 3783791815u32
+            .encode(), 3809356999u32
         );
     }
     #[test]
     fn decode_Div_f64() {
         assert_eq!(
-            Instruction::decode(4052227271u32), Instruction::Div_f64 { rd :
+            Instruction::decode(4077792455u32), Instruction::Div_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12860,13 +12860,13 @@ mod tests {
         assert_eq!(
             Instruction::Div_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 4052227271u32
+            .encode(), 4077792455u32
         );
     }
     #[test]
     fn decode_Div_E_f32() {
         assert_eq!(
-            Instruction::decode(3783791879u32), Instruction::Div_E_f32 { rd :
+            Instruction::decode(3809357063u32), Instruction::Div_E_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12876,13 +12876,13 @@ mod tests {
         assert_eq!(
             Instruction::Div_E_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 3783791879u32
+            .encode(), 3809357063u32
         );
     }
     #[test]
     fn decode_Div_E_f64() {
         assert_eq!(
-            Instruction::decode(4052227335u32), Instruction::Div_E_f64 { rd :
+            Instruction::decode(4077792519u32), Instruction::Div_E_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12892,13 +12892,13 @@ mod tests {
         assert_eq!(
             Instruction::Div_E_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 4052227335u32
+            .encode(), 4077792519u32
         );
     }
     #[test]
     fn decode_Log_f32() {
         assert_eq!(
-            Instruction::decode(3783791943u32), Instruction::Log_f32 { rd :
+            Instruction::decode(3809357127u32), Instruction::Log_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12908,13 +12908,13 @@ mod tests {
         assert_eq!(
             Instruction::Log_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 3783791943u32
+            .encode(), 3809357127u32
         );
     }
     #[test]
     fn decode_Log_f64() {
         assert_eq!(
-            Instruction::decode(4052227399u32), Instruction::Log_f64 { rd :
+            Instruction::decode(4077792583u32), Instruction::Log_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12924,13 +12924,13 @@ mod tests {
         assert_eq!(
             Instruction::Log_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 4052227399u32
+            .encode(), 4077792583u32
         );
     }
     #[test]
     fn decode_Sqrt_f32() {
         assert_eq!(
-            Instruction::decode(3758626183u32), Instruction::Sqrt_f32 { rd :
+            Instruction::decode(3759025543u32), Instruction::Sqrt_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -12938,13 +12938,13 @@ mod tests {
     fn encode_Sqrt_f32() {
         assert_eq!(
             Instruction::Sqrt_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 3758626183u32
+            Register::General_Purpose(8), } .encode(), 3759025543u32
         );
     }
     #[test]
     fn decode_Sqrt_f64() {
         assert_eq!(
-            Instruction::decode(4027061639u32), Instruction::Sqrt_f64 { rd :
+            Instruction::decode(4027460999u32), Instruction::Sqrt_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -12952,13 +12952,13 @@ mod tests {
     fn encode_Sqrt_f64() {
         assert_eq!(
             Instruction::Sqrt_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 4027061639u32
+            Register::General_Purpose(8), } .encode(), 4027460999u32
         );
     }
     #[test]
     fn decode_Mul_f32() {
         assert_eq!(
-            Instruction::decode(3783792071u32), Instruction::Mul_f32 { rd :
+            Instruction::decode(3809357255u32), Instruction::Mul_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12968,13 +12968,13 @@ mod tests {
         assert_eq!(
             Instruction::Mul_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 3783792071u32
+            .encode(), 3809357255u32
         );
     }
     #[test]
     fn decode_Mul_f64() {
         assert_eq!(
-            Instruction::decode(4052227527u32), Instruction::Mul_f64 { rd :
+            Instruction::decode(4077792711u32), Instruction::Mul_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -12984,13 +12984,13 @@ mod tests {
         assert_eq!(
             Instruction::Mul_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 4052227527u32
+            .encode(), 4077792711u32
         );
     }
     #[test]
     fn decode_Neg_f32() {
         assert_eq!(
-            Instruction::decode(3758626311u32), Instruction::Neg_f32 { rd :
+            Instruction::decode(3759025671u32), Instruction::Neg_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -12998,13 +12998,13 @@ mod tests {
     fn encode_Neg_f32() {
         assert_eq!(
             Instruction::Neg_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 3758626311u32
+            Register::General_Purpose(8), } .encode(), 3759025671u32
         );
     }
     #[test]
     fn decode_Neg_f64() {
         assert_eq!(
-            Instruction::decode(4027061767u32), Instruction::Neg_f64 { rd :
+            Instruction::decode(4027461127u32), Instruction::Neg_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -13012,13 +13012,13 @@ mod tests {
     fn encode_Neg_f64() {
         assert_eq!(
             Instruction::Neg_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 4027061767u32
+            Register::General_Purpose(8), } .encode(), 4027461127u32
         );
     }
     #[test]
     fn decode_Pow_f32() {
         assert_eq!(
-            Instruction::decode(3783792199u32), Instruction::Pow_f32 { rd :
+            Instruction::decode(3809357383u32), Instruction::Pow_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -13028,13 +13028,13 @@ mod tests {
         assert_eq!(
             Instruction::Pow_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 3783792199u32
+            .encode(), 3809357383u32
         );
     }
     #[test]
     fn decode_Pow_f64() {
         assert_eq!(
-            Instruction::decode(4052227655u32), Instruction::Pow_f64 { rd :
+            Instruction::decode(4077792839u32), Instruction::Pow_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -13044,13 +13044,13 @@ mod tests {
         assert_eq!(
             Instruction::Pow_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 4052227655u32
+            .encode(), 4077792839u32
         );
     }
     #[test]
     fn decode_Rem_f32() {
         assert_eq!(
-            Instruction::decode(3783792263u32), Instruction::Rem_f32 { rd :
+            Instruction::decode(3809357447u32), Instruction::Rem_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -13060,13 +13060,13 @@ mod tests {
         assert_eq!(
             Instruction::Rem_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 3783792263u32
+            .encode(), 3809357447u32
         );
     }
     #[test]
     fn decode_Rem_f64() {
         assert_eq!(
-            Instruction::decode(4052227719u32), Instruction::Rem_f64 { rd :
+            Instruction::decode(4077792903u32), Instruction::Rem_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -13076,13 +13076,13 @@ mod tests {
         assert_eq!(
             Instruction::Rem_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 4052227719u32
+            .encode(), 4077792903u32
         );
     }
     #[test]
     fn decode_Rem_E_f32() {
         assert_eq!(
-            Instruction::decode(3783792327u32), Instruction::Rem_E_f32 { rd :
+            Instruction::decode(3809357511u32), Instruction::Rem_E_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -13092,13 +13092,13 @@ mod tests {
         assert_eq!(
             Instruction::Rem_E_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 3783792327u32
+            .encode(), 3809357511u32
         );
     }
     #[test]
     fn decode_Rem_E_f64() {
         assert_eq!(
-            Instruction::decode(4052227783u32), Instruction::Rem_E_f64 { rd :
+            Instruction::decode(4077792967u32), Instruction::Rem_E_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -13108,13 +13108,13 @@ mod tests {
         assert_eq!(
             Instruction::Rem_E_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 4052227783u32
+            .encode(), 4077792967u32
         );
     }
     #[test]
     fn decode_Cbrt_f32() {
         assert_eq!(
-            Instruction::decode(3758626631u32), Instruction::Cbrt_f32 { rd :
+            Instruction::decode(3759025991u32), Instruction::Cbrt_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -13122,13 +13122,13 @@ mod tests {
     fn encode_Cbrt_f32() {
         assert_eq!(
             Instruction::Cbrt_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 3758626631u32
+            Register::General_Purpose(8), } .encode(), 3759025991u32
         );
     }
     #[test]
     fn decode_Cbrt_f64() {
         assert_eq!(
-            Instruction::decode(4027062087u32), Instruction::Cbrt_f64 { rd :
+            Instruction::decode(4027461447u32), Instruction::Cbrt_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -13136,13 +13136,13 @@ mod tests {
     fn encode_Cbrt_f64() {
         assert_eq!(
             Instruction::Cbrt_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 4027062087u32
+            Register::General_Purpose(8), } .encode(), 4027461447u32
         );
     }
     #[test]
     fn decode_Sub_f32() {
         assert_eq!(
-            Instruction::decode(3783792519u32), Instruction::Sub_f32 { rd :
+            Instruction::decode(3809357703u32), Instruction::Sub_f32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -13152,13 +13152,13 @@ mod tests {
         assert_eq!(
             Instruction::Sub_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 3783792519u32
+            .encode(), 3809357703u32
         );
     }
     #[test]
     fn decode_Sub_f64() {
         assert_eq!(
-            Instruction::decode(4052227975u32), Instruction::Sub_f64 { rd :
+            Instruction::decode(4077793159u32), Instruction::Sub_f64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
@@ -13168,7 +13168,7 @@ mod tests {
         assert_eq!(
             Instruction::Sub_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 4052227975u32
+            .encode(), 4077793159u32
         );
     }
 }

@@ -50,7 +50,7 @@ fn main() {
                         quote!(rd,),
                         quote!(encode_rd(*rd)),
                         quote!(rd: Register::General_Purpose(5),),
-                        0b000101,
+                        5 + 6,
                     )
                 } else {
                     (quote!(), quote!(), quote!(), quote!(0), quote!(), 0)
@@ -62,7 +62,7 @@ fn main() {
                         quote!(rs1,),
                         quote!(encode_rs1(*rs1)),
                         quote!(rs1: Register::General_Purpose(8),),
-                        0b001000,
+                        8 + 6,
                     )
                 } else {
                     (quote!(), quote!(), quote!(0), quote!(), 0)
@@ -74,7 +74,7 @@ fn main() {
                         quote!(rs2,),
                         quote!(encode_rs2(*rs2)),
                         quote!(rs2: Register::General_Purpose(6),),
-                        0b000110,
+                        6 + 6,
                     )
                 } else {
                     (quote!(), quote!(), quote!(0), quote!(), 0)
@@ -207,7 +207,7 @@ fn main() {
                         quote!(rd,),
                         quote!(encode_rd(*rd)),
                         quote!(rd: Register::General_Purpose(5),),
-                        0b000101,
+                        5 + 6,
                     )
                 } else {
                     (quote!(), quote!(), quote!(), quote!(0), quote!(), 0)
