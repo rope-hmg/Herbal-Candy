@@ -6,5 +6,10 @@ members  = [
 ]
 
 [workspace.dependencies]
-byte_code = { path = "libs/byte_code" }
-logos     = "0.14"
+logos        = { version = "0.14" }
+prettyplease = { version = "0.2"  }
+quote        = { version = "1.0"  }
+syn          = { version = "2.0"  }
+
+byte_code     = { path = "libs/byte_code" }
+instr_codegen = { path = "libs/instr_codegen" }
