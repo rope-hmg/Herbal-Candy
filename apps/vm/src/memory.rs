@@ -1,10 +1,12 @@
 use std::alloc::{alloc_zeroed, dealloc, Layout};
 
-use byte_code::Memory_Address;
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
+pub struct Memory_Address(pub u64);
 
 pub struct Memory {
     bytes: *mut u8,
-    size: usize,
+    size:  usize,
 }
 
 impl Memory {
@@ -12,7 +14,10 @@ impl Memory {
         let layout = Layout::from_size_align(size, 8).unwrap();
         let bytes = unsafe { alloc_zeroed(layout) };
 
-        Self { bytes, size }
+        Self {
+            bytes,
+            size,
+        }
     }
 
     // #[inline(always)]
