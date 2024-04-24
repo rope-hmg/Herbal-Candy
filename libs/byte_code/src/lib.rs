@@ -1,6 +1,7 @@
 #![allow(non_camel_case_types)]
 
-mod encoding;
+pub mod encoding;
+
 mod instruction;
 mod register;
 
