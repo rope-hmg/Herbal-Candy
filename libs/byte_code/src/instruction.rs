@@ -9,8 +9,8 @@ pub enum Instruction {
     Ret,
     Ecall { imm: i16 },
     Break,
-    Jal { rd: Register, rs1: Register, rs2: Register },
-    Jal_R { rd: Register, rs1: Register, rs2: Register },
+    Jal { rd: Register, rs2: Register },
+    Jal_R { rd: Register, rs2: Register },
     Jnz { rd: Register, rs1: Register, rs2: Register },
     Jnz_R { rd: Register, rs1: Register, rs2: Register },
     Jiz { rd: Register, rs1: Register, rs2: Register },
@@ -493,10 +493,10 @@ impl Instruction {
             0u8 if funct == 4u8 => Instruction::Ecall { imm },
             0u8 if funct == 5u8 => Instruction::Break,
             0u8 if funct == 6u8 && s == 0u8 && !rd.is_readonly() => {
-                Instruction::Jal { rd, rs1, rs2 }
+                Instruction::Jal { rd, rs2 }
             }
             0u8 if funct == 6u8 && s == 1u8 && !rd.is_readonly() => {
-                Instruction::Jal_R { rd, rs1, rs2 }
+                Instruction::Jal_R { rd, rs2 }
             }
             0u8 if funct == 7u8 && s == 0u8 && !rd.is_readonly() => {
                 Instruction::Jnz { rd, rs1, rs2 }
@@ -3724,13 +3724,13 @@ impl Instruction {
                 encode_imm(*imm) | 0 | encode_funct(4u8) | encode_op_code(0u8)
             }
             Instruction::Break => 320u32,
-            Instruction::Jal { rd, rs1, rs2 } => {
-                encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(0u8)
+            Instruction::Jal { rd, rs2 } => {
+                encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | 0 | encode_rd(*rd)
+                    | encode_funct(6u8) | encode_op_code(0u8)
             }
-            Instruction::Jal_R { rd, rs1, rs2 } => {
-                encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(0u8)
+            Instruction::Jal_R { rd, rs2 } => {
+                encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | 0 | encode_rd(*rd)
+                    | encode_funct(6u8) | encode_op_code(0u8)
             }
             Instruction::Jnz { rd, rs1, rs2 } => {
                 encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1)
@@ -6000,43 +6000,39 @@ mod tests {
     #[test]
     fn decode_Jal() {
         assert_eq!(
-            Instruction::decode(25695616u32), Instruction::Jal { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(6), }
+            Instruction::decode(25171328u32), Instruction::Jal { rd :
+            Register::General_Purpose(5), rs2 : Register::General_Purpose(6), }
         );
     }
     #[test]
     fn encode_Jal() {
         println!(
-            "{:032b}", Instruction::Jal { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
+            "{:032b}", Instruction::Jal { rd : Register::General_Purpose(5), rs2 :
+            Register::General_Purpose(6), } .encode()
         );
-        println!("{:032b}", 25695616u32);
+        println!("{:032b}", 25171328u32);
         assert_eq!(
-            Instruction::Jal { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695616u32
+            Instruction::Jal { rd : Register::General_Purpose(5), rs2 :
+            Register::General_Purpose(6), } .encode(), 25171328u32
         );
     }
     #[test]
     fn decode_Jal_R() {
         assert_eq!(
-            Instruction::decode(2173179264u32), Instruction::Jal_R { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(6), }
+            Instruction::decode(2172654976u32), Instruction::Jal_R { rd :
+            Register::General_Purpose(5), rs2 : Register::General_Purpose(6), }
         );
     }
     #[test]
     fn encode_Jal_R() {
         println!(
-            "{:032b}", Instruction::Jal_R { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
+            "{:032b}", Instruction::Jal_R { rd : Register::General_Purpose(5), rs2 :
+            Register::General_Purpose(6), } .encode()
         );
-        println!("{:032b}", 2173179264u32);
+        println!("{:032b}", 2172654976u32);
         assert_eq!(
-            Instruction::Jal_R { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179264u32
+            Instruction::Jal_R { rd : Register::General_Purpose(5), rs2 :
+            Register::General_Purpose(6), } .encode(), 2172654976u32
         );
     }
     #[test]
