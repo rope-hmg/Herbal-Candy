@@ -1,6 +1,5 @@
-use instr_codegen::{Instr, INSTRUCTIONS};
+use instr_codegen::{make_name_good, Instr, INSTRUCTIONS};
 use quote::{format_ident, quote};
-use syn::Ident;
 
 // TODO: Figure out how to import `byte_code::encoding::map_size`.
 #[inline(always)]
@@ -14,30 +13,6 @@ pub fn map_size(size: u8) -> u8 {
     }
 }
 
-fn make_name_good(name: &str) -> Ident {
-    let mut good_name = String::with_capacity(name.len());
-
-    let mut seen_an_underscore = true;
-
-    for c in name.bytes() {
-        if c == b'_' {
-            seen_an_underscore = true;
-            good_name.push(c as char);
-        } else if c == b'.' {
-            good_name.push('_');
-        } else {
-            if seen_an_underscore {
-                good_name.push(c.to_ascii_uppercase() as char);
-                seen_an_underscore = false;
-            } else {
-                good_name.push(c as char);
-            }
-        }
-    }
-
-    format_ident!("{}", good_name)
-}
-
 fn main() {
     let mut enum_variants = Vec::new();
     let mut decode_match_arms = Vec::new();
@@ -45,15 +20,12 @@ fn main() {
     let mut test_functs = Vec::new();
 
     for (name, instr) in INSTRUCTIONS.iter() {
-        let instr_ident = make_name_good(name);
+        let instr_ident = format_ident!("{}", make_name_good(name));
         let decode_test_ident = format_ident!("decode_{}", instr_ident);
         let encode_test_ident = format_ident!("encode_{}", instr_ident);
 
         let (enum_definition, decode_match_arm, encode_match_arm, bytes, instr) = match instr {
-            Instr::V_Type {
-                op_code,
-                funct,
-            } => {
+            Instr::V_Type { op_code, funct } => {
                 let encoded = (*funct as u32) << 6 | *op_code as u32;
 
                 (
@@ -296,10 +268,6 @@ fn main() {
 
             #[test]
             fn #encode_test_ident() {
-                println!("{:032b}", #instr.encode());
-                println!("{:032b}", #bytes);
-
-
                 assert_eq!(#instr.encode(), #bytes);
             }
         });

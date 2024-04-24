@@ -16,7 +16,8 @@ pub struct Virtual_Machine<'program> {
 }
 
 pub enum Instruction_Pointer {
-    Goto(u64),
+    Rel(i64),
+    Abs(u64),
     Next,
     Halt,
 }
@@ -67,8 +68,15 @@ impl<'program> Virtual_Machine<'program> {
                     should_continue = false;
                 },
                 Instruction_Pointer::Next => self.increment_register(Register::Instruction_Pointer),
-                Instruction_Pointer::Goto(value) => {
-                    self.set_register(Register::Instruction_Pointer, value);
+                Instruction_Pointer::Abs(absolute_address) => {
+                    self.set_register(Register::Instruction_Pointer, absolute_address);
+                },
+                Instruction_Pointer::Rel(relative_address) => {
+                    let absolute_address = self
+                        .register(Register::Instruction_Pointer)
+                        .wrapping_add_signed(relative_address);
+
+                    self.increment_register_n(Register::Instruction_Pointer, absolute_address);
                 },
             }
 
@@ -125,8 +133,11 @@ impl<'program> Virtual_Machine<'program> {
     }
 
     /// Stores the address of the next instruction in the specified register.
-    fn link(&mut self, rd: Register) {
-        self.set_register(rd, self.register(Register::Instruction_Pointer) + 1);
+    fn link(&mut self) {
+        self.set_register(
+            Register::Link,
+            self.register(Register::Instruction_Pointer) + 1,
+        );
     }
 
     fn load(&mut self, register: Register, address: Memory_Address, bit_width: u8) {
@@ -175,17 +186,6 @@ impl<'program> Virtual_Machine<'program> {
     }
 
     fn execute(&mut self, instruction: Instruction) -> Instruction_Pointer {
-        macro_rules! jump_relative {
-            ($rs2:expr) => {{
-                let relative_address = self.register($rs2);
-                let absolute_address = self
-                    .register(Register::Instruction_Pointer)
-                    .wrapping_add_signed(i64::from_u64(relative_address));
-
-                Instruction_Pointer::Goto(absolute_address)
-            }};
-        }
-
         macro_rules! op1 {
             ($rd:expr, $rs1:expr, ($op:tt), $source:ty) => {{
                 let source_1 = <$source>::from_u64(self.register($rs1));
@@ -244,12 +244,17 @@ impl<'program> Virtual_Machine<'program> {
 
             Call { rs2 } => {
                 self.call();
-                Instruction_Pointer::Goto(self.register(rs2))
+                Instruction_Pointer::Abs(self.register(rs2))
             },
 
-            Call_R { rs2 } => {
+            Callr { rs2 } => {
                 self.call();
-                jump_relative!(rs2)
+                Instruction_Pointer::Rel(i64::from_u64(self.register(rs2)))
+            },
+
+            Calli { imm } => {
+                self.call();
+                Instruction_Pointer::Rel(imm as i64)
             },
 
             Ret => {
@@ -271,47 +276,70 @@ impl<'program> Virtual_Machine<'program> {
                 todo!()
             },
 
-            Jal { rd, rs2 } => {
-                self.link(rd);
-                Instruction_Pointer::Goto(self.register(rs2))
+            Jal { rs2 } => {
+                self.link();
+                Instruction_Pointer::Abs(self.register(rs2))
             },
 
-            Jal_R { rd, rs2 } => {
-                self.link(rd);
-                jump_relative!(rs2)
+            Jalr { rs2 } => {
+                self.link();
+                Instruction_Pointer::Rel(i64::from_u64(self.register(rs2)))
             },
 
-            Jnz { rd, rs1, rs2 } => {
+            Jali { imm } => {
+                self.link();
+                Instruction_Pointer::Rel(imm as i64)
+            },
+
+            Jnz { rs1, rs2 } => {
                 if self.register(rs1) != 0 {
-                    self.link(rd);
-                    Instruction_Pointer::Goto(self.register(rs2))
+                    self.link();
+                    Instruction_Pointer::Abs(self.register(rs2))
                 } else {
                     Instruction_Pointer::Next
                 }
             },
 
-            Jnz_R { rd, rs1, rs2 } => {
+            Jnzr { rs1, rs2 } => {
                 if self.register(rs1) != 0 {
-                    self.link(rd);
-                    jump_relative!(rs2)
+                    self.link();
+                    Instruction_Pointer::Rel(i64::from_u64(self.register(rs2)))
                 } else {
                     Instruction_Pointer::Next
                 }
             },
 
-            Jiz { rd, rs1, rs2 } => {
-                if self.register(rs1) == 0 {
-                    self.link(rd);
-                    Instruction_Pointer::Goto(self.register(rs2))
+            Jnzi { rd, imm } => {
+                if self.register(rd) != 0 {
+                    self.link();
+                    Instruction_Pointer::Rel(imm as i64)
                 } else {
                     Instruction_Pointer::Next
                 }
             },
 
-            Jiz_R { rd, rs1, rs2 } => {
+            Jiz { rs1, rs2 } => {
                 if self.register(rs1) == 0 {
-                    self.link(rd);
-                    jump_relative!(rs2)
+                    self.link();
+                    Instruction_Pointer::Abs(self.register(rs2))
+                } else {
+                    Instruction_Pointer::Next
+                }
+            },
+
+            Jizr { rs1, rs2 } => {
+                if self.register(rs1) == 0 {
+                    self.link();
+                    Instruction_Pointer::Rel(i64::from_u64(self.register(rs2)))
+                } else {
+                    Instruction_Pointer::Next
+                }
+            },
+
+            Jizi { rd, imm } => {
+                if self.register(rd) == 0 {
+                    self.link();
+                    Instruction_Pointer::Rel(imm as i64)
                 } else {
                     Instruction_Pointer::Next
                 }

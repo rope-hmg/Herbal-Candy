@@ -110,19 +110,23 @@ pub enum Instr {
 pub static INSTRUCTIONS: &[(&str, Instr)] = &[
     // Control Flow
     // ------------
-    instr!(v_type => "halt",   0b000000, 0x0),
-    instr!(v_type => "trap",   0b000000, 0x1),
-    instr!(r_type => "call",   0b000000, 0x2, [rs2], { s: 0 }),
-    instr!(r_type => "call_r", 0b000000, 0x2, [rs2], { s: 1 }),
-    instr!(v_type => "ret",    0b000000, 0x3),
-    instr!(i_type => "ecall",  0b000000, 0x4, [imm]),
-    instr!(v_type => "break",  0b000000, 0x5),
-    instr!(r_type => "jal",    0b000000, 0x6, [rs2,      rd], { s: 0 }),
-    instr!(r_type => "jal_r",  0b000000, 0x6, [rs2,      rd], { s: 1 }),
-    instr!(r_type => "jnz",    0b000000, 0x7, [rs2, rs1, rd], { s: 0 }),
-    instr!(r_type => "jnz_r",  0b000000, 0x7, [rs2, rs1, rd], { s: 1 }),
-    instr!(r_type => "jiz",    0b000000, 0x8, [rs2, rs1, rd], { s: 0 }),
-    instr!(r_type => "jiz_r",  0b000000, 0x8, [rs2, rs1, rd], { s: 1 }),
+    instr!(v_type => "halt",  0b000000, 0x0),
+    instr!(v_type => "trap",  0b000000, 0x1),
+    instr!(r_type => "call",  0b000000, 0x2, [rs2], { s: 0 }),
+    instr!(r_type => "callr", 0b000000, 0x2, [rs2], { s: 1 }),
+    instr!(i_type => "calli", 0b000000, 0x3, [imm]          ),
+    instr!(v_type => "ret",   0b000000, 0x4),
+    instr!(i_type => "ecall", 0b000000, 0x5, [imm]),
+    instr!(v_type => "break", 0b000000, 0x6),
+    instr!(r_type => "jal",   0b000000, 0x7, [rs2     ], { s: 0 }),
+    instr!(r_type => "jalr",  0b000000, 0x7, [rs2     ], { s: 1 }),
+    instr!(i_type => "jali",  0b000000, 0x8, [imm     ]          ),
+    instr!(r_type => "jnz",   0b000000, 0x9, [rs2, rs1], { s: 0 }),
+    instr!(r_type => "jnzr",  0b000000, 0x9, [rs2, rs1], { s: 1 }),
+    instr!(i_type => "jnzi",  0b000000, 0xA, [imm, rd ]          ),
+    instr!(r_type => "jiz",   0b000000, 0xB, [rs2, rs1], { s: 0 }),
+    instr!(r_type => "jizr",  0b000000, 0xB, [rs2, rs1], { s: 1 }),
+    instr!(i_type => "jizi",  0b000000, 0xC, [imm, rd ]          ),
     // Memory
     // ------
     instr!(r_type => "load",   0b000001, 0x0, [size, rs1, rd], {}),
@@ -594,3 +598,27 @@ pub static INSTRUCTIONS: &[(&str, Instr)] = &[
     instr!(r_type => "sub.f32",   0b000111, 0xE, [rs2, rs1, rd], { size: 32, s: 1, f: 1 }),
     instr!(r_type => "sub.f64",   0b000111, 0xE, [rs2, rs1, rd], { size: 64, s: 1, f: 1 }),
 ];
+
+pub fn make_name_good(name: &str) -> String {
+    let mut good_name = String::with_capacity(name.len());
+
+    let mut seen_an_underscore = true;
+
+    for c in name.bytes() {
+        if c == b'_' {
+            seen_an_underscore = true;
+            good_name.push(c as char);
+        } else if c == b'.' {
+            good_name.push('_');
+        } else {
+            if seen_an_underscore {
+                good_name.push(c.to_ascii_uppercase() as char);
+                seen_an_underscore = false;
+            } else {
+                good_name.push(c as char);
+            }
+        }
+    }
+
+    good_name
+}

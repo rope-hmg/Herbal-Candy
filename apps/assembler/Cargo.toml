@@ -8,3 +8,9 @@ edition = "2021"
 [dependencies]
 byte_code = { workspace = true }
 logos     = { workspace = true }
+
+[build-dependencies]
+instr_codegen = { workspace = true }
+prettyplease  = { workspace = true }
+quote         = { workspace = true }
+syn           = { workspace = true }

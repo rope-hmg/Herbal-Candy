@@ -11,6 +11,8 @@ pub enum Register {
     Stack_Pointer,
     /// readonly, stores the memory address of the top of the frame
     Frame_Pointer,
+    /// readonly, stores the code offset of the instruction after the last jump
+    Link,
 
     /// General Purpose Registers
     General_Purpose(u8),
@@ -24,6 +26,7 @@ impl Register {
             2 => Register::Instruction_Pointer,
             3 => Register::Stack_Pointer,
             4 => Register::Frame_Pointer,
+            5 => Register::Link,
             _ => Register::General_Purpose(index),
         }
     }
@@ -35,6 +38,7 @@ impl Register {
             Register::Instruction_Pointer => 2,
             Register::Stack_Pointer => 3,
             Register::Frame_Pointer => 4,
+            Register::Link => 5,
             Register::General_Purpose(index) => index as usize,
         }
     }

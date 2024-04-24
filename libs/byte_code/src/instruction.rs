@@ -5,16 +5,20 @@ pub enum Instruction {
     Halt,
     Trap,
     Call { rs2: Register },
-    Call_R { rs2: Register },
+    Callr { rs2: Register },
+    Calli { imm: i16 },
     Ret,
     Ecall { imm: i16 },
     Break,
-    Jal { rd: Register, rs2: Register },
-    Jal_R { rd: Register, rs2: Register },
-    Jnz { rd: Register, rs1: Register, rs2: Register },
-    Jnz_R { rd: Register, rs1: Register, rs2: Register },
-    Jiz { rd: Register, rs1: Register, rs2: Register },
-    Jiz_R { rd: Register, rs1: Register, rs2: Register },
+    Jal { rs2: Register },
+    Jalr { rs2: Register },
+    Jali { imm: i16 },
+    Jnz { rs1: Register, rs2: Register },
+    Jnzr { rs1: Register, rs2: Register },
+    Jnzi { rd: Register, imm: i16 },
+    Jiz { rs1: Register, rs2: Register },
+    Jizr { rs1: Register, rs2: Register },
+    Jizi { rd: Register, imm: i16 },
     Load { rd: Register, rs1: Register, size: u8 },
     Loadi { rd: Register, imm: i16 },
     Store { rd: Register, rs1: Register, size: u8 },
@@ -488,28 +492,20 @@ impl Instruction {
             0u8 if funct == 0u8 => Instruction::Halt,
             0u8 if funct == 1u8 => Instruction::Trap,
             0u8 if funct == 2u8 && s == 0u8 => Instruction::Call { rs2 },
-            0u8 if funct == 2u8 && s == 1u8 => Instruction::Call_R { rs2 },
-            0u8 if funct == 3u8 => Instruction::Ret,
-            0u8 if funct == 4u8 => Instruction::Ecall { imm },
-            0u8 if funct == 5u8 => Instruction::Break,
-            0u8 if funct == 6u8 && s == 0u8 && !rd.is_readonly() => {
-                Instruction::Jal { rd, rs2 }
-            }
-            0u8 if funct == 6u8 && s == 1u8 && !rd.is_readonly() => {
-                Instruction::Jal_R { rd, rs2 }
-            }
-            0u8 if funct == 7u8 && s == 0u8 && !rd.is_readonly() => {
-                Instruction::Jnz { rd, rs1, rs2 }
-            }
-            0u8 if funct == 7u8 && s == 1u8 && !rd.is_readonly() => {
-                Instruction::Jnz_R { rd, rs1, rs2 }
-            }
-            0u8 if funct == 8u8 && s == 0u8 && !rd.is_readonly() => {
-                Instruction::Jiz { rd, rs1, rs2 }
-            }
-            0u8 if funct == 8u8 && s == 1u8 && !rd.is_readonly() => {
-                Instruction::Jiz_R { rd, rs1, rs2 }
-            }
+            0u8 if funct == 2u8 && s == 1u8 => Instruction::Callr { rs2 },
+            0u8 if funct == 3u8 => Instruction::Calli { imm },
+            0u8 if funct == 4u8 => Instruction::Ret,
+            0u8 if funct == 5u8 => Instruction::Ecall { imm },
+            0u8 if funct == 6u8 => Instruction::Break,
+            0u8 if funct == 7u8 && s == 0u8 => Instruction::Jal { rs2 },
+            0u8 if funct == 7u8 && s == 1u8 => Instruction::Jalr { rs2 },
+            0u8 if funct == 8u8 => Instruction::Jali { imm },
+            0u8 if funct == 9u8 && s == 0u8 => Instruction::Jnz { rs1, rs2 },
+            0u8 if funct == 9u8 && s == 1u8 => Instruction::Jnzr { rs1, rs2 },
+            0u8 if funct == 10u8 && !rd.is_readonly() => Instruction::Jnzi { rd, imm },
+            0u8 if funct == 11u8 && s == 0u8 => Instruction::Jiz { rs1, rs2 },
+            0u8 if funct == 11u8 && s == 1u8 => Instruction::Jizr { rs1, rs2 },
+            0u8 if funct == 12u8 && !rd.is_readonly() => Instruction::Jizi { rd, imm },
             1u8 if funct == 0u8 && !rd.is_readonly() => {
                 Instruction::Load { rd, rs1, size }
             }
@@ -3715,38 +3711,52 @@ impl Instruction {
                 encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | 0 | 0 | encode_funct(2u8)
                     | encode_op_code(0u8)
             }
-            Instruction::Call_R { rs2 } => {
+            Instruction::Callr { rs2 } => {
                 encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | 0 | 0 | encode_funct(2u8)
                     | encode_op_code(0u8)
             }
-            Instruction::Ret => 192u32,
+            Instruction::Calli { imm } => {
+                encode_imm(*imm) | 0 | encode_funct(3u8) | encode_op_code(0u8)
+            }
+            Instruction::Ret => 256u32,
             Instruction::Ecall { imm } => {
-                encode_imm(*imm) | 0 | encode_funct(4u8) | encode_op_code(0u8)
+                encode_imm(*imm) | 0 | encode_funct(5u8) | encode_op_code(0u8)
             }
-            Instruction::Break => 320u32,
-            Instruction::Jal { rd, rs2 } => {
-                encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | 0 | encode_rd(*rd)
-                    | encode_funct(6u8) | encode_op_code(0u8)
+            Instruction::Break => 384u32,
+            Instruction::Jal { rs2 } => {
+                encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | 0 | 0 | encode_funct(7u8)
+                    | encode_op_code(0u8)
             }
-            Instruction::Jal_R { rd, rs2 } => {
-                encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | 0 | encode_rd(*rd)
-                    | encode_funct(6u8) | encode_op_code(0u8)
+            Instruction::Jalr { rs2 } => {
+                encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | 0 | 0 | encode_funct(7u8)
+                    | encode_op_code(0u8)
             }
-            Instruction::Jnz { rd, rs1, rs2 } => {
-                encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(7u8) | encode_op_code(0u8)
+            Instruction::Jali { imm } => {
+                encode_imm(*imm) | 0 | encode_funct(8u8) | encode_op_code(0u8)
             }
-            Instruction::Jnz_R { rd, rs1, rs2 } => {
-                encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(7u8) | encode_op_code(0u8)
+            Instruction::Jnz { rs1, rs2 } => {
+                encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1) | 0
+                    | encode_funct(9u8) | encode_op_code(0u8)
             }
-            Instruction::Jiz { rd, rs1, rs2 } => {
-                encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(0u8)
+            Instruction::Jnzr { rs1, rs2 } => {
+                encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1) | 0
+                    | encode_funct(9u8) | encode_op_code(0u8)
             }
-            Instruction::Jiz_R { rd, rs1, rs2 } => {
-                encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(0u8)
+            Instruction::Jnzi { rd, imm } => {
+                encode_imm(*imm) | encode_rd(*rd) | encode_funct(10u8)
+                    | encode_op_code(0u8)
+            }
+            Instruction::Jiz { rs1, rs2 } => {
+                encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1) | 0
+                    | encode_funct(11u8) | encode_op_code(0u8)
+            }
+            Instruction::Jizr { rs1, rs2 } => {
+                encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1) | 0
+                    | encode_funct(11u8) | encode_op_code(0u8)
+            }
+            Instruction::Jizi { rd, imm } => {
+                encode_imm(*imm) | encode_rd(*rd) | encode_funct(12u8)
+                    | encode_op_code(0u8)
             }
             Instruction::Load { rd, rs1, size } => {
                 0 | 0 | encode_size(*size) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
@@ -5913,8 +5923,6 @@ mod tests {
     }
     #[test]
     fn encode_Halt() {
-        println!("{:032b}", Instruction::Halt.encode());
-        println!("{:032b}", 0u32);
         assert_eq!(Instruction::Halt.encode(), 0u32);
     }
     #[test]
@@ -5923,8 +5931,6 @@ mod tests {
     }
     #[test]
     fn encode_Trap() {
-        println!("{:032b}", Instruction::Trap.encode());
-        println!("{:032b}", 64u32);
         assert_eq!(Instruction::Trap.encode(), 64u32);
     }
     #[test]
@@ -5936,187 +5942,181 @@ mod tests {
     }
     #[test]
     fn encode_Call() {
-        println!(
-            "{:032b}", Instruction::Call { rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 25165952u32);
         assert_eq!(
             Instruction::Call { rs2 : Register::General_Purpose(6), } .encode(),
             25165952u32
         );
     }
     #[test]
-    fn decode_Call_R() {
+    fn decode_Callr() {
         assert_eq!(
-            Instruction::decode(2172649600u32), Instruction::Call_R { rs2 :
+            Instruction::decode(2172649600u32), Instruction::Callr { rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Call_R() {
-        println!(
-            "{:032b}", Instruction::Call_R { rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2172649600u32);
+    fn encode_Callr() {
         assert_eq!(
-            Instruction::Call_R { rs2 : Register::General_Purpose(6), } .encode(),
+            Instruction::Callr { rs2 : Register::General_Purpose(6), } .encode(),
             2172649600u32
         );
     }
     #[test]
+    fn decode_Calli() {
+        assert_eq!(
+            Instruction::decode(4293918912u32), Instruction::Calli { imm : - 16, }
+        );
+    }
+    #[test]
+    fn encode_Calli() {
+        assert_eq!(Instruction::Calli { imm : - 16, } .encode(), 4293918912u32);
+    }
+    #[test]
     fn decode_Ret() {
-        assert_eq!(Instruction::decode(192u32), Instruction::Ret);
+        assert_eq!(Instruction::decode(256u32), Instruction::Ret);
     }
     #[test]
     fn encode_Ret() {
-        println!("{:032b}", Instruction::Ret.encode());
-        println!("{:032b}", 192u32);
-        assert_eq!(Instruction::Ret.encode(), 192u32);
+        assert_eq!(Instruction::Ret.encode(), 256u32);
     }
     #[test]
     fn decode_Ecall() {
         assert_eq!(
-            Instruction::decode(4293918976u32), Instruction::Ecall { imm : - 16, }
+            Instruction::decode(4293919040u32), Instruction::Ecall { imm : - 16, }
         );
     }
     #[test]
     fn encode_Ecall() {
-        println!("{:032b}", Instruction::Ecall { imm : - 16, } .encode());
-        println!("{:032b}", 4293918976u32);
-        assert_eq!(Instruction::Ecall { imm : - 16, } .encode(), 4293918976u32);
+        assert_eq!(Instruction::Ecall { imm : - 16, } .encode(), 4293919040u32);
     }
     #[test]
     fn decode_Break() {
-        assert_eq!(Instruction::decode(320u32), Instruction::Break);
+        assert_eq!(Instruction::decode(384u32), Instruction::Break);
     }
     #[test]
     fn encode_Break() {
-        println!("{:032b}", Instruction::Break.encode());
-        println!("{:032b}", 320u32);
-        assert_eq!(Instruction::Break.encode(), 320u32);
+        assert_eq!(Instruction::Break.encode(), 384u32);
     }
     #[test]
     fn decode_Jal() {
         assert_eq!(
-            Instruction::decode(25171328u32), Instruction::Jal { rd :
-            Register::General_Purpose(5), rs2 : Register::General_Purpose(6), }
+            Instruction::decode(25166272u32), Instruction::Jal { rs2 :
+            Register::General_Purpose(6), }
         );
     }
     #[test]
     fn encode_Jal() {
-        println!(
-            "{:032b}", Instruction::Jal { rd : Register::General_Purpose(5), rs2 :
-            Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25171328u32);
         assert_eq!(
-            Instruction::Jal { rd : Register::General_Purpose(5), rs2 :
-            Register::General_Purpose(6), } .encode(), 25171328u32
+            Instruction::Jal { rs2 : Register::General_Purpose(6), } .encode(),
+            25166272u32
         );
     }
     #[test]
-    fn decode_Jal_R() {
+    fn decode_Jalr() {
         assert_eq!(
-            Instruction::decode(2172654976u32), Instruction::Jal_R { rd :
-            Register::General_Purpose(5), rs2 : Register::General_Purpose(6), }
+            Instruction::decode(2172649920u32), Instruction::Jalr { rs2 :
+            Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Jal_R() {
-        println!(
-            "{:032b}", Instruction::Jal_R { rd : Register::General_Purpose(5), rs2 :
-            Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2172654976u32);
+    fn encode_Jalr() {
         assert_eq!(
-            Instruction::Jal_R { rd : Register::General_Purpose(5), rs2 :
-            Register::General_Purpose(6), } .encode(), 2172654976u32
+            Instruction::Jalr { rs2 : Register::General_Purpose(6), } .encode(),
+            2172649920u32
         );
+    }
+    #[test]
+    fn decode_Jali() {
+        assert_eq!(
+            Instruction::decode(4293919232u32), Instruction::Jali { imm : - 16, }
+        );
+    }
+    #[test]
+    fn encode_Jali() {
+        assert_eq!(Instruction::Jali { imm : - 16, } .encode(), 4293919232u32);
     }
     #[test]
     fn decode_Jnz() {
         assert_eq!(
-            Instruction::decode(25695680u32), Instruction::Jnz { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(6), }
+            Instruction::decode(25690688u32), Instruction::Jnz { rs1 :
+            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
         );
     }
     #[test]
     fn encode_Jnz() {
-        println!(
-            "{:032b}", Instruction::Jnz { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695680u32);
         assert_eq!(
-            Instruction::Jnz { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695680u32
+            Instruction::Jnz { rs1 : Register::General_Purpose(8), rs2 :
+            Register::General_Purpose(6), } .encode(), 25690688u32
         );
     }
     #[test]
-    fn decode_Jnz_R() {
+    fn decode_Jnzr() {
         assert_eq!(
-            Instruction::decode(2173179328u32), Instruction::Jnz_R { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(6), }
+            Instruction::decode(2173174336u32), Instruction::Jnzr { rs1 :
+            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Jnz_R() {
-        println!(
-            "{:032b}", Instruction::Jnz_R { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179328u32);
+    fn encode_Jnzr() {
         assert_eq!(
-            Instruction::Jnz_R { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179328u32
+            Instruction::Jnzr { rs1 : Register::General_Purpose(8), rs2 :
+            Register::General_Purpose(6), } .encode(), 2173174336u32
+        );
+    }
+    #[test]
+    fn decode_Jnzi() {
+        assert_eq!(
+            Instruction::decode(4293924480u32), Instruction::Jnzi { rd :
+            Register::General_Purpose(5), imm : - 16, }
+        );
+    }
+    #[test]
+    fn encode_Jnzi() {
+        assert_eq!(
+            Instruction::Jnzi { rd : Register::General_Purpose(5), imm : - 16, }
+            .encode(), 4293924480u32
         );
     }
     #[test]
     fn decode_Jiz() {
         assert_eq!(
-            Instruction::decode(25695744u32), Instruction::Jiz { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(6), }
+            Instruction::decode(25690816u32), Instruction::Jiz { rs1 :
+            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
         );
     }
     #[test]
     fn encode_Jiz() {
-        println!(
-            "{:032b}", Instruction::Jiz { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695744u32);
         assert_eq!(
-            Instruction::Jiz { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 25695744u32
+            Instruction::Jiz { rs1 : Register::General_Purpose(8), rs2 :
+            Register::General_Purpose(6), } .encode(), 25690816u32
         );
     }
     #[test]
-    fn decode_Jiz_R() {
+    fn decode_Jizr() {
         assert_eq!(
-            Instruction::decode(2173179392u32), Instruction::Jiz_R { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(6), }
+            Instruction::decode(2173174464u32), Instruction::Jizr { rs1 :
+            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Jiz_R() {
-        println!(
-            "{:032b}", Instruction::Jiz_R { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179392u32);
+    fn encode_Jizr() {
         assert_eq!(
-            Instruction::Jiz_R { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode(), 2173179392u32
+            Instruction::Jizr { rs1 : Register::General_Purpose(8), rs2 :
+            Register::General_Purpose(6), } .encode(), 2173174464u32
+        );
+    }
+    #[test]
+    fn decode_Jizi() {
+        assert_eq!(
+            Instruction::decode(4293924608u32), Instruction::Jizi { rd :
+            Register::General_Purpose(5), imm : - 16, }
+        );
+    }
+    #[test]
+    fn encode_Jizi() {
+        assert_eq!(
+            Instruction::Jizi { rd : Register::General_Purpose(5), imm : - 16, }
+            .encode(), 4293924608u32
         );
     }
     #[test]
@@ -6129,11 +6129,6 @@ mod tests {
     }
     #[test]
     fn encode_Load() {
-        println!(
-            "{:032b}", Instruction::Load { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), size : 64u8, } .encode()
-        );
-        println!("{:032b}", 805835777u32);
         assert_eq!(
             Instruction::Load { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), size : 64u8, } .encode(), 805835777u32
@@ -6148,11 +6143,6 @@ mod tests {
     }
     #[test]
     fn encode_Loadi() {
-        println!(
-            "{:032b}", Instruction::Loadi { rd : Register::General_Purpose(5), imm : -
-            16, } .encode()
-        );
-        println!("{:032b}", 4293923905u32);
         assert_eq!(
             Instruction::Loadi { rd : Register::General_Purpose(5), imm : - 16, }
             .encode(), 4293923905u32
@@ -6168,11 +6158,6 @@ mod tests {
     }
     #[test]
     fn encode_Store() {
-        println!(
-            "{:032b}", Instruction::Store { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), size : 64u8, } .encode()
-        );
-        println!("{:032b}", 805835905u32);
         assert_eq!(
             Instruction::Store { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), size : 64u8, } .encode(), 805835905u32
@@ -6187,11 +6172,6 @@ mod tests {
     }
     #[test]
     fn encode_Storei() {
-        println!(
-            "{:032b}", Instruction::Storei { rd : Register::General_Purpose(5), imm : -
-            16, } .encode()
-        );
-        println!("{:032b}", 4293924033u32);
         assert_eq!(
             Instruction::Storei { rd : Register::General_Purpose(5), imm : - 16, }
             .encode(), 4293924033u32
@@ -6206,11 +6186,6 @@ mod tests {
     }
     #[test]
     fn encode_Move() {
-        println!(
-            "{:032b}", Instruction::Move { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 529665u32);
         assert_eq!(
             Instruction::Move { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 529665u32
@@ -6225,10 +6200,6 @@ mod tests {
     }
     #[test]
     fn encode_Push() {
-        println!(
-            "{:032b}", Instruction::Push { rd : Register::General_Purpose(5), } .encode()
-        );
-        println!("{:032b}", 5441u32);
         assert_eq!(
             Instruction::Push { rd : Register::General_Purpose(5), } .encode(), 5441u32
         );
@@ -6241,8 +6212,6 @@ mod tests {
     }
     #[test]
     fn encode_Pushi() {
-        println!("{:032b}", Instruction::Pushi { imm : - 16, } .encode());
-        println!("{:032b}", 4293919105u32);
         assert_eq!(Instruction::Pushi { imm : - 16, } .encode(), 4293919105u32);
     }
     #[test]
@@ -6254,10 +6223,6 @@ mod tests {
     }
     #[test]
     fn encode_Pop() {
-        println!(
-            "{:032b}", Instruction::Pop { rd : Register::General_Purpose(5), } .encode()
-        );
-        println!("{:032b}", 5569u32);
         assert_eq!(
             Instruction::Pop { rd : Register::General_Purpose(5), } .encode(), 5569u32
         );
@@ -6272,11 +6237,6 @@ mod tests {
     }
     #[test]
     fn encode_Ie() {
-        println!(
-            "{:032b}", Instruction::Ie { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695234u32);
         assert_eq!(
             Instruction::Ie { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6293,11 +6253,6 @@ mod tests {
     }
     #[test]
     fn encode_Ie_f32() {
-        println!(
-            "{:032b}", Instruction::Ie_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1636307970u32);
         assert_eq!(
             Instruction::Ie_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6314,11 +6269,6 @@ mod tests {
     }
     #[test]
     fn encode_Ie_f64() {
-        println!(
-            "{:032b}", Instruction::Ie_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1904743426u32);
         assert_eq!(
             Instruction::Ie_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6335,11 +6285,6 @@ mod tests {
     }
     #[test]
     fn encode_Ne() {
-        println!(
-            "{:032b}", Instruction::Ne { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695298u32);
         assert_eq!(
             Instruction::Ne { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6356,11 +6301,6 @@ mod tests {
     }
     #[test]
     fn encode_Ne_f32() {
-        println!(
-            "{:032b}", Instruction::Ne_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1636308034u32);
         assert_eq!(
             Instruction::Ne_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6377,11 +6317,6 @@ mod tests {
     }
     #[test]
     fn encode_Ne_f64() {
-        println!(
-            "{:032b}", Instruction::Ne_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1904743490u32);
         assert_eq!(
             Instruction::Ne_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6398,11 +6333,6 @@ mod tests {
     }
     #[test]
     fn encode_Lt() {
-        println!(
-            "{:032b}", Instruction::Lt { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695362u32);
         assert_eq!(
             Instruction::Lt { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6419,11 +6349,6 @@ mod tests {
     }
     #[test]
     fn encode_Lt_f32() {
-        println!(
-            "{:032b}", Instruction::Lt_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1636308098u32);
         assert_eq!(
             Instruction::Lt_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6440,11 +6365,6 @@ mod tests {
     }
     #[test]
     fn encode_Lt_f64() {
-        println!(
-            "{:032b}", Instruction::Lt_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1904743554u32);
         assert_eq!(
             Instruction::Lt_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6461,11 +6381,6 @@ mod tests {
     }
     #[test]
     fn encode_Le() {
-        println!(
-            "{:032b}", Instruction::Le { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695426u32);
         assert_eq!(
             Instruction::Le { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6482,11 +6397,6 @@ mod tests {
     }
     #[test]
     fn encode_Le_f32() {
-        println!(
-            "{:032b}", Instruction::Le_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1636308162u32);
         assert_eq!(
             Instruction::Le_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6503,11 +6413,6 @@ mod tests {
     }
     #[test]
     fn encode_Le_f64() {
-        println!(
-            "{:032b}", Instruction::Le_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1904743618u32);
         assert_eq!(
             Instruction::Le_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6524,11 +6429,6 @@ mod tests {
     }
     #[test]
     fn encode_Gt() {
-        println!(
-            "{:032b}", Instruction::Gt { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695490u32);
         assert_eq!(
             Instruction::Gt { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6545,11 +6445,6 @@ mod tests {
     }
     #[test]
     fn encode_Gt_f32() {
-        println!(
-            "{:032b}", Instruction::Gt_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1636308226u32);
         assert_eq!(
             Instruction::Gt_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6566,11 +6461,6 @@ mod tests {
     }
     #[test]
     fn encode_Gt_f64() {
-        println!(
-            "{:032b}", Instruction::Gt_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1904743682u32);
         assert_eq!(
             Instruction::Gt_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6587,11 +6477,6 @@ mod tests {
     }
     #[test]
     fn encode_Ge() {
-        println!(
-            "{:032b}", Instruction::Ge { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695554u32);
         assert_eq!(
             Instruction::Ge { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6608,11 +6493,6 @@ mod tests {
     }
     #[test]
     fn encode_Ge_f32() {
-        println!(
-            "{:032b}", Instruction::Ge_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1636308290u32);
         assert_eq!(
             Instruction::Ge_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6629,11 +6509,6 @@ mod tests {
     }
     #[test]
     fn encode_Ge_f64() {
-        println!(
-            "{:032b}", Instruction::Ge_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 1904743746u32);
         assert_eq!(
             Instruction::Ge_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6650,11 +6525,6 @@ mod tests {
     }
     #[test]
     fn encode_And_i8() {
-        println!(
-            "{:032b}", Instruction::And_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173178883u32);
         assert_eq!(
             Instruction::And_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6671,11 +6541,6 @@ mod tests {
     }
     #[test]
     fn encode_And_i16() {
-        println!(
-            "{:032b}", Instruction::And_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614339u32);
         assert_eq!(
             Instruction::And_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6692,11 +6557,6 @@ mod tests {
     }
     #[test]
     fn encode_And_i32() {
-        println!(
-            "{:032b}", Instruction::And_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710049795u32);
         assert_eq!(
             Instruction::And_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6713,11 +6573,6 @@ mod tests {
     }
     #[test]
     fn encode_And_i64() {
-        println!(
-            "{:032b}", Instruction::And_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485251u32);
         assert_eq!(
             Instruction::And_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6734,11 +6589,6 @@ mod tests {
     }
     #[test]
     fn encode_And_u8() {
-        println!(
-            "{:032b}", Instruction::And_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695235u32);
         assert_eq!(
             Instruction::And_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6755,11 +6605,6 @@ mod tests {
     }
     #[test]
     fn encode_And_u16() {
-        println!(
-            "{:032b}", Instruction::And_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294130691u32);
         assert_eq!(
             Instruction::And_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6776,11 +6621,6 @@ mod tests {
     }
     #[test]
     fn encode_And_u32() {
-        println!(
-            "{:032b}", Instruction::And_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566147u32);
         assert_eq!(
             Instruction::And_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6797,11 +6637,6 @@ mod tests {
     }
     #[test]
     fn encode_And_u64() {
-        println!(
-            "{:032b}", Instruction::And_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001603u32);
         assert_eq!(
             Instruction::And_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6818,11 +6653,6 @@ mod tests {
     }
     #[test]
     fn encode_Or_i8() {
-        println!(
-            "{:032b}", Instruction::Or_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173178947u32);
         assert_eq!(
             Instruction::Or_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6839,11 +6669,6 @@ mod tests {
     }
     #[test]
     fn encode_Or_i16() {
-        println!(
-            "{:032b}", Instruction::Or_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614403u32);
         assert_eq!(
             Instruction::Or_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6860,11 +6685,6 @@ mod tests {
     }
     #[test]
     fn encode_Or_i32() {
-        println!(
-            "{:032b}", Instruction::Or_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710049859u32);
         assert_eq!(
             Instruction::Or_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6881,11 +6701,6 @@ mod tests {
     }
     #[test]
     fn encode_Or_i64() {
-        println!(
-            "{:032b}", Instruction::Or_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485315u32);
         assert_eq!(
             Instruction::Or_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6902,11 +6717,6 @@ mod tests {
     }
     #[test]
     fn encode_Or_u8() {
-        println!(
-            "{:032b}", Instruction::Or_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695299u32);
         assert_eq!(
             Instruction::Or_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6923,11 +6733,6 @@ mod tests {
     }
     #[test]
     fn encode_Or_u16() {
-        println!(
-            "{:032b}", Instruction::Or_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294130755u32);
         assert_eq!(
             Instruction::Or_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6944,11 +6749,6 @@ mod tests {
     }
     #[test]
     fn encode_Or_u32() {
-        println!(
-            "{:032b}", Instruction::Or_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566211u32);
         assert_eq!(
             Instruction::Or_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6965,11 +6765,6 @@ mod tests {
     }
     #[test]
     fn encode_Or_u64() {
-        println!(
-            "{:032b}", Instruction::Or_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001667u32);
         assert_eq!(
             Instruction::Or_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -6986,11 +6781,6 @@ mod tests {
     }
     #[test]
     fn encode_Xor_i8() {
-        println!(
-            "{:032b}", Instruction::Xor_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179011u32);
         assert_eq!(
             Instruction::Xor_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7007,11 +6797,6 @@ mod tests {
     }
     #[test]
     fn encode_Xor_i16() {
-        println!(
-            "{:032b}", Instruction::Xor_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614467u32);
         assert_eq!(
             Instruction::Xor_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7028,11 +6813,6 @@ mod tests {
     }
     #[test]
     fn encode_Xor_i32() {
-        println!(
-            "{:032b}", Instruction::Xor_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710049923u32);
         assert_eq!(
             Instruction::Xor_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7049,11 +6829,6 @@ mod tests {
     }
     #[test]
     fn encode_Xor_i64() {
-        println!(
-            "{:032b}", Instruction::Xor_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485379u32);
         assert_eq!(
             Instruction::Xor_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7070,11 +6845,6 @@ mod tests {
     }
     #[test]
     fn encode_Xor_u8() {
-        println!(
-            "{:032b}", Instruction::Xor_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695363u32);
         assert_eq!(
             Instruction::Xor_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7091,11 +6861,6 @@ mod tests {
     }
     #[test]
     fn encode_Xor_u16() {
-        println!(
-            "{:032b}", Instruction::Xor_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294130819u32);
         assert_eq!(
             Instruction::Xor_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7112,11 +6877,6 @@ mod tests {
     }
     #[test]
     fn encode_Xor_u32() {
-        println!(
-            "{:032b}", Instruction::Xor_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566275u32);
         assert_eq!(
             Instruction::Xor_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7133,11 +6893,6 @@ mod tests {
     }
     #[test]
     fn encode_Xor_u64() {
-        println!(
-            "{:032b}", Instruction::Xor_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001731u32);
         assert_eq!(
             Instruction::Xor_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7153,11 +6908,6 @@ mod tests {
     }
     #[test]
     fn encode_Not_i8() {
-        println!(
-            "{:032b}", Instruction::Not_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013251u32);
         assert_eq!(
             Instruction::Not_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013251u32
@@ -7172,11 +6922,6 @@ mod tests {
     }
     #[test]
     fn encode_Not_i16() {
-        println!(
-            "{:032b}", Instruction::Not_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416448707u32);
         assert_eq!(
             Instruction::Not_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416448707u32
@@ -7191,11 +6936,6 @@ mod tests {
     }
     #[test]
     fn encode_Not_i32() {
-        println!(
-            "{:032b}", Instruction::Not_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884163u32);
         assert_eq!(
             Instruction::Not_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884163u32
@@ -7210,11 +6950,6 @@ mod tests {
     }
     #[test]
     fn encode_Not_i64() {
-        println!(
-            "{:032b}", Instruction::Not_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953319619u32);
         assert_eq!(
             Instruction::Not_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953319619u32
@@ -7229,11 +6964,6 @@ mod tests {
     }
     #[test]
     fn encode_Not_u8() {
-        println!(
-            "{:032b}", Instruction::Not_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 529603u32);
         assert_eq!(
             Instruction::Not_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 529603u32
@@ -7248,11 +6978,6 @@ mod tests {
     }
     #[test]
     fn encode_Not_u16() {
-        println!(
-            "{:032b}", Instruction::Not_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 268965059u32);
         assert_eq!(
             Instruction::Not_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 268965059u32
@@ -7267,11 +6992,6 @@ mod tests {
     }
     #[test]
     fn encode_Not_u32() {
-        println!(
-            "{:032b}", Instruction::Not_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 537400515u32);
         assert_eq!(
             Instruction::Not_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537400515u32
@@ -7286,11 +7006,6 @@ mod tests {
     }
     #[test]
     fn encode_Not_u64() {
-        println!(
-            "{:032b}", Instruction::Not_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 805835971u32);
         assert_eq!(
             Instruction::Not_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 805835971u32
@@ -7306,11 +7021,6 @@ mod tests {
     }
     #[test]
     fn encode_Shl_i8() {
-        println!(
-            "{:032b}", Instruction::Shl_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179139u32);
         assert_eq!(
             Instruction::Shl_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7327,11 +7037,6 @@ mod tests {
     }
     #[test]
     fn encode_Shl_i16() {
-        println!(
-            "{:032b}", Instruction::Shl_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614595u32);
         assert_eq!(
             Instruction::Shl_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7348,11 +7053,6 @@ mod tests {
     }
     #[test]
     fn encode_Shl_i32() {
-        println!(
-            "{:032b}", Instruction::Shl_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050051u32);
         assert_eq!(
             Instruction::Shl_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7369,11 +7069,6 @@ mod tests {
     }
     #[test]
     fn encode_Shl_i64() {
-        println!(
-            "{:032b}", Instruction::Shl_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485507u32);
         assert_eq!(
             Instruction::Shl_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7390,11 +7085,6 @@ mod tests {
     }
     #[test]
     fn encode_Shl_u8() {
-        println!(
-            "{:032b}", Instruction::Shl_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695491u32);
         assert_eq!(
             Instruction::Shl_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7411,11 +7101,6 @@ mod tests {
     }
     #[test]
     fn encode_Shl_u16() {
-        println!(
-            "{:032b}", Instruction::Shl_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294130947u32);
         assert_eq!(
             Instruction::Shl_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7432,11 +7117,6 @@ mod tests {
     }
     #[test]
     fn encode_Shl_u32() {
-        println!(
-            "{:032b}", Instruction::Shl_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566403u32);
         assert_eq!(
             Instruction::Shl_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7453,11 +7133,6 @@ mod tests {
     }
     #[test]
     fn encode_Shl_u64() {
-        println!(
-            "{:032b}", Instruction::Shl_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001859u32);
         assert_eq!(
             Instruction::Shl_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7474,11 +7149,6 @@ mod tests {
     }
     #[test]
     fn encode_Shr_i8() {
-        println!(
-            "{:032b}", Instruction::Shr_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179203u32);
         assert_eq!(
             Instruction::Shr_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7495,11 +7165,6 @@ mod tests {
     }
     #[test]
     fn encode_Shr_i16() {
-        println!(
-            "{:032b}", Instruction::Shr_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614659u32);
         assert_eq!(
             Instruction::Shr_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7516,11 +7181,6 @@ mod tests {
     }
     #[test]
     fn encode_Shr_i32() {
-        println!(
-            "{:032b}", Instruction::Shr_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050115u32);
         assert_eq!(
             Instruction::Shr_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7537,11 +7197,6 @@ mod tests {
     }
     #[test]
     fn encode_Shr_i64() {
-        println!(
-            "{:032b}", Instruction::Shr_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485571u32);
         assert_eq!(
             Instruction::Shr_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7558,11 +7213,6 @@ mod tests {
     }
     #[test]
     fn encode_Shr_u8() {
-        println!(
-            "{:032b}", Instruction::Shr_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695555u32);
         assert_eq!(
             Instruction::Shr_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7579,11 +7229,6 @@ mod tests {
     }
     #[test]
     fn encode_Shr_u16() {
-        println!(
-            "{:032b}", Instruction::Shr_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131011u32);
         assert_eq!(
             Instruction::Shr_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7600,11 +7245,6 @@ mod tests {
     }
     #[test]
     fn encode_Shr_u32() {
-        println!(
-            "{:032b}", Instruction::Shr_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566467u32);
         assert_eq!(
             Instruction::Shr_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7621,11 +7261,6 @@ mod tests {
     }
     #[test]
     fn encode_Shr_u64() {
-        println!(
-            "{:032b}", Instruction::Shr_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001923u32);
         assert_eq!(
             Instruction::Shr_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7642,11 +7277,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotl_i8() {
-        println!(
-            "{:032b}", Instruction::Rotl_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179267u32);
         assert_eq!(
             Instruction::Rotl_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7663,11 +7293,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotl_i16() {
-        println!(
-            "{:032b}", Instruction::Rotl_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614723u32);
         assert_eq!(
             Instruction::Rotl_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7684,11 +7309,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotl_i32() {
-        println!(
-            "{:032b}", Instruction::Rotl_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050179u32);
         assert_eq!(
             Instruction::Rotl_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7705,11 +7325,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotl_i64() {
-        println!(
-            "{:032b}", Instruction::Rotl_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485635u32);
         assert_eq!(
             Instruction::Rotl_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7726,11 +7341,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotl_u8() {
-        println!(
-            "{:032b}", Instruction::Rotl_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695619u32);
         assert_eq!(
             Instruction::Rotl_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7747,11 +7357,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotl_u16() {
-        println!(
-            "{:032b}", Instruction::Rotl_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131075u32);
         assert_eq!(
             Instruction::Rotl_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7768,11 +7373,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotl_u32() {
-        println!(
-            "{:032b}", Instruction::Rotl_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566531u32);
         assert_eq!(
             Instruction::Rotl_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7789,11 +7389,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotl_u64() {
-        println!(
-            "{:032b}", Instruction::Rotl_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001987u32);
         assert_eq!(
             Instruction::Rotl_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7810,11 +7405,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotr_i8() {
-        println!(
-            "{:032b}", Instruction::Rotr_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179331u32);
         assert_eq!(
             Instruction::Rotr_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7831,11 +7421,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotr_i16() {
-        println!(
-            "{:032b}", Instruction::Rotr_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614787u32);
         assert_eq!(
             Instruction::Rotr_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7852,11 +7437,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotr_i32() {
-        println!(
-            "{:032b}", Instruction::Rotr_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050243u32);
         assert_eq!(
             Instruction::Rotr_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7873,11 +7453,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotr_i64() {
-        println!(
-            "{:032b}", Instruction::Rotr_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485699u32);
         assert_eq!(
             Instruction::Rotr_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7894,11 +7469,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotr_u8() {
-        println!(
-            "{:032b}", Instruction::Rotr_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695683u32);
         assert_eq!(
             Instruction::Rotr_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7915,11 +7485,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotr_u16() {
-        println!(
-            "{:032b}", Instruction::Rotr_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131139u32);
         assert_eq!(
             Instruction::Rotr_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7936,11 +7501,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotr_u32() {
-        println!(
-            "{:032b}", Instruction::Rotr_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566595u32);
         assert_eq!(
             Instruction::Rotr_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7957,11 +7517,6 @@ mod tests {
     }
     #[test]
     fn encode_Rotr_u64() {
-        println!(
-            "{:032b}", Instruction::Rotr_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002051u32);
         assert_eq!(
             Instruction::Rotr_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -7977,11 +7532,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Ones_i8() {
-        println!(
-            "{:032b}", Instruction::Count_Ones_i8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013571u32);
         assert_eq!(
             Instruction::Count_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013571u32
@@ -7996,11 +7546,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Ones_i16() {
-        println!(
-            "{:032b}", Instruction::Count_Ones_i16 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416449027u32);
         assert_eq!(
             Instruction::Count_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416449027u32
@@ -8015,11 +7560,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Ones_i32() {
-        println!(
-            "{:032b}", Instruction::Count_Ones_i32 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884483u32);
         assert_eq!(
             Instruction::Count_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884483u32
@@ -8034,11 +7574,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Ones_i64() {
-        println!(
-            "{:032b}", Instruction::Count_Ones_i64 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953319939u32);
         assert_eq!(
             Instruction::Count_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953319939u32
@@ -8053,11 +7588,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Ones_u8() {
-        println!(
-            "{:032b}", Instruction::Count_Ones_u8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 529923u32);
         assert_eq!(
             Instruction::Count_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 529923u32
@@ -8072,11 +7602,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Ones_u16() {
-        println!(
-            "{:032b}", Instruction::Count_Ones_u16 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 268965379u32);
         assert_eq!(
             Instruction::Count_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 268965379u32
@@ -8091,11 +7616,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Ones_u32() {
-        println!(
-            "{:032b}", Instruction::Count_Ones_u32 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 537400835u32);
         assert_eq!(
             Instruction::Count_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537400835u32
@@ -8110,11 +7630,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Ones_u64() {
-        println!(
-            "{:032b}", Instruction::Count_Ones_u64 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 805836291u32);
         assert_eq!(
             Instruction::Count_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 805836291u32
@@ -8129,11 +7644,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Ones_i8() {
-        println!(
-            "{:032b}", Instruction::Leading_Ones_i8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013635u32);
         assert_eq!(
             Instruction::Leading_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013635u32
@@ -8148,11 +7658,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Ones_i16() {
-        println!(
-            "{:032b}", Instruction::Leading_Ones_i16 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416449091u32);
         assert_eq!(
             Instruction::Leading_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416449091u32
@@ -8167,11 +7672,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Ones_i32() {
-        println!(
-            "{:032b}", Instruction::Leading_Ones_i32 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884547u32);
         assert_eq!(
             Instruction::Leading_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884547u32
@@ -8186,11 +7686,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Ones_i64() {
-        println!(
-            "{:032b}", Instruction::Leading_Ones_i64 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953320003u32);
         assert_eq!(
             Instruction::Leading_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953320003u32
@@ -8205,11 +7700,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Ones_u8() {
-        println!(
-            "{:032b}", Instruction::Leading_Ones_u8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 529987u32);
         assert_eq!(
             Instruction::Leading_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 529987u32
@@ -8224,11 +7714,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Ones_u16() {
-        println!(
-            "{:032b}", Instruction::Leading_Ones_u16 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 268965443u32);
         assert_eq!(
             Instruction::Leading_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 268965443u32
@@ -8243,11 +7728,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Ones_u32() {
-        println!(
-            "{:032b}", Instruction::Leading_Ones_u32 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 537400899u32);
         assert_eq!(
             Instruction::Leading_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537400899u32
@@ -8262,11 +7742,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Ones_u64() {
-        println!(
-            "{:032b}", Instruction::Leading_Ones_u64 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 805836355u32);
         assert_eq!(
             Instruction::Leading_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 805836355u32
@@ -8281,11 +7756,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Ones_i8() {
-        println!(
-            "{:032b}", Instruction::Trailing_Ones_i8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013699u32);
         assert_eq!(
             Instruction::Trailing_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013699u32
@@ -8300,11 +7770,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Ones_i16() {
-        println!(
-            "{:032b}", Instruction::Trailing_Ones_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416449155u32);
         assert_eq!(
             Instruction::Trailing_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416449155u32
@@ -8319,11 +7784,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Ones_i32() {
-        println!(
-            "{:032b}", Instruction::Trailing_Ones_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884611u32);
         assert_eq!(
             Instruction::Trailing_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884611u32
@@ -8338,11 +7798,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Ones_i64() {
-        println!(
-            "{:032b}", Instruction::Trailing_Ones_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953320067u32);
         assert_eq!(
             Instruction::Trailing_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953320067u32
@@ -8357,11 +7812,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Ones_u8() {
-        println!(
-            "{:032b}", Instruction::Trailing_Ones_u8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 530051u32);
         assert_eq!(
             Instruction::Trailing_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 530051u32
@@ -8376,11 +7826,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Ones_u16() {
-        println!(
-            "{:032b}", Instruction::Trailing_Ones_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 268965507u32);
         assert_eq!(
             Instruction::Trailing_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 268965507u32
@@ -8395,11 +7840,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Ones_u32() {
-        println!(
-            "{:032b}", Instruction::Trailing_Ones_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 537400963u32);
         assert_eq!(
             Instruction::Trailing_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537400963u32
@@ -8414,11 +7854,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Ones_u64() {
-        println!(
-            "{:032b}", Instruction::Trailing_Ones_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 805836419u32);
         assert_eq!(
             Instruction::Trailing_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 805836419u32
@@ -8433,11 +7868,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Zeros_i8() {
-        println!(
-            "{:032b}", Instruction::Count_Zeros_i8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013763u32);
         assert_eq!(
             Instruction::Count_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013763u32
@@ -8452,11 +7882,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Zeros_i16() {
-        println!(
-            "{:032b}", Instruction::Count_Zeros_i16 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416449219u32);
         assert_eq!(
             Instruction::Count_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416449219u32
@@ -8471,11 +7896,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Zeros_i32() {
-        println!(
-            "{:032b}", Instruction::Count_Zeros_i32 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884675u32);
         assert_eq!(
             Instruction::Count_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884675u32
@@ -8490,11 +7910,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Zeros_i64() {
-        println!(
-            "{:032b}", Instruction::Count_Zeros_i64 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953320131u32);
         assert_eq!(
             Instruction::Count_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953320131u32
@@ -8509,11 +7924,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Zeros_u8() {
-        println!(
-            "{:032b}", Instruction::Count_Zeros_u8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 530115u32);
         assert_eq!(
             Instruction::Count_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 530115u32
@@ -8528,11 +7938,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Zeros_u16() {
-        println!(
-            "{:032b}", Instruction::Count_Zeros_u16 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 268965571u32);
         assert_eq!(
             Instruction::Count_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 268965571u32
@@ -8547,11 +7952,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Zeros_u32() {
-        println!(
-            "{:032b}", Instruction::Count_Zeros_u32 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 537401027u32);
         assert_eq!(
             Instruction::Count_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537401027u32
@@ -8566,11 +7966,6 @@ mod tests {
     }
     #[test]
     fn encode_Count_Zeros_u64() {
-        println!(
-            "{:032b}", Instruction::Count_Zeros_u64 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 805836483u32);
         assert_eq!(
             Instruction::Count_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 805836483u32
@@ -8585,11 +7980,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Zeros_i8() {
-        println!(
-            "{:032b}", Instruction::Leading_Zeros_i8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013827u32);
         assert_eq!(
             Instruction::Leading_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013827u32
@@ -8604,11 +7994,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Zeros_i16() {
-        println!(
-            "{:032b}", Instruction::Leading_Zeros_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416449283u32);
         assert_eq!(
             Instruction::Leading_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416449283u32
@@ -8623,11 +8008,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Zeros_i32() {
-        println!(
-            "{:032b}", Instruction::Leading_Zeros_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884739u32);
         assert_eq!(
             Instruction::Leading_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884739u32
@@ -8642,11 +8022,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Zeros_i64() {
-        println!(
-            "{:032b}", Instruction::Leading_Zeros_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953320195u32);
         assert_eq!(
             Instruction::Leading_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953320195u32
@@ -8661,11 +8036,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Zeros_u8() {
-        println!(
-            "{:032b}", Instruction::Leading_Zeros_u8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 530179u32);
         assert_eq!(
             Instruction::Leading_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 530179u32
@@ -8680,11 +8050,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Zeros_u16() {
-        println!(
-            "{:032b}", Instruction::Leading_Zeros_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 268965635u32);
         assert_eq!(
             Instruction::Leading_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 268965635u32
@@ -8699,11 +8064,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Zeros_u32() {
-        println!(
-            "{:032b}", Instruction::Leading_Zeros_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 537401091u32);
         assert_eq!(
             Instruction::Leading_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537401091u32
@@ -8718,11 +8078,6 @@ mod tests {
     }
     #[test]
     fn encode_Leading_Zeros_u64() {
-        println!(
-            "{:032b}", Instruction::Leading_Zeros_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 805836547u32);
         assert_eq!(
             Instruction::Leading_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 805836547u32
@@ -8737,11 +8092,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Zeros_i8() {
-        println!(
-            "{:032b}", Instruction::Trailing_Zeros_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013891u32);
         assert_eq!(
             Instruction::Trailing_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013891u32
@@ -8756,11 +8106,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Zeros_i16() {
-        println!(
-            "{:032b}", Instruction::Trailing_Zeros_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416449347u32);
         assert_eq!(
             Instruction::Trailing_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416449347u32
@@ -8775,11 +8120,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Zeros_i32() {
-        println!(
-            "{:032b}", Instruction::Trailing_Zeros_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884803u32);
         assert_eq!(
             Instruction::Trailing_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884803u32
@@ -8794,11 +8134,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Zeros_i64() {
-        println!(
-            "{:032b}", Instruction::Trailing_Zeros_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953320259u32);
         assert_eq!(
             Instruction::Trailing_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953320259u32
@@ -8813,11 +8148,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Zeros_u8() {
-        println!(
-            "{:032b}", Instruction::Trailing_Zeros_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 530243u32);
         assert_eq!(
             Instruction::Trailing_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 530243u32
@@ -8832,11 +8162,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Zeros_u16() {
-        println!(
-            "{:032b}", Instruction::Trailing_Zeros_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 268965699u32);
         assert_eq!(
             Instruction::Trailing_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 268965699u32
@@ -8851,11 +8176,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Zeros_u32() {
-        println!(
-            "{:032b}", Instruction::Trailing_Zeros_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 537401155u32);
         assert_eq!(
             Instruction::Trailing_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537401155u32
@@ -8870,11 +8190,6 @@ mod tests {
     }
     #[test]
     fn encode_Trailing_Zeros_u64() {
-        println!(
-            "{:032b}", Instruction::Trailing_Zeros_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 805836611u32);
         assert_eq!(
             Instruction::Trailing_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 805836611u32
@@ -8889,11 +8204,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bytes_i8() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bytes_i8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013955u32);
         assert_eq!(
             Instruction::Reverse_Bytes_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013955u32
@@ -8908,11 +8218,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bytes_i16() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bytes_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416449411u32);
         assert_eq!(
             Instruction::Reverse_Bytes_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416449411u32
@@ -8927,11 +8232,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bytes_i32() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bytes_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884867u32);
         assert_eq!(
             Instruction::Reverse_Bytes_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884867u32
@@ -8946,11 +8246,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bytes_i64() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bytes_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953320323u32);
         assert_eq!(
             Instruction::Reverse_Bytes_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953320323u32
@@ -8965,11 +8260,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bytes_u8() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bytes_u8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 530307u32);
         assert_eq!(
             Instruction::Reverse_Bytes_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 530307u32
@@ -8984,11 +8274,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bytes_u16() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bytes_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 268965763u32);
         assert_eq!(
             Instruction::Reverse_Bytes_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 268965763u32
@@ -9003,11 +8288,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bytes_u32() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bytes_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 537401219u32);
         assert_eq!(
             Instruction::Reverse_Bytes_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537401219u32
@@ -9022,11 +8302,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bytes_u64() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bytes_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 805836675u32);
         assert_eq!(
             Instruction::Reverse_Bytes_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 805836675u32
@@ -9041,11 +8316,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bits_i8() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bits_i8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148014019u32);
         assert_eq!(
             Instruction::Reverse_Bits_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148014019u32
@@ -9060,11 +8330,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bits_i16() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bits_i16 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416449475u32);
         assert_eq!(
             Instruction::Reverse_Bits_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416449475u32
@@ -9079,11 +8344,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bits_i32() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bits_i32 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884931u32);
         assert_eq!(
             Instruction::Reverse_Bits_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884931u32
@@ -9098,11 +8358,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bits_i64() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bits_i64 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953320387u32);
         assert_eq!(
             Instruction::Reverse_Bits_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953320387u32
@@ -9117,11 +8372,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bits_u8() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bits_u8 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 530371u32);
         assert_eq!(
             Instruction::Reverse_Bits_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 530371u32
@@ -9136,11 +8386,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bits_u16() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bits_u16 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 268965827u32);
         assert_eq!(
             Instruction::Reverse_Bits_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 268965827u32
@@ -9155,11 +8400,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bits_u32() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bits_u32 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 537401283u32);
         assert_eq!(
             Instruction::Reverse_Bits_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537401283u32
@@ -9174,11 +8414,6 @@ mod tests {
     }
     #[test]
     fn encode_Reverse_Bits_u64() {
-        println!(
-            "{:032b}", Instruction::Reverse_Bits_u64 { rd : Register::General_Purpose(5),
-            rs1 : Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 805836739u32);
         assert_eq!(
             Instruction::Reverse_Bits_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 805836739u32
@@ -9193,11 +8428,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Abs_i8() {
-        println!(
-            "{:032b}", Instruction::C_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013060u32);
         assert_eq!(
             Instruction::C_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013060u32
@@ -9212,11 +8442,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Abs_i16() {
-        println!(
-            "{:032b}", Instruction::C_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416448516u32);
         assert_eq!(
             Instruction::C_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416448516u32
@@ -9231,11 +8456,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Abs_i32() {
-        println!(
-            "{:032b}", Instruction::C_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684883972u32);
         assert_eq!(
             Instruction::C_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684883972u32
@@ -9250,11 +8470,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Abs_i64() {
-        println!(
-            "{:032b}", Instruction::C_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953319428u32);
         assert_eq!(
             Instruction::C_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953319428u32
@@ -9270,11 +8485,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_i8() {
-        println!(
-            "{:032b}", Instruction::C_Add_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173178948u32);
         assert_eq!(
             Instruction::C_Add_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9291,11 +8501,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_i16() {
-        println!(
-            "{:032b}", Instruction::C_Add_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614404u32);
         assert_eq!(
             Instruction::C_Add_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9312,11 +8517,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_i32() {
-        println!(
-            "{:032b}", Instruction::C_Add_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710049860u32);
         assert_eq!(
             Instruction::C_Add_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9333,11 +8533,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_i64() {
-        println!(
-            "{:032b}", Instruction::C_Add_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485316u32);
         assert_eq!(
             Instruction::C_Add_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9354,11 +8549,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_u8() {
-        println!(
-            "{:032b}", Instruction::C_Add_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695300u32);
         assert_eq!(
             Instruction::C_Add_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9375,11 +8565,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_u16() {
-        println!(
-            "{:032b}", Instruction::C_Add_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294130756u32);
         assert_eq!(
             Instruction::C_Add_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9396,11 +8581,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_u32() {
-        println!(
-            "{:032b}", Instruction::C_Add_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566212u32);
         assert_eq!(
             Instruction::C_Add_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9417,11 +8597,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_u64() {
-        println!(
-            "{:032b}", Instruction::C_Add_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001668u32);
         assert_eq!(
             Instruction::C_Add_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9438,11 +8613,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_U_i8() {
-        println!(
-            "{:032b}", Instruction::C_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179012u32);
         assert_eq!(
             Instruction::C_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9459,12 +8629,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_U_i16() {
-        println!(
-            "{:032b}", Instruction::C_Add_U_i16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2441614468u32);
         assert_eq!(
             Instruction::C_Add_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9481,12 +8645,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_U_i32() {
-        println!(
-            "{:032b}", Instruction::C_Add_U_i32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2710049924u32);
         assert_eq!(
             Instruction::C_Add_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9503,12 +8661,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_U_i64() {
-        println!(
-            "{:032b}", Instruction::C_Add_U_i64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2978485380u32);
         assert_eq!(
             Instruction::C_Add_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9525,11 +8677,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_S_u8() {
-        println!(
-            "{:032b}", Instruction::C_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695364u32);
         assert_eq!(
             Instruction::C_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9546,12 +8693,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_S_u16() {
-        println!(
-            "{:032b}", Instruction::C_Add_S_u16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 294130820u32);
         assert_eq!(
             Instruction::C_Add_S_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9568,12 +8709,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_S_u32() {
-        println!(
-            "{:032b}", Instruction::C_Add_S_u32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 562566276u32);
         assert_eq!(
             Instruction::C_Add_S_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9590,12 +8725,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Add_S_u64() {
-        println!(
-            "{:032b}", Instruction::C_Add_S_u64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 831001732u32);
         assert_eq!(
             Instruction::C_Add_S_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9612,11 +8741,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_i8() {
-        println!(
-            "{:032b}", Instruction::C_Div_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179076u32);
         assert_eq!(
             Instruction::C_Div_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9633,11 +8757,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_i16() {
-        println!(
-            "{:032b}", Instruction::C_Div_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614532u32);
         assert_eq!(
             Instruction::C_Div_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9654,11 +8773,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_i32() {
-        println!(
-            "{:032b}", Instruction::C_Div_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710049988u32);
         assert_eq!(
             Instruction::C_Div_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9675,11 +8789,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_i64() {
-        println!(
-            "{:032b}", Instruction::C_Div_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485444u32);
         assert_eq!(
             Instruction::C_Div_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9696,11 +8805,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_u8() {
-        println!(
-            "{:032b}", Instruction::C_Div_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695428u32);
         assert_eq!(
             Instruction::C_Div_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9717,11 +8821,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_u16() {
-        println!(
-            "{:032b}", Instruction::C_Div_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294130884u32);
         assert_eq!(
             Instruction::C_Div_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9738,11 +8837,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_u32() {
-        println!(
-            "{:032b}", Instruction::C_Div_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566340u32);
         assert_eq!(
             Instruction::C_Div_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9759,11 +8853,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_u64() {
-        println!(
-            "{:032b}", Instruction::C_Div_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001796u32);
         assert_eq!(
             Instruction::C_Div_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9780,11 +8869,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_E_i8() {
-        println!(
-            "{:032b}", Instruction::C_Div_E_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179140u32);
         assert_eq!(
             Instruction::C_Div_E_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9801,12 +8885,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_E_i16() {
-        println!(
-            "{:032b}", Instruction::C_Div_E_i16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2441614596u32);
         assert_eq!(
             Instruction::C_Div_E_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9823,12 +8901,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_E_i32() {
-        println!(
-            "{:032b}", Instruction::C_Div_E_i32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2710050052u32);
         assert_eq!(
             Instruction::C_Div_E_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9845,12 +8917,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_E_i64() {
-        println!(
-            "{:032b}", Instruction::C_Div_E_i64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2978485508u32);
         assert_eq!(
             Instruction::C_Div_E_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9867,11 +8933,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_E_u8() {
-        println!(
-            "{:032b}", Instruction::C_Div_E_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695492u32);
         assert_eq!(
             Instruction::C_Div_E_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9888,12 +8949,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_E_u16() {
-        println!(
-            "{:032b}", Instruction::C_Div_E_u16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 294130948u32);
         assert_eq!(
             Instruction::C_Div_E_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9910,12 +8965,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_E_u32() {
-        println!(
-            "{:032b}", Instruction::C_Div_E_u32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 562566404u32);
         assert_eq!(
             Instruction::C_Div_E_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9932,12 +8981,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Div_E_u64() {
-        println!(
-            "{:032b}", Instruction::C_Div_E_u64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 831001860u32);
         assert_eq!(
             Instruction::C_Div_E_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9954,11 +8997,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Log_i8() {
-        println!(
-            "{:032b}", Instruction::C_Log_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179204u32);
         assert_eq!(
             Instruction::C_Log_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9975,11 +9013,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Log_i16() {
-        println!(
-            "{:032b}", Instruction::C_Log_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614660u32);
         assert_eq!(
             Instruction::C_Log_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -9996,11 +9029,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Log_i32() {
-        println!(
-            "{:032b}", Instruction::C_Log_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050116u32);
         assert_eq!(
             Instruction::C_Log_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10017,11 +9045,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Log_i64() {
-        println!(
-            "{:032b}", Instruction::C_Log_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485572u32);
         assert_eq!(
             Instruction::C_Log_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10038,11 +9061,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Log_u8() {
-        println!(
-            "{:032b}", Instruction::C_Log_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695556u32);
         assert_eq!(
             Instruction::C_Log_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10059,11 +9077,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Log_u16() {
-        println!(
-            "{:032b}", Instruction::C_Log_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131012u32);
         assert_eq!(
             Instruction::C_Log_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10080,11 +9093,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Log_u32() {
-        println!(
-            "{:032b}", Instruction::C_Log_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566468u32);
         assert_eq!(
             Instruction::C_Log_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10101,11 +9109,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Log_u64() {
-        println!(
-            "{:032b}", Instruction::C_Log_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001924u32);
         assert_eq!(
             Instruction::C_Log_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10121,11 +9124,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sqrt_i8() {
-        println!(
-            "{:032b}", Instruction::C_Sqrt_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013444u32);
         assert_eq!(
             Instruction::C_Sqrt_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013444u32
@@ -10140,11 +9138,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sqrt_i16() {
-        println!(
-            "{:032b}", Instruction::C_Sqrt_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416448900u32);
         assert_eq!(
             Instruction::C_Sqrt_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416448900u32
@@ -10159,11 +9152,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sqrt_i32() {
-        println!(
-            "{:032b}", Instruction::C_Sqrt_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884356u32);
         assert_eq!(
             Instruction::C_Sqrt_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884356u32
@@ -10178,11 +9166,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sqrt_i64() {
-        println!(
-            "{:032b}", Instruction::C_Sqrt_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953319812u32);
         assert_eq!(
             Instruction::C_Sqrt_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953319812u32
@@ -10197,11 +9180,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sqrt_u8() {
-        println!(
-            "{:032b}", Instruction::C_Sqrt_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 529796u32);
         assert_eq!(
             Instruction::C_Sqrt_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 529796u32
@@ -10216,11 +9194,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sqrt_u16() {
-        println!(
-            "{:032b}", Instruction::C_Sqrt_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 268965252u32);
         assert_eq!(
             Instruction::C_Sqrt_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 268965252u32
@@ -10235,11 +9208,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sqrt_u32() {
-        println!(
-            "{:032b}", Instruction::C_Sqrt_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 537400708u32);
         assert_eq!(
             Instruction::C_Sqrt_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537400708u32
@@ -10254,11 +9222,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sqrt_u64() {
-        println!(
-            "{:032b}", Instruction::C_Sqrt_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 805836164u32);
         assert_eq!(
             Instruction::C_Sqrt_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 805836164u32
@@ -10274,11 +9237,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Mul_i8() {
-        println!(
-            "{:032b}", Instruction::C_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179332u32);
         assert_eq!(
             Instruction::C_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10295,11 +9253,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Mul_i16() {
-        println!(
-            "{:032b}", Instruction::C_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614788u32);
         assert_eq!(
             Instruction::C_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10316,11 +9269,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Mul_i32() {
-        println!(
-            "{:032b}", Instruction::C_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050244u32);
         assert_eq!(
             Instruction::C_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10337,11 +9285,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Mul_i64() {
-        println!(
-            "{:032b}", Instruction::C_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485700u32);
         assert_eq!(
             Instruction::C_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10358,11 +9301,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Mul_u8() {
-        println!(
-            "{:032b}", Instruction::C_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695684u32);
         assert_eq!(
             Instruction::C_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10379,11 +9317,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Mul_u16() {
-        println!(
-            "{:032b}", Instruction::C_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131140u32);
         assert_eq!(
             Instruction::C_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10400,11 +9333,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Mul_u32() {
-        println!(
-            "{:032b}", Instruction::C_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566596u32);
         assert_eq!(
             Instruction::C_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10421,11 +9349,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Mul_u64() {
-        println!(
-            "{:032b}", Instruction::C_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002052u32);
         assert_eq!(
             Instruction::C_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10441,11 +9364,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Neg_i8() {
-        println!(
-            "{:032b}", Instruction::C_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013572u32);
         assert_eq!(
             Instruction::C_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013572u32
@@ -10460,11 +9378,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Neg_i16() {
-        println!(
-            "{:032b}", Instruction::C_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416449028u32);
         assert_eq!(
             Instruction::C_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416449028u32
@@ -10479,11 +9392,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Neg_i32() {
-        println!(
-            "{:032b}", Instruction::C_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884484u32);
         assert_eq!(
             Instruction::C_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884484u32
@@ -10498,11 +9406,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Neg_i64() {
-        println!(
-            "{:032b}", Instruction::C_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953319940u32);
         assert_eq!(
             Instruction::C_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953319940u32
@@ -10518,11 +9421,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Pow_i8() {
-        println!(
-            "{:032b}", Instruction::C_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179460u32);
         assert_eq!(
             Instruction::C_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10539,11 +9437,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Pow_i16() {
-        println!(
-            "{:032b}", Instruction::C_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614916u32);
         assert_eq!(
             Instruction::C_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10560,11 +9453,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Pow_i32() {
-        println!(
-            "{:032b}", Instruction::C_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050372u32);
         assert_eq!(
             Instruction::C_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10581,11 +9469,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Pow_i64() {
-        println!(
-            "{:032b}", Instruction::C_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485828u32);
         assert_eq!(
             Instruction::C_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10602,11 +9485,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Pow_u8() {
-        println!(
-            "{:032b}", Instruction::C_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695812u32);
         assert_eq!(
             Instruction::C_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10623,11 +9501,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Pow_u16() {
-        println!(
-            "{:032b}", Instruction::C_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131268u32);
         assert_eq!(
             Instruction::C_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10644,11 +9517,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Pow_u32() {
-        println!(
-            "{:032b}", Instruction::C_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566724u32);
         assert_eq!(
             Instruction::C_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10665,11 +9533,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Pow_u64() {
-        println!(
-            "{:032b}", Instruction::C_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002180u32);
         assert_eq!(
             Instruction::C_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10686,11 +9549,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_i8() {
-        println!(
-            "{:032b}", Instruction::C_Rem_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179524u32);
         assert_eq!(
             Instruction::C_Rem_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10707,11 +9565,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_i16() {
-        println!(
-            "{:032b}", Instruction::C_Rem_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614980u32);
         assert_eq!(
             Instruction::C_Rem_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10728,11 +9581,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_i32() {
-        println!(
-            "{:032b}", Instruction::C_Rem_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050436u32);
         assert_eq!(
             Instruction::C_Rem_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10749,11 +9597,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_i64() {
-        println!(
-            "{:032b}", Instruction::C_Rem_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485892u32);
         assert_eq!(
             Instruction::C_Rem_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10770,11 +9613,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_u8() {
-        println!(
-            "{:032b}", Instruction::C_Rem_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695876u32);
         assert_eq!(
             Instruction::C_Rem_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10791,11 +9629,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_u16() {
-        println!(
-            "{:032b}", Instruction::C_Rem_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131332u32);
         assert_eq!(
             Instruction::C_Rem_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10812,11 +9645,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_u32() {
-        println!(
-            "{:032b}", Instruction::C_Rem_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566788u32);
         assert_eq!(
             Instruction::C_Rem_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10833,11 +9661,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_u64() {
-        println!(
-            "{:032b}", Instruction::C_Rem_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002244u32);
         assert_eq!(
             Instruction::C_Rem_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10854,11 +9677,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_E_i8() {
-        println!(
-            "{:032b}", Instruction::C_Rem_E_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179588u32);
         assert_eq!(
             Instruction::C_Rem_E_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10875,12 +9693,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_E_i16() {
-        println!(
-            "{:032b}", Instruction::C_Rem_E_i16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2441615044u32);
         assert_eq!(
             Instruction::C_Rem_E_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10897,12 +9709,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_E_i32() {
-        println!(
-            "{:032b}", Instruction::C_Rem_E_i32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2710050500u32);
         assert_eq!(
             Instruction::C_Rem_E_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10919,12 +9725,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_E_i64() {
-        println!(
-            "{:032b}", Instruction::C_Rem_E_i64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2978485956u32);
         assert_eq!(
             Instruction::C_Rem_E_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10941,11 +9741,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_E_u8() {
-        println!(
-            "{:032b}", Instruction::C_Rem_E_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695940u32);
         assert_eq!(
             Instruction::C_Rem_E_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10962,12 +9757,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_E_u16() {
-        println!(
-            "{:032b}", Instruction::C_Rem_E_u16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 294131396u32);
         assert_eq!(
             Instruction::C_Rem_E_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -10984,12 +9773,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_E_u32() {
-        println!(
-            "{:032b}", Instruction::C_Rem_E_u32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 562566852u32);
         assert_eq!(
             Instruction::C_Rem_E_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11006,12 +9789,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Rem_E_u64() {
-        println!(
-            "{:032b}", Instruction::C_Rem_E_u64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 831002308u32);
         assert_eq!(
             Instruction::C_Rem_E_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11028,11 +9805,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shl_i8() {
-        println!(
-            "{:032b}", Instruction::C_Shl_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179652u32);
         assert_eq!(
             Instruction::C_Shl_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11049,11 +9821,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shl_i16() {
-        println!(
-            "{:032b}", Instruction::C_Shl_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441615108u32);
         assert_eq!(
             Instruction::C_Shl_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11070,11 +9837,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shl_i32() {
-        println!(
-            "{:032b}", Instruction::C_Shl_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050564u32);
         assert_eq!(
             Instruction::C_Shl_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11091,11 +9853,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shl_i64() {
-        println!(
-            "{:032b}", Instruction::C_Shl_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978486020u32);
         assert_eq!(
             Instruction::C_Shl_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11112,11 +9869,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shl_u8() {
-        println!(
-            "{:032b}", Instruction::C_Shl_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25696004u32);
         assert_eq!(
             Instruction::C_Shl_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11133,11 +9885,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shl_u16() {
-        println!(
-            "{:032b}", Instruction::C_Shl_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131460u32);
         assert_eq!(
             Instruction::C_Shl_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11154,11 +9901,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shl_u32() {
-        println!(
-            "{:032b}", Instruction::C_Shl_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566916u32);
         assert_eq!(
             Instruction::C_Shl_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11175,11 +9917,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shl_u64() {
-        println!(
-            "{:032b}", Instruction::C_Shl_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002372u32);
         assert_eq!(
             Instruction::C_Shl_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11196,11 +9933,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shr_i8() {
-        println!(
-            "{:032b}", Instruction::C_Shr_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179716u32);
         assert_eq!(
             Instruction::C_Shr_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11217,11 +9949,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shr_i16() {
-        println!(
-            "{:032b}", Instruction::C_Shr_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441615172u32);
         assert_eq!(
             Instruction::C_Shr_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11238,11 +9965,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shr_i32() {
-        println!(
-            "{:032b}", Instruction::C_Shr_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050628u32);
         assert_eq!(
             Instruction::C_Shr_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11259,11 +9981,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shr_i64() {
-        println!(
-            "{:032b}", Instruction::C_Shr_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978486084u32);
         assert_eq!(
             Instruction::C_Shr_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11280,11 +9997,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shr_u8() {
-        println!(
-            "{:032b}", Instruction::C_Shr_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25696068u32);
         assert_eq!(
             Instruction::C_Shr_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11301,11 +10013,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shr_u16() {
-        println!(
-            "{:032b}", Instruction::C_Shr_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131524u32);
         assert_eq!(
             Instruction::C_Shr_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11322,11 +10029,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shr_u32() {
-        println!(
-            "{:032b}", Instruction::C_Shr_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566980u32);
         assert_eq!(
             Instruction::C_Shr_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11343,11 +10045,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Shr_u64() {
-        println!(
-            "{:032b}", Instruction::C_Shr_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002436u32);
         assert_eq!(
             Instruction::C_Shr_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11364,11 +10061,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_i8() {
-        println!(
-            "{:032b}", Instruction::C_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179780u32);
         assert_eq!(
             Instruction::C_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11385,11 +10077,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_i16() {
-        println!(
-            "{:032b}", Instruction::C_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441615236u32);
         assert_eq!(
             Instruction::C_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11406,11 +10093,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_i32() {
-        println!(
-            "{:032b}", Instruction::C_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050692u32);
         assert_eq!(
             Instruction::C_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11427,11 +10109,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_i64() {
-        println!(
-            "{:032b}", Instruction::C_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978486148u32);
         assert_eq!(
             Instruction::C_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11448,11 +10125,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_u8() {
-        println!(
-            "{:032b}", Instruction::C_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25696132u32);
         assert_eq!(
             Instruction::C_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11469,11 +10141,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_u16() {
-        println!(
-            "{:032b}", Instruction::C_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131588u32);
         assert_eq!(
             Instruction::C_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11490,11 +10157,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_u32() {
-        println!(
-            "{:032b}", Instruction::C_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562567044u32);
         assert_eq!(
             Instruction::C_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11511,11 +10173,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_u64() {
-        println!(
-            "{:032b}", Instruction::C_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002500u32);
         assert_eq!(
             Instruction::C_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11532,11 +10189,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_U_i8() {
-        println!(
-            "{:032b}", Instruction::C_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179844u32);
         assert_eq!(
             Instruction::C_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11553,12 +10205,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_U_i16() {
-        println!(
-            "{:032b}", Instruction::C_Sub_U_i16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2441615300u32);
         assert_eq!(
             Instruction::C_Sub_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11575,12 +10221,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_U_i32() {
-        println!(
-            "{:032b}", Instruction::C_Sub_U_i32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2710050756u32);
         assert_eq!(
             Instruction::C_Sub_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11597,12 +10237,6 @@ mod tests {
     }
     #[test]
     fn encode_C_Sub_U_i64() {
-        println!(
-            "{:032b}", Instruction::C_Sub_U_i64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2978486212u32);
         assert_eq!(
             Instruction::C_Sub_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11618,11 +10252,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Abs_i8() {
-        println!(
-            "{:032b}", Instruction::O_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013061u32);
         assert_eq!(
             Instruction::O_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013061u32
@@ -11637,11 +10266,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Abs_i16() {
-        println!(
-            "{:032b}", Instruction::O_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416448517u32);
         assert_eq!(
             Instruction::O_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416448517u32
@@ -11656,11 +10280,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Abs_i32() {
-        println!(
-            "{:032b}", Instruction::O_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684883973u32);
         assert_eq!(
             Instruction::O_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684883973u32
@@ -11675,11 +10294,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Abs_i64() {
-        println!(
-            "{:032b}", Instruction::O_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953319429u32);
         assert_eq!(
             Instruction::O_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953319429u32
@@ -11695,11 +10309,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_i8() {
-        println!(
-            "{:032b}", Instruction::O_Add_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173178949u32);
         assert_eq!(
             Instruction::O_Add_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11716,11 +10325,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_i16() {
-        println!(
-            "{:032b}", Instruction::O_Add_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614405u32);
         assert_eq!(
             Instruction::O_Add_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11737,11 +10341,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_i32() {
-        println!(
-            "{:032b}", Instruction::O_Add_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710049861u32);
         assert_eq!(
             Instruction::O_Add_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11758,11 +10357,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_i64() {
-        println!(
-            "{:032b}", Instruction::O_Add_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485317u32);
         assert_eq!(
             Instruction::O_Add_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11779,11 +10373,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_u8() {
-        println!(
-            "{:032b}", Instruction::O_Add_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695301u32);
         assert_eq!(
             Instruction::O_Add_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11800,11 +10389,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_u16() {
-        println!(
-            "{:032b}", Instruction::O_Add_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294130757u32);
         assert_eq!(
             Instruction::O_Add_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11821,11 +10405,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_u32() {
-        println!(
-            "{:032b}", Instruction::O_Add_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566213u32);
         assert_eq!(
             Instruction::O_Add_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11842,11 +10421,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_u64() {
-        println!(
-            "{:032b}", Instruction::O_Add_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001669u32);
         assert_eq!(
             Instruction::O_Add_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11863,11 +10437,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_U_i8() {
-        println!(
-            "{:032b}", Instruction::O_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179013u32);
         assert_eq!(
             Instruction::O_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11884,12 +10453,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_U_i16() {
-        println!(
-            "{:032b}", Instruction::O_Add_U_i16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2441614469u32);
         assert_eq!(
             Instruction::O_Add_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11906,12 +10469,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_U_i32() {
-        println!(
-            "{:032b}", Instruction::O_Add_U_i32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2710049925u32);
         assert_eq!(
             Instruction::O_Add_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11928,12 +10485,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_U_i64() {
-        println!(
-            "{:032b}", Instruction::O_Add_U_i64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2978485381u32);
         assert_eq!(
             Instruction::O_Add_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11950,11 +10501,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_S_u8() {
-        println!(
-            "{:032b}", Instruction::O_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695365u32);
         assert_eq!(
             Instruction::O_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11971,12 +10517,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_S_u16() {
-        println!(
-            "{:032b}", Instruction::O_Add_S_u16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 294130821u32);
         assert_eq!(
             Instruction::O_Add_S_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -11993,12 +10533,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_S_u32() {
-        println!(
-            "{:032b}", Instruction::O_Add_S_u32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 562566277u32);
         assert_eq!(
             Instruction::O_Add_S_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12015,12 +10549,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Add_S_u64() {
-        println!(
-            "{:032b}", Instruction::O_Add_S_u64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 831001733u32);
         assert_eq!(
             Instruction::O_Add_S_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12037,11 +10565,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_i8() {
-        println!(
-            "{:032b}", Instruction::O_Div_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179077u32);
         assert_eq!(
             Instruction::O_Div_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12058,11 +10581,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_i16() {
-        println!(
-            "{:032b}", Instruction::O_Div_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614533u32);
         assert_eq!(
             Instruction::O_Div_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12079,11 +10597,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_i32() {
-        println!(
-            "{:032b}", Instruction::O_Div_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710049989u32);
         assert_eq!(
             Instruction::O_Div_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12100,11 +10613,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_i64() {
-        println!(
-            "{:032b}", Instruction::O_Div_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485445u32);
         assert_eq!(
             Instruction::O_Div_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12121,11 +10629,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_u8() {
-        println!(
-            "{:032b}", Instruction::O_Div_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695429u32);
         assert_eq!(
             Instruction::O_Div_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12142,11 +10645,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_u16() {
-        println!(
-            "{:032b}", Instruction::O_Div_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294130885u32);
         assert_eq!(
             Instruction::O_Div_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12163,11 +10661,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_u32() {
-        println!(
-            "{:032b}", Instruction::O_Div_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566341u32);
         assert_eq!(
             Instruction::O_Div_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12184,11 +10677,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_u64() {
-        println!(
-            "{:032b}", Instruction::O_Div_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001797u32);
         assert_eq!(
             Instruction::O_Div_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12205,11 +10693,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_E_i8() {
-        println!(
-            "{:032b}", Instruction::O_Div_E_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179141u32);
         assert_eq!(
             Instruction::O_Div_E_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12226,12 +10709,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_E_i16() {
-        println!(
-            "{:032b}", Instruction::O_Div_E_i16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2441614597u32);
         assert_eq!(
             Instruction::O_Div_E_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12248,12 +10725,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_E_i32() {
-        println!(
-            "{:032b}", Instruction::O_Div_E_i32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2710050053u32);
         assert_eq!(
             Instruction::O_Div_E_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12270,12 +10741,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_E_i64() {
-        println!(
-            "{:032b}", Instruction::O_Div_E_i64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2978485509u32);
         assert_eq!(
             Instruction::O_Div_E_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12292,11 +10757,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_E_u8() {
-        println!(
-            "{:032b}", Instruction::O_Div_E_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695493u32);
         assert_eq!(
             Instruction::O_Div_E_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12313,12 +10773,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_E_u16() {
-        println!(
-            "{:032b}", Instruction::O_Div_E_u16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 294130949u32);
         assert_eq!(
             Instruction::O_Div_E_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12335,12 +10789,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_E_u32() {
-        println!(
-            "{:032b}", Instruction::O_Div_E_u32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 562566405u32);
         assert_eq!(
             Instruction::O_Div_E_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12357,12 +10805,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Div_E_u64() {
-        println!(
-            "{:032b}", Instruction::O_Div_E_u64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 831001861u32);
         assert_eq!(
             Instruction::O_Div_E_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12379,11 +10821,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Mul_i8() {
-        println!(
-            "{:032b}", Instruction::O_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179333u32);
         assert_eq!(
             Instruction::O_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12400,11 +10837,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Mul_i16() {
-        println!(
-            "{:032b}", Instruction::O_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614789u32);
         assert_eq!(
             Instruction::O_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12421,11 +10853,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Mul_i32() {
-        println!(
-            "{:032b}", Instruction::O_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050245u32);
         assert_eq!(
             Instruction::O_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12442,11 +10869,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Mul_i64() {
-        println!(
-            "{:032b}", Instruction::O_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485701u32);
         assert_eq!(
             Instruction::O_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12463,11 +10885,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Mul_u8() {
-        println!(
-            "{:032b}", Instruction::O_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695685u32);
         assert_eq!(
             Instruction::O_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12484,11 +10901,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Mul_u16() {
-        println!(
-            "{:032b}", Instruction::O_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131141u32);
         assert_eq!(
             Instruction::O_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12505,11 +10917,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Mul_u32() {
-        println!(
-            "{:032b}", Instruction::O_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566597u32);
         assert_eq!(
             Instruction::O_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12526,11 +10933,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Mul_u64() {
-        println!(
-            "{:032b}", Instruction::O_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002053u32);
         assert_eq!(
             Instruction::O_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12546,11 +10948,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Neg_i8() {
-        println!(
-            "{:032b}", Instruction::O_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013573u32);
         assert_eq!(
             Instruction::O_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013573u32
@@ -12565,11 +10962,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Neg_i16() {
-        println!(
-            "{:032b}", Instruction::O_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416449029u32);
         assert_eq!(
             Instruction::O_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416449029u32
@@ -12584,11 +10976,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Neg_i32() {
-        println!(
-            "{:032b}", Instruction::O_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884485u32);
         assert_eq!(
             Instruction::O_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884485u32
@@ -12603,11 +10990,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Neg_i64() {
-        println!(
-            "{:032b}", Instruction::O_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953319941u32);
         assert_eq!(
             Instruction::O_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953319941u32
@@ -12623,11 +11005,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Pow_i8() {
-        println!(
-            "{:032b}", Instruction::O_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179461u32);
         assert_eq!(
             Instruction::O_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12644,11 +11021,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Pow_i16() {
-        println!(
-            "{:032b}", Instruction::O_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614917u32);
         assert_eq!(
             Instruction::O_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12665,11 +11037,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Pow_i32() {
-        println!(
-            "{:032b}", Instruction::O_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050373u32);
         assert_eq!(
             Instruction::O_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12686,11 +11053,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Pow_i64() {
-        println!(
-            "{:032b}", Instruction::O_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485829u32);
         assert_eq!(
             Instruction::O_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12707,11 +11069,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Pow_u8() {
-        println!(
-            "{:032b}", Instruction::O_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695813u32);
         assert_eq!(
             Instruction::O_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12728,11 +11085,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Pow_u16() {
-        println!(
-            "{:032b}", Instruction::O_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131269u32);
         assert_eq!(
             Instruction::O_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12749,11 +11101,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Pow_u32() {
-        println!(
-            "{:032b}", Instruction::O_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566725u32);
         assert_eq!(
             Instruction::O_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12770,11 +11117,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Pow_u64() {
-        println!(
-            "{:032b}", Instruction::O_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002181u32);
         assert_eq!(
             Instruction::O_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12791,11 +11133,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_i8() {
-        println!(
-            "{:032b}", Instruction::O_Rem_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179525u32);
         assert_eq!(
             Instruction::O_Rem_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12812,11 +11149,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_i16() {
-        println!(
-            "{:032b}", Instruction::O_Rem_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614981u32);
         assert_eq!(
             Instruction::O_Rem_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12833,11 +11165,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_i32() {
-        println!(
-            "{:032b}", Instruction::O_Rem_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050437u32);
         assert_eq!(
             Instruction::O_Rem_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12854,11 +11181,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_i64() {
-        println!(
-            "{:032b}", Instruction::O_Rem_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485893u32);
         assert_eq!(
             Instruction::O_Rem_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12875,11 +11197,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_u8() {
-        println!(
-            "{:032b}", Instruction::O_Rem_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695877u32);
         assert_eq!(
             Instruction::O_Rem_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12896,11 +11213,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_u16() {
-        println!(
-            "{:032b}", Instruction::O_Rem_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131333u32);
         assert_eq!(
             Instruction::O_Rem_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12917,11 +11229,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_u32() {
-        println!(
-            "{:032b}", Instruction::O_Rem_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566789u32);
         assert_eq!(
             Instruction::O_Rem_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12938,11 +11245,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_u64() {
-        println!(
-            "{:032b}", Instruction::O_Rem_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002245u32);
         assert_eq!(
             Instruction::O_Rem_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12959,11 +11261,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_E_i8() {
-        println!(
-            "{:032b}", Instruction::O_Rem_E_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179589u32);
         assert_eq!(
             Instruction::O_Rem_E_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -12980,12 +11277,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_E_i16() {
-        println!(
-            "{:032b}", Instruction::O_Rem_E_i16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2441615045u32);
         assert_eq!(
             Instruction::O_Rem_E_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13002,12 +11293,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_E_i32() {
-        println!(
-            "{:032b}", Instruction::O_Rem_E_i32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2710050501u32);
         assert_eq!(
             Instruction::O_Rem_E_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13024,12 +11309,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_E_i64() {
-        println!(
-            "{:032b}", Instruction::O_Rem_E_i64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2978485957u32);
         assert_eq!(
             Instruction::O_Rem_E_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13046,11 +11325,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_E_u8() {
-        println!(
-            "{:032b}", Instruction::O_Rem_E_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695941u32);
         assert_eq!(
             Instruction::O_Rem_E_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13067,12 +11341,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_E_u16() {
-        println!(
-            "{:032b}", Instruction::O_Rem_E_u16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 294131397u32);
         assert_eq!(
             Instruction::O_Rem_E_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13089,12 +11357,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_E_u32() {
-        println!(
-            "{:032b}", Instruction::O_Rem_E_u32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 562566853u32);
         assert_eq!(
             Instruction::O_Rem_E_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13111,12 +11373,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Rem_E_u64() {
-        println!(
-            "{:032b}", Instruction::O_Rem_E_u64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 831002309u32);
         assert_eq!(
             Instruction::O_Rem_E_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13133,11 +11389,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shl_i8() {
-        println!(
-            "{:032b}", Instruction::O_Shl_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179653u32);
         assert_eq!(
             Instruction::O_Shl_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13154,11 +11405,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shl_i16() {
-        println!(
-            "{:032b}", Instruction::O_Shl_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441615109u32);
         assert_eq!(
             Instruction::O_Shl_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13175,11 +11421,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shl_i32() {
-        println!(
-            "{:032b}", Instruction::O_Shl_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050565u32);
         assert_eq!(
             Instruction::O_Shl_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13196,11 +11437,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shl_i64() {
-        println!(
-            "{:032b}", Instruction::O_Shl_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978486021u32);
         assert_eq!(
             Instruction::O_Shl_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13217,11 +11453,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shl_u8() {
-        println!(
-            "{:032b}", Instruction::O_Shl_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25696005u32);
         assert_eq!(
             Instruction::O_Shl_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13238,11 +11469,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shl_u16() {
-        println!(
-            "{:032b}", Instruction::O_Shl_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131461u32);
         assert_eq!(
             Instruction::O_Shl_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13259,11 +11485,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shl_u32() {
-        println!(
-            "{:032b}", Instruction::O_Shl_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566917u32);
         assert_eq!(
             Instruction::O_Shl_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13280,11 +11501,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shl_u64() {
-        println!(
-            "{:032b}", Instruction::O_Shl_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002373u32);
         assert_eq!(
             Instruction::O_Shl_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13301,11 +11517,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shr_i8() {
-        println!(
-            "{:032b}", Instruction::O_Shr_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179717u32);
         assert_eq!(
             Instruction::O_Shr_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13322,11 +11533,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shr_i16() {
-        println!(
-            "{:032b}", Instruction::O_Shr_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441615173u32);
         assert_eq!(
             Instruction::O_Shr_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13343,11 +11549,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shr_i32() {
-        println!(
-            "{:032b}", Instruction::O_Shr_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050629u32);
         assert_eq!(
             Instruction::O_Shr_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13364,11 +11565,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shr_i64() {
-        println!(
-            "{:032b}", Instruction::O_Shr_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978486085u32);
         assert_eq!(
             Instruction::O_Shr_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13385,11 +11581,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shr_u8() {
-        println!(
-            "{:032b}", Instruction::O_Shr_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25696069u32);
         assert_eq!(
             Instruction::O_Shr_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13406,11 +11597,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shr_u16() {
-        println!(
-            "{:032b}", Instruction::O_Shr_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131525u32);
         assert_eq!(
             Instruction::O_Shr_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13427,11 +11613,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shr_u32() {
-        println!(
-            "{:032b}", Instruction::O_Shr_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566981u32);
         assert_eq!(
             Instruction::O_Shr_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13448,11 +11629,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Shr_u64() {
-        println!(
-            "{:032b}", Instruction::O_Shr_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002437u32);
         assert_eq!(
             Instruction::O_Shr_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13469,11 +11645,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_i8() {
-        println!(
-            "{:032b}", Instruction::O_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179781u32);
         assert_eq!(
             Instruction::O_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13490,11 +11661,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_i16() {
-        println!(
-            "{:032b}", Instruction::O_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441615237u32);
         assert_eq!(
             Instruction::O_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13511,11 +11677,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_i32() {
-        println!(
-            "{:032b}", Instruction::O_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050693u32);
         assert_eq!(
             Instruction::O_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13532,11 +11693,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_i64() {
-        println!(
-            "{:032b}", Instruction::O_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978486149u32);
         assert_eq!(
             Instruction::O_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13553,11 +11709,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_u8() {
-        println!(
-            "{:032b}", Instruction::O_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25696133u32);
         assert_eq!(
             Instruction::O_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13574,11 +11725,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_u16() {
-        println!(
-            "{:032b}", Instruction::O_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131589u32);
         assert_eq!(
             Instruction::O_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13595,11 +11741,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_u32() {
-        println!(
-            "{:032b}", Instruction::O_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562567045u32);
         assert_eq!(
             Instruction::O_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13616,11 +11757,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_u64() {
-        println!(
-            "{:032b}", Instruction::O_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002501u32);
         assert_eq!(
             Instruction::O_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13637,11 +11773,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_U_i8() {
-        println!(
-            "{:032b}", Instruction::O_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179845u32);
         assert_eq!(
             Instruction::O_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13658,12 +11789,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_U_i16() {
-        println!(
-            "{:032b}", Instruction::O_Sub_U_i16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2441615301u32);
         assert_eq!(
             Instruction::O_Sub_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13680,12 +11805,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_U_i32() {
-        println!(
-            "{:032b}", Instruction::O_Sub_U_i32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2710050757u32);
         assert_eq!(
             Instruction::O_Sub_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13702,12 +11821,6 @@ mod tests {
     }
     #[test]
     fn encode_O_Sub_U_i64() {
-        println!(
-            "{:032b}", Instruction::O_Sub_U_i64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2978486213u32);
         assert_eq!(
             Instruction::O_Sub_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13723,11 +11836,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Abs_i8() {
-        println!(
-            "{:032b}", Instruction::S_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013062u32);
         assert_eq!(
             Instruction::S_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013062u32
@@ -13742,11 +11850,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Abs_i16() {
-        println!(
-            "{:032b}", Instruction::S_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416448518u32);
         assert_eq!(
             Instruction::S_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416448518u32
@@ -13761,11 +11864,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Abs_i32() {
-        println!(
-            "{:032b}", Instruction::S_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684883974u32);
         assert_eq!(
             Instruction::S_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684883974u32
@@ -13780,11 +11878,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Abs_i64() {
-        println!(
-            "{:032b}", Instruction::S_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953319430u32);
         assert_eq!(
             Instruction::S_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953319430u32
@@ -13800,11 +11893,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_i8() {
-        println!(
-            "{:032b}", Instruction::S_Add_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173178950u32);
         assert_eq!(
             Instruction::S_Add_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13821,11 +11909,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_i16() {
-        println!(
-            "{:032b}", Instruction::S_Add_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614406u32);
         assert_eq!(
             Instruction::S_Add_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13842,11 +11925,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_i32() {
-        println!(
-            "{:032b}", Instruction::S_Add_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710049862u32);
         assert_eq!(
             Instruction::S_Add_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13863,11 +11941,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_i64() {
-        println!(
-            "{:032b}", Instruction::S_Add_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485318u32);
         assert_eq!(
             Instruction::S_Add_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13884,11 +11957,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_u8() {
-        println!(
-            "{:032b}", Instruction::S_Add_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695302u32);
         assert_eq!(
             Instruction::S_Add_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13905,11 +11973,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_u16() {
-        println!(
-            "{:032b}", Instruction::S_Add_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294130758u32);
         assert_eq!(
             Instruction::S_Add_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13926,11 +11989,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_u32() {
-        println!(
-            "{:032b}", Instruction::S_Add_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566214u32);
         assert_eq!(
             Instruction::S_Add_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13947,11 +12005,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_u64() {
-        println!(
-            "{:032b}", Instruction::S_Add_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001670u32);
         assert_eq!(
             Instruction::S_Add_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13968,11 +12021,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_U_i8() {
-        println!(
-            "{:032b}", Instruction::S_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179014u32);
         assert_eq!(
             Instruction::S_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -13989,12 +12037,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_U_i16() {
-        println!(
-            "{:032b}", Instruction::S_Add_U_i16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2441614470u32);
         assert_eq!(
             Instruction::S_Add_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14011,12 +12053,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_U_i32() {
-        println!(
-            "{:032b}", Instruction::S_Add_U_i32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2710049926u32);
         assert_eq!(
             Instruction::S_Add_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14033,12 +12069,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_U_i64() {
-        println!(
-            "{:032b}", Instruction::S_Add_U_i64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2978485382u32);
         assert_eq!(
             Instruction::S_Add_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14055,11 +12085,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_S_u8() {
-        println!(
-            "{:032b}", Instruction::S_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695366u32);
         assert_eq!(
             Instruction::S_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14076,12 +12101,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_S_u16() {
-        println!(
-            "{:032b}", Instruction::S_Add_S_u16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 294130822u32);
         assert_eq!(
             Instruction::S_Add_S_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14098,12 +12117,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_S_u32() {
-        println!(
-            "{:032b}", Instruction::S_Add_S_u32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 562566278u32);
         assert_eq!(
             Instruction::S_Add_S_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14120,12 +12133,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Add_S_u64() {
-        println!(
-            "{:032b}", Instruction::S_Add_S_u64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 831001734u32);
         assert_eq!(
             Instruction::S_Add_S_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14142,11 +12149,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Div_i8() {
-        println!(
-            "{:032b}", Instruction::S_Div_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179078u32);
         assert_eq!(
             Instruction::S_Div_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14163,11 +12165,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Div_i16() {
-        println!(
-            "{:032b}", Instruction::S_Div_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614534u32);
         assert_eq!(
             Instruction::S_Div_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14184,11 +12181,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Div_i32() {
-        println!(
-            "{:032b}", Instruction::S_Div_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710049990u32);
         assert_eq!(
             Instruction::S_Div_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14205,11 +12197,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Div_i64() {
-        println!(
-            "{:032b}", Instruction::S_Div_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485446u32);
         assert_eq!(
             Instruction::S_Div_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14226,11 +12213,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Div_u8() {
-        println!(
-            "{:032b}", Instruction::S_Div_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695430u32);
         assert_eq!(
             Instruction::S_Div_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14247,11 +12229,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Div_u16() {
-        println!(
-            "{:032b}", Instruction::S_Div_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294130886u32);
         assert_eq!(
             Instruction::S_Div_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14268,11 +12245,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Div_u32() {
-        println!(
-            "{:032b}", Instruction::S_Div_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566342u32);
         assert_eq!(
             Instruction::S_Div_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14289,11 +12261,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Div_u64() {
-        println!(
-            "{:032b}", Instruction::S_Div_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831001798u32);
         assert_eq!(
             Instruction::S_Div_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14310,11 +12277,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Mul_i8() {
-        println!(
-            "{:032b}", Instruction::S_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179334u32);
         assert_eq!(
             Instruction::S_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14331,11 +12293,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Mul_i16() {
-        println!(
-            "{:032b}", Instruction::S_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614790u32);
         assert_eq!(
             Instruction::S_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14352,11 +12309,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Mul_i32() {
-        println!(
-            "{:032b}", Instruction::S_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050246u32);
         assert_eq!(
             Instruction::S_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14373,11 +12325,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Mul_i64() {
-        println!(
-            "{:032b}", Instruction::S_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485702u32);
         assert_eq!(
             Instruction::S_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14394,11 +12341,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Mul_u8() {
-        println!(
-            "{:032b}", Instruction::S_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695686u32);
         assert_eq!(
             Instruction::S_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14415,11 +12357,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Mul_u16() {
-        println!(
-            "{:032b}", Instruction::S_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131142u32);
         assert_eq!(
             Instruction::S_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14436,11 +12373,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Mul_u32() {
-        println!(
-            "{:032b}", Instruction::S_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566598u32);
         assert_eq!(
             Instruction::S_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14457,11 +12389,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Mul_u64() {
-        println!(
-            "{:032b}", Instruction::S_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002054u32);
         assert_eq!(
             Instruction::S_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14477,11 +12404,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Neg_i8() {
-        println!(
-            "{:032b}", Instruction::S_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2148013574u32);
         assert_eq!(
             Instruction::S_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148013574u32
@@ -14496,11 +12418,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Neg_i16() {
-        println!(
-            "{:032b}", Instruction::S_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2416449030u32);
         assert_eq!(
             Instruction::S_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416449030u32
@@ -14515,11 +12432,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Neg_i32() {
-        println!(
-            "{:032b}", Instruction::S_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2684884486u32);
         assert_eq!(
             Instruction::S_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2684884486u32
@@ -14534,11 +12446,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Neg_i64() {
-        println!(
-            "{:032b}", Instruction::S_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 2953319942u32);
         assert_eq!(
             Instruction::S_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953319942u32
@@ -14554,11 +12461,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Pow_i8() {
-        println!(
-            "{:032b}", Instruction::S_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179462u32);
         assert_eq!(
             Instruction::S_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14575,11 +12477,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Pow_i16() {
-        println!(
-            "{:032b}", Instruction::S_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441614918u32);
         assert_eq!(
             Instruction::S_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14596,11 +12493,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Pow_i32() {
-        println!(
-            "{:032b}", Instruction::S_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050374u32);
         assert_eq!(
             Instruction::S_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14617,11 +12509,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Pow_i64() {
-        println!(
-            "{:032b}", Instruction::S_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978485830u32);
         assert_eq!(
             Instruction::S_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14638,11 +12525,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Pow_u8() {
-        println!(
-            "{:032b}", Instruction::S_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25695814u32);
         assert_eq!(
             Instruction::S_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14659,11 +12541,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Pow_u16() {
-        println!(
-            "{:032b}", Instruction::S_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131270u32);
         assert_eq!(
             Instruction::S_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14680,11 +12557,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Pow_u32() {
-        println!(
-            "{:032b}", Instruction::S_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562566726u32);
         assert_eq!(
             Instruction::S_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14701,11 +12573,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Pow_u64() {
-        println!(
-            "{:032b}", Instruction::S_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002182u32);
         assert_eq!(
             Instruction::S_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14722,11 +12589,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_i8() {
-        println!(
-            "{:032b}", Instruction::S_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179782u32);
         assert_eq!(
             Instruction::S_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14743,11 +12605,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_i16() {
-        println!(
-            "{:032b}", Instruction::S_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2441615238u32);
         assert_eq!(
             Instruction::S_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14764,11 +12621,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_i32() {
-        println!(
-            "{:032b}", Instruction::S_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2710050694u32);
         assert_eq!(
             Instruction::S_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14785,11 +12637,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_i64() {
-        println!(
-            "{:032b}", Instruction::S_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2978486150u32);
         assert_eq!(
             Instruction::S_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14806,11 +12653,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_u8() {
-        println!(
-            "{:032b}", Instruction::S_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 25696134u32);
         assert_eq!(
             Instruction::S_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14827,11 +12669,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_u16() {
-        println!(
-            "{:032b}", Instruction::S_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 294131590u32);
         assert_eq!(
             Instruction::S_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14848,11 +12685,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_u32() {
-        println!(
-            "{:032b}", Instruction::S_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 562567046u32);
         assert_eq!(
             Instruction::S_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14869,11 +12701,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_u64() {
-        println!(
-            "{:032b}", Instruction::S_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 831002502u32);
         assert_eq!(
             Instruction::S_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14890,11 +12717,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_U_i8() {
-        println!(
-            "{:032b}", Instruction::S_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 2173179846u32);
         assert_eq!(
             Instruction::S_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14911,12 +12733,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_U_i16() {
-        println!(
-            "{:032b}", Instruction::S_Sub_U_i16 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2441615302u32);
         assert_eq!(
             Instruction::S_Sub_U_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14933,12 +12749,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_U_i32() {
-        println!(
-            "{:032b}", Instruction::S_Sub_U_i32 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2710050758u32);
         assert_eq!(
             Instruction::S_Sub_U_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14955,12 +12765,6 @@ mod tests {
     }
     #[test]
     fn encode_S_Sub_U_i64() {
-        println!(
-            "{:032b}", Instruction::S_Sub_U_i64 { rd : Register::General_Purpose(5), rs1
-            : Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
-            .encode()
-        );
-        println!("{:032b}", 2978486214u32);
         assert_eq!(
             Instruction::S_Sub_U_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -14976,11 +12780,6 @@ mod tests {
     }
     #[test]
     fn encode_Abs_f32() {
-        println!(
-            "{:032b}", Instruction::Abs_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 3758625799u32);
         assert_eq!(
             Instruction::Abs_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 3758625799u32
@@ -14995,11 +12794,6 @@ mod tests {
     }
     #[test]
     fn encode_Abs_f64() {
-        println!(
-            "{:032b}", Instruction::Abs_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 4027061255u32);
         assert_eq!(
             Instruction::Abs_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 4027061255u32
@@ -15015,11 +12809,6 @@ mod tests {
     }
     #[test]
     fn encode_Add_f32() {
-        println!(
-            "{:032b}", Instruction::Add_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 3783791687u32);
         assert_eq!(
             Instruction::Add_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15036,11 +12825,6 @@ mod tests {
     }
     #[test]
     fn encode_Add_f64() {
-        println!(
-            "{:032b}", Instruction::Add_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 4052227143u32);
         assert_eq!(
             Instruction::Add_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15057,11 +12841,6 @@ mod tests {
     }
     #[test]
     fn encode_Div_f32() {
-        println!(
-            "{:032b}", Instruction::Div_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 3783791815u32);
         assert_eq!(
             Instruction::Div_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15078,11 +12857,6 @@ mod tests {
     }
     #[test]
     fn encode_Div_f64() {
-        println!(
-            "{:032b}", Instruction::Div_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 4052227271u32);
         assert_eq!(
             Instruction::Div_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15099,11 +12873,6 @@ mod tests {
     }
     #[test]
     fn encode_Div_E_f32() {
-        println!(
-            "{:032b}", Instruction::Div_E_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 3783791879u32);
         assert_eq!(
             Instruction::Div_E_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15120,11 +12889,6 @@ mod tests {
     }
     #[test]
     fn encode_Div_E_f64() {
-        println!(
-            "{:032b}", Instruction::Div_E_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 4052227335u32);
         assert_eq!(
             Instruction::Div_E_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15141,11 +12905,6 @@ mod tests {
     }
     #[test]
     fn encode_Log_f32() {
-        println!(
-            "{:032b}", Instruction::Log_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 3783791943u32);
         assert_eq!(
             Instruction::Log_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15162,11 +12921,6 @@ mod tests {
     }
     #[test]
     fn encode_Log_f64() {
-        println!(
-            "{:032b}", Instruction::Log_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 4052227399u32);
         assert_eq!(
             Instruction::Log_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15182,11 +12936,6 @@ mod tests {
     }
     #[test]
     fn encode_Sqrt_f32() {
-        println!(
-            "{:032b}", Instruction::Sqrt_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 3758626183u32);
         assert_eq!(
             Instruction::Sqrt_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 3758626183u32
@@ -15201,11 +12950,6 @@ mod tests {
     }
     #[test]
     fn encode_Sqrt_f64() {
-        println!(
-            "{:032b}", Instruction::Sqrt_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 4027061639u32);
         assert_eq!(
             Instruction::Sqrt_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 4027061639u32
@@ -15221,11 +12965,6 @@ mod tests {
     }
     #[test]
     fn encode_Mul_f32() {
-        println!(
-            "{:032b}", Instruction::Mul_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 3783792071u32);
         assert_eq!(
             Instruction::Mul_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15242,11 +12981,6 @@ mod tests {
     }
     #[test]
     fn encode_Mul_f64() {
-        println!(
-            "{:032b}", Instruction::Mul_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 4052227527u32);
         assert_eq!(
             Instruction::Mul_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15262,11 +12996,6 @@ mod tests {
     }
     #[test]
     fn encode_Neg_f32() {
-        println!(
-            "{:032b}", Instruction::Neg_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 3758626311u32);
         assert_eq!(
             Instruction::Neg_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 3758626311u32
@@ -15281,11 +13010,6 @@ mod tests {
     }
     #[test]
     fn encode_Neg_f64() {
-        println!(
-            "{:032b}", Instruction::Neg_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 4027061767u32);
         assert_eq!(
             Instruction::Neg_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 4027061767u32
@@ -15301,11 +13025,6 @@ mod tests {
     }
     #[test]
     fn encode_Pow_f32() {
-        println!(
-            "{:032b}", Instruction::Pow_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 3783792199u32);
         assert_eq!(
             Instruction::Pow_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15322,11 +13041,6 @@ mod tests {
     }
     #[test]
     fn encode_Pow_f64() {
-        println!(
-            "{:032b}", Instruction::Pow_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 4052227655u32);
         assert_eq!(
             Instruction::Pow_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15343,11 +13057,6 @@ mod tests {
     }
     #[test]
     fn encode_Rem_f32() {
-        println!(
-            "{:032b}", Instruction::Rem_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 3783792263u32);
         assert_eq!(
             Instruction::Rem_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15364,11 +13073,6 @@ mod tests {
     }
     #[test]
     fn encode_Rem_f64() {
-        println!(
-            "{:032b}", Instruction::Rem_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 4052227719u32);
         assert_eq!(
             Instruction::Rem_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15385,11 +13089,6 @@ mod tests {
     }
     #[test]
     fn encode_Rem_E_f32() {
-        println!(
-            "{:032b}", Instruction::Rem_E_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 3783792327u32);
         assert_eq!(
             Instruction::Rem_E_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15406,11 +13105,6 @@ mod tests {
     }
     #[test]
     fn encode_Rem_E_f64() {
-        println!(
-            "{:032b}", Instruction::Rem_E_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 4052227783u32);
         assert_eq!(
             Instruction::Rem_E_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15426,11 +13120,6 @@ mod tests {
     }
     #[test]
     fn encode_Cbrt_f32() {
-        println!(
-            "{:032b}", Instruction::Cbrt_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 3758626631u32);
         assert_eq!(
             Instruction::Cbrt_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 3758626631u32
@@ -15445,11 +13134,6 @@ mod tests {
     }
     #[test]
     fn encode_Cbrt_f64() {
-        println!(
-            "{:032b}", Instruction::Cbrt_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode()
-        );
-        println!("{:032b}", 4027062087u32);
         assert_eq!(
             Instruction::Cbrt_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 4027062087u32
@@ -15465,11 +13149,6 @@ mod tests {
     }
     #[test]
     fn encode_Sub_f32() {
-        println!(
-            "{:032b}", Instruction::Sub_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 3783792519u32);
         assert_eq!(
             Instruction::Sub_f32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
@@ -15486,11 +13165,6 @@ mod tests {
     }
     #[test]
     fn encode_Sub_f64() {
-        println!(
-            "{:032b}", Instruction::Sub_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(6), } .encode()
-        );
-        println!("{:032b}", 4052227975u32);
         assert_eq!(
             Instruction::Sub_f64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
