@@ -19,10 +19,19 @@ pub enum Instruction {
     Jiz { rs1: Register, rs2: Register },
     Jizr { rs1: Register, rs2: Register },
     Jizi { rd: Register, imm: i16 },
-    Load { rd: Register, rs1: Register, size: u8 },
+    Load_8 { rd: Register, rs1: Register },
+    Load_16 { rd: Register, rs1: Register },
+    Load_32 { rd: Register, rs1: Register },
+    Load_64 { rd: Register, rs1: Register },
     Loadi { rd: Register, imm: i16 },
-    Loada { rd: Register, imm: i16 },
-    Store { rd: Register, rs1: Register, size: u8 },
+    Loada_8 { rd: Register, imm: i16 },
+    Loada_16 { rd: Register, imm: i16 },
+    Loada_32 { rd: Register, imm: i16 },
+    Loada_64 { rd: Register, imm: i16 },
+    Store_8 { rd: Register, rs1: Register },
+    Store_16 { rd: Register, rs1: Register },
+    Store_32 { rd: Register, rs1: Register },
+    Store_64 { rd: Register, rs1: Register },
     Storei { rd: Register, imm: i16 },
     Move { rd: Register, rs1: Register },
     Push { rd: Register },
@@ -507,23 +516,40 @@ impl Instruction {
             0u8 if funct == 11u8 && s == 0u8 => Instruction::Jiz { rs1, rs2 },
             0u8 if funct == 11u8 && s == 1u8 => Instruction::Jizr { rs1, rs2 },
             0u8 if funct == 12u8 && !rd.is_readonly() => Instruction::Jizi { rd, imm },
-            1u8 if funct == 0u8 && !rd.is_readonly() => {
-                Instruction::Load { rd, rs1, size }
+            1u8 if funct == 0u8 && size == 8u8 && !rd.is_readonly() => {
+                Instruction::Load_8 { rd, rs1 }
+            }
+            1u8 if funct == 0u8 && size == 16u8 && !rd.is_readonly() => {
+                Instruction::Load_16 { rd, rs1 }
+            }
+            1u8 if funct == 0u8 && size == 32u8 && !rd.is_readonly() => {
+                Instruction::Load_32 { rd, rs1 }
+            }
+            1u8 if funct == 0u8 && size == 64u8 && !rd.is_readonly() => {
+                Instruction::Load_64 { rd, rs1 }
             }
             1u8 if funct == 1u8 && !rd.is_readonly() => Instruction::Loadi { rd, imm },
-            1u8 if funct == 2u8 && !rd.is_readonly() => Instruction::Loada { rd, imm },
-            1u8 if funct == 3u8 && !rd.is_readonly() => {
-                Instruction::Store {
-                    rd,
-                    rs1,
-                    size,
-                }
+            1u8 if funct == 2u8 && !rd.is_readonly() => Instruction::Loada_8 { rd, imm },
+            1u8 if funct == 3u8 && !rd.is_readonly() => Instruction::Loada_16 { rd, imm },
+            1u8 if funct == 4u8 && !rd.is_readonly() => Instruction::Loada_32 { rd, imm },
+            1u8 if funct == 5u8 && !rd.is_readonly() => Instruction::Loada_64 { rd, imm },
+            1u8 if funct == 6u8 && size == 8u8 && !rd.is_readonly() => {
+                Instruction::Store_8 { rd, rs1 }
             }
-            1u8 if funct == 4u8 && !rd.is_readonly() => Instruction::Storei { rd, imm },
-            1u8 if funct == 5u8 && !rd.is_readonly() => Instruction::Move { rd, rs1 },
-            1u8 if funct == 6u8 && !rd.is_readonly() => Instruction::Push { rd },
-            1u8 if funct == 7u8 => Instruction::Pushi { imm },
-            1u8 if funct == 8u8 && !rd.is_readonly() => Instruction::Pop { rd },
+            1u8 if funct == 6u8 && size == 16u8 && !rd.is_readonly() => {
+                Instruction::Store_16 { rd, rs1 }
+            }
+            1u8 if funct == 6u8 && size == 32u8 && !rd.is_readonly() => {
+                Instruction::Store_32 { rd, rs1 }
+            }
+            1u8 if funct == 6u8 && size == 64u8 && !rd.is_readonly() => {
+                Instruction::Store_64 { rd, rs1 }
+            }
+            1u8 if funct == 7u8 && !rd.is_readonly() => Instruction::Storei { rd, imm },
+            1u8 if funct == 8u8 && !rd.is_readonly() => Instruction::Move { rd, rs1 },
+            1u8 if funct == 9u8 && !rd.is_readonly() => Instruction::Push { rd },
+            1u8 if funct == 10u8 => Instruction::Pushi { imm },
+            1u8 if funct == 11u8 && !rd.is_readonly() => Instruction::Pop { rd },
             2u8 if funct == 0u8 && f == 0u8 && !rd.is_readonly() => {
                 Instruction::Ie { rd, rs1, rs2 }
             }
@@ -3760,38 +3786,74 @@ impl Instruction {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(12u8)
                     | encode_op_code(0u8)
             }
-            Instruction::Load { rd, rs1, size } => {
-                0 | 0 | encode_size(*size) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
+            Instruction::Load_8 { rd, rs1 } => {
+                0 | 0 | encode_size(8u8) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
+                    | encode_funct(0u8) | encode_op_code(1u8)
+            }
+            Instruction::Load_16 { rd, rs1 } => {
+                0 | 0 | encode_size(16u8) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
+                    | encode_funct(0u8) | encode_op_code(1u8)
+            }
+            Instruction::Load_32 { rd, rs1 } => {
+                0 | 0 | encode_size(32u8) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
+                    | encode_funct(0u8) | encode_op_code(1u8)
+            }
+            Instruction::Load_64 { rd, rs1 } => {
+                0 | 0 | encode_size(64u8) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
                     | encode_funct(0u8) | encode_op_code(1u8)
             }
             Instruction::Loadi { rd, imm } => {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(1u8)
                     | encode_op_code(1u8)
             }
-            Instruction::Loada { rd, imm } => {
+            Instruction::Loada_8 { rd, imm } => {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(2u8)
                     | encode_op_code(1u8)
             }
-            Instruction::Store { rd, rs1, size } => {
-                0 | 0 | encode_size(*size) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
-                    | encode_funct(3u8) | encode_op_code(1u8)
+            Instruction::Loada_16 { rd, imm } => {
+                encode_imm(*imm) | encode_rd(*rd) | encode_funct(3u8)
+                    | encode_op_code(1u8)
             }
-            Instruction::Storei { rd, imm } => {
+            Instruction::Loada_32 { rd, imm } => {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(4u8)
                     | encode_op_code(1u8)
             }
+            Instruction::Loada_64 { rd, imm } => {
+                encode_imm(*imm) | encode_rd(*rd) | encode_funct(5u8)
+                    | encode_op_code(1u8)
+            }
+            Instruction::Store_8 { rd, rs1 } => {
+                0 | 0 | encode_size(8u8) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
+                    | encode_funct(6u8) | encode_op_code(1u8)
+            }
+            Instruction::Store_16 { rd, rs1 } => {
+                0 | 0 | encode_size(16u8) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
+                    | encode_funct(6u8) | encode_op_code(1u8)
+            }
+            Instruction::Store_32 { rd, rs1 } => {
+                0 | 0 | encode_size(32u8) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
+                    | encode_funct(6u8) | encode_op_code(1u8)
+            }
+            Instruction::Store_64 { rd, rs1 } => {
+                0 | 0 | encode_size(64u8) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
+                    | encode_funct(6u8) | encode_op_code(1u8)
+            }
+            Instruction::Storei { rd, imm } => {
+                encode_imm(*imm) | encode_rd(*rd) | encode_funct(7u8)
+                    | encode_op_code(1u8)
+            }
             Instruction::Move { rd, rs1 } => {
-                0 | 0 | 0 | 0 | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
+                0 | 0 | 0 | 0 | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(8u8)
                     | encode_op_code(1u8)
             }
             Instruction::Push { rd } => {
-                0 | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(1u8)
+                0 | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(1u8)
             }
             Instruction::Pushi { imm } => {
-                encode_imm(*imm) | 0 | encode_funct(7u8) | encode_op_code(1u8)
+                encode_imm(*imm) | 0 | encode_funct(10u8) | encode_op_code(1u8)
             }
             Instruction::Pop { rd } => {
-                0 | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(1u8)
+                0 | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(1u8)
             }
             Instruction::Ie { rd, rs1, rs2 } => {
                 0 | encode_f(0u8) | 0 | encode_rs2(*rs2) | encode_rs1(*rs1)
@@ -6126,18 +6188,59 @@ mod tests {
         );
     }
     #[test]
-    fn decode_Load() {
+    fn decode_Load_8() {
         assert_eq!(
-            Instruction::decode(806235137u32), Instruction::Load { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), size :
-            64u8, }
+            Instruction::decode(928769u32), Instruction::Load_8 { rd :
+            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Load() {
+    fn encode_Load_8() {
         assert_eq!(
-            Instruction::Load { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), size : 64u8, } .encode(), 806235137u32
+            Instruction::Load_8 { rd : Register::General_Purpose(5), rs1 :
+            Register::General_Purpose(8), } .encode(), 928769u32
+        );
+    }
+    #[test]
+    fn decode_Load_16() {
+        assert_eq!(
+            Instruction::decode(269364225u32), Instruction::Load_16 { rd :
+            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+        );
+    }
+    #[test]
+    fn encode_Load_16() {
+        assert_eq!(
+            Instruction::Load_16 { rd : Register::General_Purpose(5), rs1 :
+            Register::General_Purpose(8), } .encode(), 269364225u32
+        );
+    }
+    #[test]
+    fn decode_Load_32() {
+        assert_eq!(
+            Instruction::decode(537799681u32), Instruction::Load_32 { rd :
+            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+        );
+    }
+    #[test]
+    fn encode_Load_32() {
+        assert_eq!(
+            Instruction::Load_32 { rd : Register::General_Purpose(5), rs1 :
+            Register::General_Purpose(8), } .encode(), 537799681u32
+        );
+    }
+    #[test]
+    fn decode_Load_64() {
+        assert_eq!(
+            Instruction::decode(806235137u32), Instruction::Load_64 { rd :
+            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+        );
+    }
+    #[test]
+    fn encode_Load_64() {
+        assert_eq!(
+            Instruction::Load_64 { rd : Register::General_Purpose(5), rs1 :
+            Register::General_Purpose(8), } .encode(), 806235137u32
         );
     }
     #[test]
@@ -6155,38 +6258,121 @@ mod tests {
         );
     }
     #[test]
-    fn decode_Loada() {
+    fn decode_Loada_8() {
         assert_eq!(
-            Instruction::decode(4293930113u32), Instruction::Loada { rd :
+            Instruction::decode(4293930113u32), Instruction::Loada_8 { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
     #[test]
-    fn encode_Loada() {
+    fn encode_Loada_8() {
         assert_eq!(
-            Instruction::Loada { rd : Register::General_Purpose(5), imm : - 16, }
+            Instruction::Loada_8 { rd : Register::General_Purpose(5), imm : - 16, }
             .encode(), 4293930113u32
         );
     }
     #[test]
-    fn decode_Store() {
+    fn decode_Loada_16() {
         assert_eq!(
-            Instruction::decode(806235329u32), Instruction::Store { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), size :
-            64u8, }
+            Instruction::decode(4293930177u32), Instruction::Loada_16 { rd :
+            Register::General_Purpose(5), imm : - 16, }
         );
     }
     #[test]
-    fn encode_Store() {
+    fn encode_Loada_16() {
         assert_eq!(
-            Instruction::Store { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), size : 64u8, } .encode(), 806235329u32
+            Instruction::Loada_16 { rd : Register::General_Purpose(5), imm : - 16, }
+            .encode(), 4293930177u32
+        );
+    }
+    #[test]
+    fn decode_Loada_32() {
+        assert_eq!(
+            Instruction::decode(4293930241u32), Instruction::Loada_32 { rd :
+            Register::General_Purpose(5), imm : - 16, }
+        );
+    }
+    #[test]
+    fn encode_Loada_32() {
+        assert_eq!(
+            Instruction::Loada_32 { rd : Register::General_Purpose(5), imm : - 16, }
+            .encode(), 4293930241u32
+        );
+    }
+    #[test]
+    fn decode_Loada_64() {
+        assert_eq!(
+            Instruction::decode(4293930305u32), Instruction::Loada_64 { rd :
+            Register::General_Purpose(5), imm : - 16, }
+        );
+    }
+    #[test]
+    fn encode_Loada_64() {
+        assert_eq!(
+            Instruction::Loada_64 { rd : Register::General_Purpose(5), imm : - 16, }
+            .encode(), 4293930305u32
+        );
+    }
+    #[test]
+    fn decode_Store_8() {
+        assert_eq!(
+            Instruction::decode(929153u32), Instruction::Store_8 { rd :
+            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+        );
+    }
+    #[test]
+    fn encode_Store_8() {
+        assert_eq!(
+            Instruction::Store_8 { rd : Register::General_Purpose(5), rs1 :
+            Register::General_Purpose(8), } .encode(), 929153u32
+        );
+    }
+    #[test]
+    fn decode_Store_16() {
+        assert_eq!(
+            Instruction::decode(269364609u32), Instruction::Store_16 { rd :
+            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+        );
+    }
+    #[test]
+    fn encode_Store_16() {
+        assert_eq!(
+            Instruction::Store_16 { rd : Register::General_Purpose(5), rs1 :
+            Register::General_Purpose(8), } .encode(), 269364609u32
+        );
+    }
+    #[test]
+    fn decode_Store_32() {
+        assert_eq!(
+            Instruction::decode(537800065u32), Instruction::Store_32 { rd :
+            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+        );
+    }
+    #[test]
+    fn encode_Store_32() {
+        assert_eq!(
+            Instruction::Store_32 { rd : Register::General_Purpose(5), rs1 :
+            Register::General_Purpose(8), } .encode(), 537800065u32
+        );
+    }
+    #[test]
+    fn decode_Store_64() {
+        assert_eq!(
+            Instruction::decode(806235521u32), Instruction::Store_64 { rd :
+            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+        );
+    }
+    #[test]
+    fn encode_Store_64() {
+        assert_eq!(
+            Instruction::Store_64 { rd : Register::General_Purpose(5), rs1 :
+            Register::General_Purpose(8), } .encode(), 806235521u32
         );
     }
     #[test]
     fn decode_Storei() {
         assert_eq!(
-            Instruction::decode(4293930241u32), Instruction::Storei { rd :
+            Instruction::decode(4293930433u32), Instruction::Storei { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
@@ -6194,13 +6380,13 @@ mod tests {
     fn encode_Storei() {
         assert_eq!(
             Instruction::Storei { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293930241u32
+            .encode(), 4293930433u32
         );
     }
     #[test]
     fn decode_Move() {
         assert_eq!(
-            Instruction::decode(929089u32), Instruction::Move { rd :
+            Instruction::decode(929281u32), Instruction::Move { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
@@ -6208,43 +6394,43 @@ mod tests {
     fn encode_Move() {
         assert_eq!(
             Instruction::Move { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929089u32
+            Register::General_Purpose(8), } .encode(), 929281u32
         );
     }
     #[test]
     fn decode_Push() {
         assert_eq!(
-            Instruction::decode(11649u32), Instruction::Push { rd :
+            Instruction::decode(11841u32), Instruction::Push { rd :
             Register::General_Purpose(5), }
         );
     }
     #[test]
     fn encode_Push() {
         assert_eq!(
-            Instruction::Push { rd : Register::General_Purpose(5), } .encode(), 11649u32
+            Instruction::Push { rd : Register::General_Purpose(5), } .encode(), 11841u32
         );
     }
     #[test]
     fn decode_Pushi() {
         assert_eq!(
-            Instruction::decode(4293919169u32), Instruction::Pushi { imm : - 16, }
+            Instruction::decode(4293919361u32), Instruction::Pushi { imm : - 16, }
         );
     }
     #[test]
     fn encode_Pushi() {
-        assert_eq!(Instruction::Pushi { imm : - 16, } .encode(), 4293919169u32);
+        assert_eq!(Instruction::Pushi { imm : - 16, } .encode(), 4293919361u32);
     }
     #[test]
     fn decode_Pop() {
         assert_eq!(
-            Instruction::decode(11777u32), Instruction::Pop { rd :
+            Instruction::decode(11969u32), Instruction::Pop { rd :
             Register::General_Purpose(5), }
         );
     }
     #[test]
     fn encode_Pop() {
         assert_eq!(
-            Instruction::Pop { rd : Register::General_Purpose(5), } .encode(), 11777u32
+            Instruction::Pop { rd : Register::General_Purpose(5), } .encode(), 11969u32
         );
     }
     #[test]

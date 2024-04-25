@@ -347,9 +347,20 @@ impl<'program> Virtual_Machine<'program> {
 
             // Memory
             // ------
-            Load { rd, rs1, size } => {
-                self.load(rd, Memory_Address(self.register(rs1)), size);
-
+            Load_8 { rd, rs1 } => {
+                self.load(rd, Memory_Address(self.register(rs1)), 8);
+                Instruction_Pointer::Next
+            },
+            Load_16 { rd, rs1 } => {
+                self.load(rd, Memory_Address(self.register(rs1)), 16);
+                Instruction_Pointer::Next
+            },
+            Load_32 { rd, rs1 } => {
+                self.load(rd, Memory_Address(self.register(rs1)), 32);
+                Instruction_Pointer::Next
+            },
+            Load_64 { rd, rs1 } => {
+                self.load(rd, Memory_Address(self.register(rs1)), 64);
                 Instruction_Pointer::Next
             },
 
@@ -359,16 +370,37 @@ impl<'program> Virtual_Machine<'program> {
                 Instruction_Pointer::Next
             },
 
-            Loada { rd, imm } => {
-                todo!();
-                // self.load(rd, Memory_Address(imm as u64), bit_width);
-
-                // Instruction_Pointer::Next
+            Loada_8 { rd, imm } => {
+                self.load(rd, Memory_Address(imm as u64), 8);
+                Instruction_Pointer::Next
+            },
+            Loada_16 { rd, imm } => {
+                self.load(rd, Memory_Address(imm as u64), 16);
+                Instruction_Pointer::Next
+            },
+            Loada_32 { rd, imm } => {
+                self.load(rd, Memory_Address(imm as u64), 32);
+                Instruction_Pointer::Next
+            },
+            Loada_64 { rd, imm } => {
+                self.load(rd, Memory_Address(imm as u64), 64);
+                Instruction_Pointer::Next
             },
 
-            Store { rd, rs1, size } => {
-                self.store(Memory_Address(self.register(rd)), self.register(rs1), size);
-
+            Store_8 { rd, rs1 } => {
+                self.store(Memory_Address(self.register(rd)), self.register(rs1), 8);
+                Instruction_Pointer::Next
+            },
+            Store_16 { rd, rs1 } => {
+                self.store(Memory_Address(self.register(rd)), self.register(rs1), 16);
+                Instruction_Pointer::Next
+            },
+            Store_32 { rd, rs1 } => {
+                self.store(Memory_Address(self.register(rd)), self.register(rs1), 32);
+                Instruction_Pointer::Next
+            },
+            Store_64 { rd, rs1 } => {
+                self.store(Memory_Address(self.register(rd)), self.register(rs1), 64);
                 Instruction_Pointer::Next
             },
 
