@@ -137,3 +137,9 @@ pub fn decode_imm(instr: u32) -> i16 {
 pub fn encode_imm(imm: i16) -> u32 {
     ((imm as u32) & IMM_MASK) << IMM_SHIFT
 }
+
+#[inline(always)]
+pub fn re_encode_imm(instr: &mut u32, imm: i16) {
+    *instr &= !(IMM_MASK << IMM_SHIFT);
+    *instr |= encode_imm(imm);
+}

@@ -1,5 +1,7 @@
 use std::mem;
 
+use byte_code::encoding;
+
 use crate::{
     lexer::Assembly_Lexer,
     object::Object,
@@ -78,9 +80,7 @@ impl<'source> Assembler<'source> {
                 let offset = *label_index as isize - instr_index as isize;
                 let instr = &mut self.object.code_instrs[instr_index];
 
-                println!("We will patch {:?} to {}", instr, offset);
-
-                // instr.imm = offset as i16;
+                encoding::re_encode_imm(instr, offset as i16);
             } else {
                 panic!("Unknown label: {}", label);
             }
@@ -88,12 +88,10 @@ impl<'source> Assembler<'source> {
 
         for (index, label) in self.patch_addresses.drain(..) {
             if let Some(layout) = self.object.data_layout.get(label) {
-                // TODO: Check the instruction size matches the data size
+                // TODO: Come up with some way to ensure the instruction size matches the data size
                 let instr = &mut self.object.code_instrs[index];
 
-                println!("We will patch {:?} to {}", instr, layout.address);
-
-                // instr.imm = offset as i16;
+                encoding::re_encode_imm(instr, layout.address as i16);
             } else {
                 panic!("Unknown label: {}", label);
             }

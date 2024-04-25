@@ -1,7 +1,5 @@
 use std::{collections::HashMap, fmt};
 
-use byte_code::Instruction;
-
 #[derive(Debug, Clone, Copy)]
 pub struct Data_Layout {
     pub address: usize,
@@ -14,7 +12,7 @@ pub struct Object {
     pub data_bytes:  Vec<u8>,
 
     pub code_labels: HashMap<String, usize>,
-    pub code_instrs: Vec<Instruction>,
+    pub code_instrs: Vec<u32>,
 }
 
 impl Object {

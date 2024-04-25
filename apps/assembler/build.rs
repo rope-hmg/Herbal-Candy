@@ -122,7 +122,7 @@ fn main() {
             fn #parser_ident<'source>(asm: &mut Assembler<'source>) {
                 let instr = #instr;
                 asm.expects(Token_Kind::Newline);
-                asm.object.code_instrs.push(instr);
+                asm.object.code_instrs.push(instr.encode());
             }
         });
         index_to_parser.push(quote! {
