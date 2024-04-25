@@ -5,37 +5,37 @@ pub enum Instruction {
     Halt,
     Trap,
     Call { rs2: Register },
-    Callr { rs2: Register },
-    Calli { imm: i16 },
+    Call_R { rs2: Register },
+    Call_I { imm: i16 },
     Ret,
     Ecall { imm: i16 },
     Break,
     Jal { rs2: Register },
-    Jalr { rs2: Register },
-    Jali { imm: i16 },
+    Jal_R { rs2: Register },
+    Jal_I { imm: i16 },
     Jnz { rs1: Register, rs2: Register },
-    Jnzr { rs1: Register, rs2: Register },
-    Jnzi { rd: Register, imm: i16 },
+    Jnz_R { rs1: Register, rs2: Register },
+    Jnz_I { rd: Register, imm: i16 },
     Jiz { rs1: Register, rs2: Register },
-    Jizr { rs1: Register, rs2: Register },
-    Jizi { rd: Register, imm: i16 },
+    Jiz_R { rs1: Register, rs2: Register },
+    Jiz_I { rd: Register, imm: i16 },
     Load_8 { rd: Register, rs1: Register },
     Load_16 { rd: Register, rs1: Register },
     Load_32 { rd: Register, rs1: Register },
     Load_64 { rd: Register, rs1: Register },
-    Loadi { rd: Register, imm: i16 },
-    Loada_8 { rd: Register, imm: i16 },
-    Loada_16 { rd: Register, imm: i16 },
-    Loada_32 { rd: Register, imm: i16 },
-    Loada_64 { rd: Register, imm: i16 },
+    Load_I { rd: Register, imm: i16 },
+    Load_A_8 { rd: Register, imm: i16 },
+    Load_A_16 { rd: Register, imm: i16 },
+    Load_A_32 { rd: Register, imm: i16 },
+    Load_A_64 { rd: Register, imm: i16 },
     Store_8 { rd: Register, rs1: Register },
     Store_16 { rd: Register, rs1: Register },
     Store_32 { rd: Register, rs1: Register },
     Store_64 { rd: Register, rs1: Register },
-    Storei { rd: Register, imm: i16 },
+    Store_I { rd: Register, imm: i16 },
     Move { rd: Register, rs1: Register },
     Push { rd: Register },
-    Pushi { imm: i16 },
+    Push_I { imm: i16 },
     Pop { rd: Register },
     Ie { rd: Register, rs1: Register, rs2: Register },
     Ie_f32 { rd: Register, rs1: Register, rs2: Register },
@@ -103,86 +103,86 @@ pub enum Instruction {
     Shr_u16 { rd: Register, rs1: Register, rs2: Register },
     Shr_u32 { rd: Register, rs1: Register, rs2: Register },
     Shr_u64 { rd: Register, rs1: Register, rs2: Register },
-    Rotl_i8 { rd: Register, rs1: Register, rs2: Register },
-    Rotl_i16 { rd: Register, rs1: Register, rs2: Register },
-    Rotl_i32 { rd: Register, rs1: Register, rs2: Register },
-    Rotl_i64 { rd: Register, rs1: Register, rs2: Register },
-    Rotl_u8 { rd: Register, rs1: Register, rs2: Register },
-    Rotl_u16 { rd: Register, rs1: Register, rs2: Register },
-    Rotl_u32 { rd: Register, rs1: Register, rs2: Register },
-    Rotl_u64 { rd: Register, rs1: Register, rs2: Register },
-    Rotr_i8 { rd: Register, rs1: Register, rs2: Register },
-    Rotr_i16 { rd: Register, rs1: Register, rs2: Register },
-    Rotr_i32 { rd: Register, rs1: Register, rs2: Register },
-    Rotr_i64 { rd: Register, rs1: Register, rs2: Register },
-    Rotr_u8 { rd: Register, rs1: Register, rs2: Register },
-    Rotr_u16 { rd: Register, rs1: Register, rs2: Register },
-    Rotr_u32 { rd: Register, rs1: Register, rs2: Register },
-    Rotr_u64 { rd: Register, rs1: Register, rs2: Register },
-    Count_Ones_i8 { rd: Register, rs1: Register },
-    Count_Ones_i16 { rd: Register, rs1: Register },
-    Count_Ones_i32 { rd: Register, rs1: Register },
-    Count_Ones_i64 { rd: Register, rs1: Register },
-    Count_Ones_u8 { rd: Register, rs1: Register },
-    Count_Ones_u16 { rd: Register, rs1: Register },
-    Count_Ones_u32 { rd: Register, rs1: Register },
-    Count_Ones_u64 { rd: Register, rs1: Register },
-    Leading_Ones_i8 { rd: Register, rs1: Register },
-    Leading_Ones_i16 { rd: Register, rs1: Register },
-    Leading_Ones_i32 { rd: Register, rs1: Register },
-    Leading_Ones_i64 { rd: Register, rs1: Register },
-    Leading_Ones_u8 { rd: Register, rs1: Register },
-    Leading_Ones_u16 { rd: Register, rs1: Register },
-    Leading_Ones_u32 { rd: Register, rs1: Register },
-    Leading_Ones_u64 { rd: Register, rs1: Register },
-    Trailing_Ones_i8 { rd: Register, rs1: Register },
-    Trailing_Ones_i16 { rd: Register, rs1: Register },
-    Trailing_Ones_i32 { rd: Register, rs1: Register },
-    Trailing_Ones_i64 { rd: Register, rs1: Register },
-    Trailing_Ones_u8 { rd: Register, rs1: Register },
-    Trailing_Ones_u16 { rd: Register, rs1: Register },
-    Trailing_Ones_u32 { rd: Register, rs1: Register },
-    Trailing_Ones_u64 { rd: Register, rs1: Register },
-    Count_Zeros_i8 { rd: Register, rs1: Register },
-    Count_Zeros_i16 { rd: Register, rs1: Register },
-    Count_Zeros_i32 { rd: Register, rs1: Register },
-    Count_Zeros_i64 { rd: Register, rs1: Register },
-    Count_Zeros_u8 { rd: Register, rs1: Register },
-    Count_Zeros_u16 { rd: Register, rs1: Register },
-    Count_Zeros_u32 { rd: Register, rs1: Register },
-    Count_Zeros_u64 { rd: Register, rs1: Register },
-    Leading_Zeros_i8 { rd: Register, rs1: Register },
-    Leading_Zeros_i16 { rd: Register, rs1: Register },
-    Leading_Zeros_i32 { rd: Register, rs1: Register },
-    Leading_Zeros_i64 { rd: Register, rs1: Register },
-    Leading_Zeros_u8 { rd: Register, rs1: Register },
-    Leading_Zeros_u16 { rd: Register, rs1: Register },
-    Leading_Zeros_u32 { rd: Register, rs1: Register },
-    Leading_Zeros_u64 { rd: Register, rs1: Register },
-    Trailing_Zeros_i8 { rd: Register, rs1: Register },
-    Trailing_Zeros_i16 { rd: Register, rs1: Register },
-    Trailing_Zeros_i32 { rd: Register, rs1: Register },
-    Trailing_Zeros_i64 { rd: Register, rs1: Register },
-    Trailing_Zeros_u8 { rd: Register, rs1: Register },
-    Trailing_Zeros_u16 { rd: Register, rs1: Register },
-    Trailing_Zeros_u32 { rd: Register, rs1: Register },
-    Trailing_Zeros_u64 { rd: Register, rs1: Register },
-    Reverse_Bytes_i8 { rd: Register, rs1: Register },
-    Reverse_Bytes_i16 { rd: Register, rs1: Register },
-    Reverse_Bytes_i32 { rd: Register, rs1: Register },
-    Reverse_Bytes_i64 { rd: Register, rs1: Register },
-    Reverse_Bytes_u8 { rd: Register, rs1: Register },
-    Reverse_Bytes_u16 { rd: Register, rs1: Register },
-    Reverse_Bytes_u32 { rd: Register, rs1: Register },
-    Reverse_Bytes_u64 { rd: Register, rs1: Register },
-    Reverse_Bits_i8 { rd: Register, rs1: Register },
-    Reverse_Bits_i16 { rd: Register, rs1: Register },
-    Reverse_Bits_i32 { rd: Register, rs1: Register },
-    Reverse_Bits_i64 { rd: Register, rs1: Register },
-    Reverse_Bits_u8 { rd: Register, rs1: Register },
-    Reverse_Bits_u16 { rd: Register, rs1: Register },
-    Reverse_Bits_u32 { rd: Register, rs1: Register },
-    Reverse_Bits_u64 { rd: Register, rs1: Register },
+    Rot_L_i8 { rd: Register, rs1: Register, rs2: Register },
+    Rot_L_i16 { rd: Register, rs1: Register, rs2: Register },
+    Rot_L_i32 { rd: Register, rs1: Register, rs2: Register },
+    Rot_L_i64 { rd: Register, rs1: Register, rs2: Register },
+    Rot_L_u8 { rd: Register, rs1: Register, rs2: Register },
+    Rot_L_u16 { rd: Register, rs1: Register, rs2: Register },
+    Rot_L_u32 { rd: Register, rs1: Register, rs2: Register },
+    Rot_L_u64 { rd: Register, rs1: Register, rs2: Register },
+    Rot_R_i8 { rd: Register, rs1: Register, rs2: Register },
+    Rot_R_i16 { rd: Register, rs1: Register, rs2: Register },
+    Rot_R_i32 { rd: Register, rs1: Register, rs2: Register },
+    Rot_R_i64 { rd: Register, rs1: Register, rs2: Register },
+    Rot_R_u8 { rd: Register, rs1: Register, rs2: Register },
+    Rot_R_u16 { rd: Register, rs1: Register, rs2: Register },
+    Rot_R_u32 { rd: Register, rs1: Register, rs2: Register },
+    Rot_R_u64 { rd: Register, rs1: Register, rs2: Register },
+    C_Ones_i8 { rd: Register, rs1: Register },
+    C_Ones_i16 { rd: Register, rs1: Register },
+    C_Ones_i32 { rd: Register, rs1: Register },
+    C_Ones_i64 { rd: Register, rs1: Register },
+    C_Ones_u8 { rd: Register, rs1: Register },
+    C_Ones_u16 { rd: Register, rs1: Register },
+    C_Ones_u32 { rd: Register, rs1: Register },
+    C_Ones_u64 { rd: Register, rs1: Register },
+    L_Ones_i8 { rd: Register, rs1: Register },
+    L_Ones_i16 { rd: Register, rs1: Register },
+    L_Ones_i32 { rd: Register, rs1: Register },
+    L_Ones_i64 { rd: Register, rs1: Register },
+    L_Ones_u8 { rd: Register, rs1: Register },
+    L_Ones_u16 { rd: Register, rs1: Register },
+    L_Ones_u32 { rd: Register, rs1: Register },
+    L_Ones_u64 { rd: Register, rs1: Register },
+    T_Ones_i8 { rd: Register, rs1: Register },
+    T_Ones_i16 { rd: Register, rs1: Register },
+    T_Ones_i32 { rd: Register, rs1: Register },
+    T_Ones_i64 { rd: Register, rs1: Register },
+    T_Ones_u8 { rd: Register, rs1: Register },
+    T_Ones_u16 { rd: Register, rs1: Register },
+    T_Ones_u32 { rd: Register, rs1: Register },
+    T_Ones_u64 { rd: Register, rs1: Register },
+    C_Zeros_i8 { rd: Register, rs1: Register },
+    C_Zeros_i16 { rd: Register, rs1: Register },
+    C_Zeros_i32 { rd: Register, rs1: Register },
+    C_Zeros_i64 { rd: Register, rs1: Register },
+    C_Zeros_u8 { rd: Register, rs1: Register },
+    C_Zeros_u16 { rd: Register, rs1: Register },
+    C_Zeros_u32 { rd: Register, rs1: Register },
+    C_Zeros_u64 { rd: Register, rs1: Register },
+    L_Zeros_i8 { rd: Register, rs1: Register },
+    L_Zeros_i16 { rd: Register, rs1: Register },
+    L_Zeros_i32 { rd: Register, rs1: Register },
+    L_Zeros_i64 { rd: Register, rs1: Register },
+    L_Zeros_u8 { rd: Register, rs1: Register },
+    L_Zeros_u16 { rd: Register, rs1: Register },
+    L_Zeros_u32 { rd: Register, rs1: Register },
+    L_Zeros_u64 { rd: Register, rs1: Register },
+    T_Zeros_i8 { rd: Register, rs1: Register },
+    T_Zeros_i16 { rd: Register, rs1: Register },
+    T_Zeros_i32 { rd: Register, rs1: Register },
+    T_Zeros_i64 { rd: Register, rs1: Register },
+    T_Zeros_u8 { rd: Register, rs1: Register },
+    T_Zeros_u16 { rd: Register, rs1: Register },
+    T_Zeros_u32 { rd: Register, rs1: Register },
+    T_Zeros_u64 { rd: Register, rs1: Register },
+    R_Bytes_i8 { rd: Register, rs1: Register },
+    R_Bytes_i16 { rd: Register, rs1: Register },
+    R_Bytes_i32 { rd: Register, rs1: Register },
+    R_Bytes_i64 { rd: Register, rs1: Register },
+    R_Bytes_u8 { rd: Register, rs1: Register },
+    R_Bytes_u16 { rd: Register, rs1: Register },
+    R_Bytes_u32 { rd: Register, rs1: Register },
+    R_Bytes_u64 { rd: Register, rs1: Register },
+    R_Bits_i8 { rd: Register, rs1: Register },
+    R_Bits_i16 { rd: Register, rs1: Register },
+    R_Bits_i32 { rd: Register, rs1: Register },
+    R_Bits_i64 { rd: Register, rs1: Register },
+    R_Bits_u8 { rd: Register, rs1: Register },
+    R_Bits_u16 { rd: Register, rs1: Register },
+    R_Bits_u32 { rd: Register, rs1: Register },
+    R_Bits_u64 { rd: Register, rs1: Register },
     C_Abs_i8 { rd: Register, rs1: Register },
     C_Abs_i16 { rd: Register, rs1: Register },
     C_Abs_i32 { rd: Register, rs1: Register },
@@ -502,20 +502,20 @@ impl Instruction {
             0u8 if funct == 0u8 => Instruction::Halt,
             0u8 if funct == 1u8 => Instruction::Trap,
             0u8 if funct == 2u8 && s == 0u8 => Instruction::Call { rs2 },
-            0u8 if funct == 2u8 && s == 1u8 => Instruction::Callr { rs2 },
-            0u8 if funct == 3u8 => Instruction::Calli { imm },
+            0u8 if funct == 2u8 && s == 1u8 => Instruction::Call_R { rs2 },
+            0u8 if funct == 3u8 => Instruction::Call_I { imm },
             0u8 if funct == 4u8 => Instruction::Ret,
             0u8 if funct == 5u8 => Instruction::Ecall { imm },
             0u8 if funct == 6u8 => Instruction::Break,
             0u8 if funct == 7u8 && s == 0u8 => Instruction::Jal { rs2 },
-            0u8 if funct == 7u8 && s == 1u8 => Instruction::Jalr { rs2 },
-            0u8 if funct == 8u8 => Instruction::Jali { imm },
+            0u8 if funct == 7u8 && s == 1u8 => Instruction::Jal_R { rs2 },
+            0u8 if funct == 8u8 => Instruction::Jal_I { imm },
             0u8 if funct == 9u8 && s == 0u8 => Instruction::Jnz { rs1, rs2 },
-            0u8 if funct == 9u8 && s == 1u8 => Instruction::Jnzr { rs1, rs2 },
-            0u8 if funct == 10u8 && !rd.is_readonly() => Instruction::Jnzi { rd, imm },
+            0u8 if funct == 9u8 && s == 1u8 => Instruction::Jnz_R { rs1, rs2 },
+            0u8 if funct == 10u8 && !rd.is_readonly() => Instruction::Jnz_I { rd, imm },
             0u8 if funct == 11u8 && s == 0u8 => Instruction::Jiz { rs1, rs2 },
-            0u8 if funct == 11u8 && s == 1u8 => Instruction::Jizr { rs1, rs2 },
-            0u8 if funct == 12u8 && !rd.is_readonly() => Instruction::Jizi { rd, imm },
+            0u8 if funct == 11u8 && s == 1u8 => Instruction::Jiz_R { rs1, rs2 },
+            0u8 if funct == 12u8 && !rd.is_readonly() => Instruction::Jiz_I { rd, imm },
             1u8 if funct == 0u8 && size == 8u8 && !rd.is_readonly() => {
                 Instruction::Load_8 { rd, rs1 }
             }
@@ -528,11 +528,17 @@ impl Instruction {
             1u8 if funct == 0u8 && size == 64u8 && !rd.is_readonly() => {
                 Instruction::Load_64 { rd, rs1 }
             }
-            1u8 if funct == 1u8 && !rd.is_readonly() => Instruction::Loadi { rd, imm },
-            1u8 if funct == 2u8 && !rd.is_readonly() => Instruction::Loada_8 { rd, imm },
-            1u8 if funct == 3u8 && !rd.is_readonly() => Instruction::Loada_16 { rd, imm },
-            1u8 if funct == 4u8 && !rd.is_readonly() => Instruction::Loada_32 { rd, imm },
-            1u8 if funct == 5u8 && !rd.is_readonly() => Instruction::Loada_64 { rd, imm },
+            1u8 if funct == 1u8 && !rd.is_readonly() => Instruction::Load_I { rd, imm },
+            1u8 if funct == 2u8 && !rd.is_readonly() => Instruction::Load_A_8 { rd, imm },
+            1u8 if funct == 3u8 && !rd.is_readonly() => {
+                Instruction::Load_A_16 { rd, imm }
+            }
+            1u8 if funct == 4u8 && !rd.is_readonly() => {
+                Instruction::Load_A_32 { rd, imm }
+            }
+            1u8 if funct == 5u8 && !rd.is_readonly() => {
+                Instruction::Load_A_64 { rd, imm }
+            }
             1u8 if funct == 6u8 && size == 8u8 && !rd.is_readonly() => {
                 Instruction::Store_8 { rd, rs1 }
             }
@@ -545,10 +551,10 @@ impl Instruction {
             1u8 if funct == 6u8 && size == 64u8 && !rd.is_readonly() => {
                 Instruction::Store_64 { rd, rs1 }
             }
-            1u8 if funct == 7u8 && !rd.is_readonly() => Instruction::Storei { rd, imm },
+            1u8 if funct == 7u8 && !rd.is_readonly() => Instruction::Store_I { rd, imm },
             1u8 if funct == 8u8 && !rd.is_readonly() => Instruction::Move { rd, rs1 },
             1u8 if funct == 9u8 && !rd.is_readonly() => Instruction::Push { rd },
-            1u8 if funct == 10u8 => Instruction::Pushi { imm },
+            1u8 if funct == 10u8 => Instruction::Push_I { imm },
             1u8 if funct == 11u8 && !rd.is_readonly() => Instruction::Pop { rd },
             2u8 if funct == 0u8 && f == 0u8 && !rd.is_readonly() => {
                 Instruction::Ie { rd, rs1, rs2 }
@@ -978,7 +984,7 @@ impl Instruction {
             }
             3u8 if funct == 6u8 && size == 8u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Rotl_i8 {
+                Instruction::Rot_L_i8 {
                     rd,
                     rs1,
                     rs2,
@@ -986,7 +992,7 @@ impl Instruction {
             }
             3u8 if funct == 6u8 && size == 16u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Rotl_i16 {
+                Instruction::Rot_L_i16 {
                     rd,
                     rs1,
                     rs2,
@@ -994,7 +1000,7 @@ impl Instruction {
             }
             3u8 if funct == 6u8 && size == 32u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Rotl_i32 {
+                Instruction::Rot_L_i32 {
                     rd,
                     rs1,
                     rs2,
@@ -1002,7 +1008,7 @@ impl Instruction {
             }
             3u8 if funct == 6u8 && size == 64u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Rotl_i64 {
+                Instruction::Rot_L_i64 {
                     rd,
                     rs1,
                     rs2,
@@ -1010,7 +1016,7 @@ impl Instruction {
             }
             3u8 if funct == 6u8 && size == 8u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Rotl_u8 {
+                Instruction::Rot_L_u8 {
                     rd,
                     rs1,
                     rs2,
@@ -1018,7 +1024,7 @@ impl Instruction {
             }
             3u8 if funct == 6u8 && size == 16u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Rotl_u16 {
+                Instruction::Rot_L_u16 {
                     rd,
                     rs1,
                     rs2,
@@ -1026,7 +1032,7 @@ impl Instruction {
             }
             3u8 if funct == 6u8 && size == 32u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Rotl_u32 {
+                Instruction::Rot_L_u32 {
                     rd,
                     rs1,
                     rs2,
@@ -1034,7 +1040,7 @@ impl Instruction {
             }
             3u8 if funct == 6u8 && size == 64u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Rotl_u64 {
+                Instruction::Rot_L_u64 {
                     rd,
                     rs1,
                     rs2,
@@ -1042,7 +1048,7 @@ impl Instruction {
             }
             3u8 if funct == 7u8 && size == 8u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Rotr_i8 {
+                Instruction::Rot_R_i8 {
                     rd,
                     rs1,
                     rs2,
@@ -1050,7 +1056,7 @@ impl Instruction {
             }
             3u8 if funct == 7u8 && size == 16u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Rotr_i16 {
+                Instruction::Rot_R_i16 {
                     rd,
                     rs1,
                     rs2,
@@ -1058,7 +1064,7 @@ impl Instruction {
             }
             3u8 if funct == 7u8 && size == 32u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Rotr_i32 {
+                Instruction::Rot_R_i32 {
                     rd,
                     rs1,
                     rs2,
@@ -1066,7 +1072,7 @@ impl Instruction {
             }
             3u8 if funct == 7u8 && size == 64u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Rotr_i64 {
+                Instruction::Rot_R_i64 {
                     rd,
                     rs1,
                     rs2,
@@ -1074,7 +1080,7 @@ impl Instruction {
             }
             3u8 if funct == 7u8 && size == 8u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Rotr_u8 {
+                Instruction::Rot_R_u8 {
                     rd,
                     rs1,
                     rs2,
@@ -1082,7 +1088,7 @@ impl Instruction {
             }
             3u8 if funct == 7u8 && size == 16u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Rotr_u16 {
+                Instruction::Rot_R_u16 {
                     rd,
                     rs1,
                     rs2,
@@ -1090,7 +1096,7 @@ impl Instruction {
             }
             3u8 if funct == 7u8 && size == 32u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Rotr_u32 {
+                Instruction::Rot_R_u32 {
                     rd,
                     rs1,
                     rs2,
@@ -1098,460 +1104,260 @@ impl Instruction {
             }
             3u8 if funct == 7u8 && size == 64u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Rotr_u64 {
+                Instruction::Rot_R_u64 {
                     rd,
                     rs1,
                     rs2,
                 }
             }
             3u8 if funct == 8u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Count_Ones_i8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::C_Ones_i8 { rd, rs1 },
             3u8 if funct == 8u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Count_Ones_i16 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::C_Ones_i16 { rd, rs1 },
             3u8 if funct == 8u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Count_Ones_i32 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::C_Ones_i32 { rd, rs1 },
             3u8 if funct == 8u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Count_Ones_i64 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::C_Ones_i64 { rd, rs1 },
             3u8 if funct == 8u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Count_Ones_u8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::C_Ones_u8 { rd, rs1 },
             3u8 if funct == 8u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Count_Ones_u16 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::C_Ones_u16 { rd, rs1 },
             3u8 if funct == 8u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Count_Ones_u32 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::C_Ones_u32 { rd, rs1 },
             3u8 if funct == 8u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Count_Ones_u64 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::C_Ones_u64 { rd, rs1 },
             3u8 if funct == 9u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Leading_Ones_i8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::L_Ones_i8 { rd, rs1 },
             3u8 if funct == 9u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Leading_Ones_i16 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::L_Ones_i16 { rd, rs1 },
             3u8 if funct == 9u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Leading_Ones_i32 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::L_Ones_i32 { rd, rs1 },
             3u8 if funct == 9u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Leading_Ones_i64 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::L_Ones_i64 { rd, rs1 },
             3u8 if funct == 9u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Leading_Ones_u8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::L_Ones_u8 { rd, rs1 },
             3u8 if funct == 9u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Leading_Ones_u16 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::L_Ones_u16 { rd, rs1 },
             3u8 if funct == 9u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Leading_Ones_u32 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::L_Ones_u32 { rd, rs1 },
             3u8 if funct == 9u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Leading_Ones_u64 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::L_Ones_u64 { rd, rs1 },
             3u8 if funct == 10u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Trailing_Ones_i8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::T_Ones_i8 { rd, rs1 },
             3u8 if funct == 10u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Trailing_Ones_i16 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::T_Ones_i16 { rd, rs1 },
             3u8 if funct == 10u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Trailing_Ones_i32 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::T_Ones_i32 { rd, rs1 },
             3u8 if funct == 10u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Trailing_Ones_i64 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::T_Ones_i64 { rd, rs1 },
             3u8 if funct == 10u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Trailing_Ones_u8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::T_Ones_u8 { rd, rs1 },
             3u8 if funct == 10u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Trailing_Ones_u16 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::T_Ones_u16 { rd, rs1 },
             3u8 if funct == 10u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Trailing_Ones_u32 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::T_Ones_u32 { rd, rs1 },
             3u8 if funct == 10u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Trailing_Ones_u64 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::T_Ones_u64 { rd, rs1 },
             3u8 if funct == 11u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Count_Zeros_i8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::C_Zeros_i8 { rd, rs1 },
             3u8 if funct == 11u8 && size == 16u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Count_Zeros_i16 {
+                Instruction::C_Zeros_i16 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 11u8 && size == 32u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Count_Zeros_i32 {
+                Instruction::C_Zeros_i32 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 11u8 && size == 64u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Count_Zeros_i64 {
+                Instruction::C_Zeros_i64 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 11u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Count_Zeros_u8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::C_Zeros_u8 { rd, rs1 },
             3u8 if funct == 11u8 && size == 16u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Count_Zeros_u16 {
+                Instruction::C_Zeros_u16 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 11u8 && size == 32u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Count_Zeros_u32 {
+                Instruction::C_Zeros_u32 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 11u8 && size == 64u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Count_Zeros_u64 {
+                Instruction::C_Zeros_u64 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 12u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Leading_Zeros_i8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::L_Zeros_i8 { rd, rs1 },
             3u8 if funct == 12u8 && size == 16u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Leading_Zeros_i16 {
+                Instruction::L_Zeros_i16 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 12u8 && size == 32u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Leading_Zeros_i32 {
+                Instruction::L_Zeros_i32 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 12u8 && size == 64u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Leading_Zeros_i64 {
+                Instruction::L_Zeros_i64 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 12u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Leading_Zeros_u8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::L_Zeros_u8 { rd, rs1 },
             3u8 if funct == 12u8 && size == 16u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Leading_Zeros_u16 {
+                Instruction::L_Zeros_u16 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 12u8 && size == 32u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Leading_Zeros_u32 {
+                Instruction::L_Zeros_u32 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 12u8 && size == 64u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Leading_Zeros_u64 {
+                Instruction::L_Zeros_u64 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 13u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Trailing_Zeros_i8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::T_Zeros_i8 { rd, rs1 },
             3u8 if funct == 13u8 && size == 16u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Trailing_Zeros_i16 {
+                Instruction::T_Zeros_i16 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 13u8 && size == 32u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Trailing_Zeros_i32 {
+                Instruction::T_Zeros_i32 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 13u8 && size == 64u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Trailing_Zeros_i64 {
+                Instruction::T_Zeros_i64 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 13u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Trailing_Zeros_u8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::T_Zeros_u8 { rd, rs1 },
             3u8 if funct == 13u8 && size == 16u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Trailing_Zeros_u16 {
+                Instruction::T_Zeros_u16 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 13u8 && size == 32u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Trailing_Zeros_u32 {
+                Instruction::T_Zeros_u32 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 13u8 && size == 64u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Trailing_Zeros_u64 {
+                Instruction::T_Zeros_u64 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 14u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Reverse_Bytes_i8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::R_Bytes_i8 { rd, rs1 },
             3u8 if funct == 14u8 && size == 16u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Reverse_Bytes_i16 {
+                Instruction::R_Bytes_i16 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 14u8 && size == 32u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Reverse_Bytes_i32 {
+                Instruction::R_Bytes_i32 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 14u8 && size == 64u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => {
-                Instruction::Reverse_Bytes_i64 {
+                Instruction::R_Bytes_i64 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 14u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Reverse_Bytes_u8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::R_Bytes_u8 { rd, rs1 },
             3u8 if funct == 14u8 && size == 16u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Reverse_Bytes_u16 {
+                Instruction::R_Bytes_u16 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 14u8 && size == 32u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Reverse_Bytes_u32 {
+                Instruction::R_Bytes_u32 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 14u8 && size == 64u8 && f == 0u8 && s == 0u8
                 && !rd.is_readonly() => {
-                Instruction::Reverse_Bytes_u64 {
+                Instruction::R_Bytes_u64 {
                     rd,
                     rs1,
                 }
             }
             3u8 if funct == 15u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Reverse_Bits_i8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::R_Bits_i8 { rd, rs1 },
             3u8 if funct == 15u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Reverse_Bits_i16 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::R_Bits_i16 { rd, rs1 },
             3u8 if funct == 15u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Reverse_Bits_i32 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::R_Bits_i32 { rd, rs1 },
             3u8 if funct == 15u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => {
-                Instruction::Reverse_Bits_i64 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::R_Bits_i64 { rd, rs1 },
             3u8 if funct == 15u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Reverse_Bits_u8 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::R_Bits_u8 { rd, rs1 },
             3u8 if funct == 15u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Reverse_Bits_u16 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::R_Bits_u16 { rd, rs1 },
             3u8 if funct == 15u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Reverse_Bits_u32 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::R_Bits_u32 { rd, rs1 },
             3u8 if funct == 15u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => {
-                Instruction::Reverse_Bits_u64 {
-                    rd,
-                    rs1,
-                }
-            }
+                && !rd.is_readonly() => Instruction::R_Bits_u64 { rd, rs1 },
             4u8 if funct == 0u8 && size == 8u8 && f == 0u8 && s == 1u8
                 && !rd.is_readonly() => Instruction::C_Abs_i8 { rd, rs1 },
             4u8 if funct == 0u8 && size == 16u8 && f == 0u8 && s == 1u8
@@ -3739,11 +3545,11 @@ impl Instruction {
                 encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | 0 | 0 | encode_funct(2u8)
                     | encode_op_code(0u8)
             }
-            Instruction::Callr { rs2 } => {
+            Instruction::Call_R { rs2 } => {
                 encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | 0 | 0 | encode_funct(2u8)
                     | encode_op_code(0u8)
             }
-            Instruction::Calli { imm } => {
+            Instruction::Call_I { imm } => {
                 encode_imm(*imm) | 0 | encode_funct(3u8) | encode_op_code(0u8)
             }
             Instruction::Ret => 256u32,
@@ -3755,22 +3561,22 @@ impl Instruction {
                 encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | 0 | 0 | encode_funct(7u8)
                     | encode_op_code(0u8)
             }
-            Instruction::Jalr { rs2 } => {
+            Instruction::Jal_R { rs2 } => {
                 encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | 0 | 0 | encode_funct(7u8)
                     | encode_op_code(0u8)
             }
-            Instruction::Jali { imm } => {
+            Instruction::Jal_I { imm } => {
                 encode_imm(*imm) | 0 | encode_funct(8u8) | encode_op_code(0u8)
             }
             Instruction::Jnz { rs1, rs2 } => {
                 encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1) | 0
                     | encode_funct(9u8) | encode_op_code(0u8)
             }
-            Instruction::Jnzr { rs1, rs2 } => {
+            Instruction::Jnz_R { rs1, rs2 } => {
                 encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1) | 0
                     | encode_funct(9u8) | encode_op_code(0u8)
             }
-            Instruction::Jnzi { rd, imm } => {
+            Instruction::Jnz_I { rd, imm } => {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(10u8)
                     | encode_op_code(0u8)
             }
@@ -3778,11 +3584,11 @@ impl Instruction {
                 encode_s(0u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1) | 0
                     | encode_funct(11u8) | encode_op_code(0u8)
             }
-            Instruction::Jizr { rs1, rs2 } => {
+            Instruction::Jiz_R { rs1, rs2 } => {
                 encode_s(1u8) | 0 | 0 | encode_rs2(*rs2) | encode_rs1(*rs1) | 0
                     | encode_funct(11u8) | encode_op_code(0u8)
             }
-            Instruction::Jizi { rd, imm } => {
+            Instruction::Jiz_I { rd, imm } => {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(12u8)
                     | encode_op_code(0u8)
             }
@@ -3802,23 +3608,23 @@ impl Instruction {
                 0 | 0 | encode_size(64u8) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
                     | encode_funct(0u8) | encode_op_code(1u8)
             }
-            Instruction::Loadi { rd, imm } => {
+            Instruction::Load_I { rd, imm } => {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(1u8)
                     | encode_op_code(1u8)
             }
-            Instruction::Loada_8 { rd, imm } => {
+            Instruction::Load_A_8 { rd, imm } => {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(2u8)
                     | encode_op_code(1u8)
             }
-            Instruction::Loada_16 { rd, imm } => {
+            Instruction::Load_A_16 { rd, imm } => {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(3u8)
                     | encode_op_code(1u8)
             }
-            Instruction::Loada_32 { rd, imm } => {
+            Instruction::Load_A_32 { rd, imm } => {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(4u8)
                     | encode_op_code(1u8)
             }
-            Instruction::Loada_64 { rd, imm } => {
+            Instruction::Load_A_64 { rd, imm } => {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(5u8)
                     | encode_op_code(1u8)
             }
@@ -3838,7 +3644,7 @@ impl Instruction {
                 0 | 0 | encode_size(64u8) | 0 | encode_rs1(*rs1) | encode_rd(*rd)
                     | encode_funct(6u8) | encode_op_code(1u8)
             }
-            Instruction::Storei { rd, imm } => {
+            Instruction::Store_I { rd, imm } => {
                 encode_imm(*imm) | encode_rd(*rd) | encode_funct(7u8)
                     | encode_op_code(1u8)
             }
@@ -3849,7 +3655,7 @@ impl Instruction {
             Instruction::Push { rd } => {
                 0 | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(1u8)
             }
-            Instruction::Pushi { imm } => {
+            Instruction::Push_I { imm } => {
                 encode_imm(*imm) | 0 | encode_funct(10u8) | encode_op_code(1u8)
             }
             Instruction::Pop { rd } => {
@@ -4171,339 +3977,339 @@ impl Instruction {
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotl_i8 { rd, rs1, rs2 } => {
+            Instruction::Rot_L_i8 { rd, rs1, rs2 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotl_i16 { rd, rs1, rs2 } => {
+            Instruction::Rot_L_i16 { rd, rs1, rs2 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotl_i32 { rd, rs1, rs2 } => {
+            Instruction::Rot_L_i32 { rd, rs1, rs2 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotl_i64 { rd, rs1, rs2 } => {
+            Instruction::Rot_L_i64 { rd, rs1, rs2 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotl_u8 { rd, rs1, rs2 } => {
+            Instruction::Rot_L_u8 { rd, rs1, rs2 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotl_u16 { rd, rs1, rs2 } => {
+            Instruction::Rot_L_u16 { rd, rs1, rs2 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotl_u32 { rd, rs1, rs2 } => {
+            Instruction::Rot_L_u32 { rd, rs1, rs2 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotl_u64 { rd, rs1, rs2 } => {
+            Instruction::Rot_L_u64 { rd, rs1, rs2 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotr_i8 { rd, rs1, rs2 } => {
+            Instruction::Rot_R_i8 { rd, rs1, rs2 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotr_i16 { rd, rs1, rs2 } => {
+            Instruction::Rot_R_i16 { rd, rs1, rs2 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotr_i32 { rd, rs1, rs2 } => {
+            Instruction::Rot_R_i32 { rd, rs1, rs2 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotr_i64 { rd, rs1, rs2 } => {
+            Instruction::Rot_R_i64 { rd, rs1, rs2 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotr_u8 { rd, rs1, rs2 } => {
+            Instruction::Rot_R_u8 { rd, rs1, rs2 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotr_u16 { rd, rs1, rs2 } => {
+            Instruction::Rot_R_u16 { rd, rs1, rs2 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotr_u32 { rd, rs1, rs2 } => {
+            Instruction::Rot_R_u32 { rd, rs1, rs2 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Rotr_u64 { rd, rs1, rs2 } => {
+            Instruction::Rot_R_u64 { rd, rs1, rs2 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
                     | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
                     | encode_op_code(3u8)
             }
-            Instruction::Count_Ones_i8 { rd, rs1 } => {
+            Instruction::C_Ones_i8 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Ones_i16 { rd, rs1 } => {
+            Instruction::C_Ones_i16 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Ones_i32 { rd, rs1 } => {
+            Instruction::C_Ones_i32 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Ones_i64 { rd, rs1 } => {
+            Instruction::C_Ones_i64 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Ones_u8 { rd, rs1 } => {
+            Instruction::C_Ones_u8 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Ones_u16 { rd, rs1 } => {
+            Instruction::C_Ones_u16 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Ones_u32 { rd, rs1 } => {
+            Instruction::C_Ones_u32 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Ones_u64 { rd, rs1 } => {
+            Instruction::C_Ones_u64 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Ones_i8 { rd, rs1 } => {
+            Instruction::L_Ones_i8 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Ones_i16 { rd, rs1 } => {
+            Instruction::L_Ones_i16 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Ones_i32 { rd, rs1 } => {
+            Instruction::L_Ones_i32 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Ones_i64 { rd, rs1 } => {
+            Instruction::L_Ones_i64 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Ones_u8 { rd, rs1 } => {
+            Instruction::L_Ones_u8 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Ones_u16 { rd, rs1 } => {
+            Instruction::L_Ones_u16 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Ones_u32 { rd, rs1 } => {
+            Instruction::L_Ones_u32 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Ones_u64 { rd, rs1 } => {
+            Instruction::L_Ones_u64 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Ones_i8 { rd, rs1 } => {
+            Instruction::T_Ones_i8 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Ones_i16 { rd, rs1 } => {
+            Instruction::T_Ones_i16 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Ones_i32 { rd, rs1 } => {
+            Instruction::T_Ones_i32 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Ones_i64 { rd, rs1 } => {
+            Instruction::T_Ones_i64 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Ones_u8 { rd, rs1 } => {
+            Instruction::T_Ones_u8 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Ones_u16 { rd, rs1 } => {
+            Instruction::T_Ones_u16 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Ones_u32 { rd, rs1 } => {
+            Instruction::T_Ones_u32 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Ones_u64 { rd, rs1 } => {
+            Instruction::T_Ones_u64 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Zeros_i8 { rd, rs1 } => {
+            Instruction::C_Zeros_i8 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Zeros_i16 { rd, rs1 } => {
+            Instruction::C_Zeros_i16 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Zeros_i32 { rd, rs1 } => {
+            Instruction::C_Zeros_i32 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Zeros_i64 { rd, rs1 } => {
+            Instruction::C_Zeros_i64 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Zeros_u8 { rd, rs1 } => {
+            Instruction::C_Zeros_u8 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Zeros_u16 { rd, rs1 } => {
+            Instruction::C_Zeros_u16 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Zeros_u32 { rd, rs1 } => {
+            Instruction::C_Zeros_u32 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
             }
-            Instruction::Count_Zeros_u64 { rd, rs1 } => {
+            Instruction::C_Zeros_u64 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Zeros_i8 { rd, rs1 } => {
+            Instruction::L_Zeros_i8 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Zeros_i16 { rd, rs1 } => {
+            Instruction::L_Zeros_i16 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Zeros_i32 { rd, rs1 } => {
+            Instruction::L_Zeros_i32 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Zeros_i64 { rd, rs1 } => {
+            Instruction::L_Zeros_i64 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Zeros_u8 { rd, rs1 } => {
+            Instruction::L_Zeros_u8 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Zeros_u16 { rd, rs1 } => {
+            Instruction::L_Zeros_u16 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Zeros_u32 { rd, rs1 } => {
+            Instruction::L_Zeros_u32 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
             }
-            Instruction::Leading_Zeros_u64 { rd, rs1 } => {
+            Instruction::L_Zeros_u64 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Zeros_i8 { rd, rs1 } => {
+            Instruction::T_Zeros_i8 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Zeros_i16 { rd, rs1 } => {
+            Instruction::T_Zeros_i16 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Zeros_i32 { rd, rs1 } => {
+            Instruction::T_Zeros_i32 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Zeros_i64 { rd, rs1 } => {
+            Instruction::T_Zeros_i64 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Zeros_u8 { rd, rs1 } => {
+            Instruction::T_Zeros_u8 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Zeros_u16 { rd, rs1 } => {
+            Instruction::T_Zeros_u16 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Zeros_u32 { rd, rs1 } => {
+            Instruction::T_Zeros_u32 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
             }
-            Instruction::Trailing_Zeros_u64 { rd, rs1 } => {
+            Instruction::T_Zeros_u64 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bytes_i8 { rd, rs1 } => {
+            Instruction::R_Bytes_i8 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bytes_i16 { rd, rs1 } => {
+            Instruction::R_Bytes_i16 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bytes_i32 { rd, rs1 } => {
+            Instruction::R_Bytes_i32 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bytes_i64 { rd, rs1 } => {
+            Instruction::R_Bytes_i64 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bytes_u8 { rd, rs1 } => {
+            Instruction::R_Bytes_u8 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bytes_u16 { rd, rs1 } => {
+            Instruction::R_Bytes_u16 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bytes_u32 { rd, rs1 } => {
+            Instruction::R_Bytes_u32 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bytes_u64 { rd, rs1 } => {
+            Instruction::R_Bytes_u64 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bits_i8 { rd, rs1 } => {
+            Instruction::R_Bits_i8 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bits_i16 { rd, rs1 } => {
+            Instruction::R_Bits_i16 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bits_i32 { rd, rs1 } => {
+            Instruction::R_Bits_i32 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bits_i64 { rd, rs1 } => {
+            Instruction::R_Bits_i64 { rd, rs1 } => {
                 encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bits_u8 { rd, rs1 } => {
+            Instruction::R_Bits_u8 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bits_u16 { rd, rs1 } => {
+            Instruction::R_Bits_u16 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bits_u32 { rd, rs1 } => {
+            Instruction::R_Bits_u32 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
             }
-            Instruction::Reverse_Bits_u64 { rd, rs1 } => {
+            Instruction::R_Bits_u64 { rd, rs1 } => {
                 encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | 0 | encode_rs1(*rs1)
                     | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
             }
@@ -6016,28 +5822,28 @@ mod tests {
         );
     }
     #[test]
-    fn decode_Callr() {
+    fn decode_Call_R() {
         assert_eq!(
-            Instruction::decode(2197815424u32), Instruction::Callr { rs2 :
+            Instruction::decode(2197815424u32), Instruction::Call_R { rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Callr() {
+    fn encode_Call_R() {
         assert_eq!(
-            Instruction::Callr { rs2 : Register::General_Purpose(6), } .encode(),
+            Instruction::Call_R { rs2 : Register::General_Purpose(6), } .encode(),
             2197815424u32
         );
     }
     #[test]
-    fn decode_Calli() {
+    fn decode_Call_I() {
         assert_eq!(
-            Instruction::decode(4293918912u32), Instruction::Calli { imm : - 16, }
+            Instruction::decode(4293918912u32), Instruction::Call_I { imm : - 16, }
         );
     }
     #[test]
-    fn encode_Calli() {
-        assert_eq!(Instruction::Calli { imm : - 16, } .encode(), 4293918912u32);
+    fn encode_Call_I() {
+        assert_eq!(Instruction::Call_I { imm : - 16, } .encode(), 4293918912u32);
     }
     #[test]
     fn decode_Ret() {
@@ -6080,28 +5886,28 @@ mod tests {
         );
     }
     #[test]
-    fn decode_Jalr() {
+    fn decode_Jal_R() {
         assert_eq!(
-            Instruction::decode(2197815744u32), Instruction::Jalr { rs2 :
+            Instruction::decode(2197815744u32), Instruction::Jal_R { rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Jalr() {
+    fn encode_Jal_R() {
         assert_eq!(
-            Instruction::Jalr { rs2 : Register::General_Purpose(6), } .encode(),
+            Instruction::Jal_R { rs2 : Register::General_Purpose(6), } .encode(),
             2197815744u32
         );
     }
     #[test]
-    fn decode_Jali() {
+    fn decode_Jal_I() {
         assert_eq!(
-            Instruction::decode(4293919232u32), Instruction::Jali { imm : - 16, }
+            Instruction::decode(4293919232u32), Instruction::Jal_I { imm : - 16, }
         );
     }
     #[test]
-    fn encode_Jali() {
-        assert_eq!(Instruction::Jali { imm : - 16, } .encode(), 4293919232u32);
+    fn encode_Jal_I() {
+        assert_eq!(Instruction::Jal_I { imm : - 16, } .encode(), 4293919232u32);
     }
     #[test]
     fn decode_Jnz() {
@@ -6118,30 +5924,30 @@ mod tests {
         );
     }
     #[test]
-    fn decode_Jnzr() {
+    fn decode_Jnz_R() {
         assert_eq!(
-            Instruction::decode(2198733376u32), Instruction::Jnzr { rs1 :
+            Instruction::decode(2198733376u32), Instruction::Jnz_R { rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Jnzr() {
+    fn encode_Jnz_R() {
         assert_eq!(
-            Instruction::Jnzr { rs1 : Register::General_Purpose(8), rs2 :
+            Instruction::Jnz_R { rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), } .encode(), 2198733376u32
         );
     }
     #[test]
-    fn decode_Jnzi() {
+    fn decode_Jnz_I() {
         assert_eq!(
-            Instruction::decode(4293930624u32), Instruction::Jnzi { rd :
+            Instruction::decode(4293930624u32), Instruction::Jnz_I { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
     #[test]
-    fn encode_Jnzi() {
+    fn encode_Jnz_I() {
         assert_eq!(
-            Instruction::Jnzi { rd : Register::General_Purpose(5), imm : - 16, }
+            Instruction::Jnz_I { rd : Register::General_Purpose(5), imm : - 16, }
             .encode(), 4293930624u32
         );
     }
@@ -6160,30 +5966,30 @@ mod tests {
         );
     }
     #[test]
-    fn decode_Jizr() {
+    fn decode_Jiz_R() {
         assert_eq!(
-            Instruction::decode(2198733504u32), Instruction::Jizr { rs1 :
+            Instruction::decode(2198733504u32), Instruction::Jiz_R { rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Jizr() {
+    fn encode_Jiz_R() {
         assert_eq!(
-            Instruction::Jizr { rs1 : Register::General_Purpose(8), rs2 :
+            Instruction::Jiz_R { rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), } .encode(), 2198733504u32
         );
     }
     #[test]
-    fn decode_Jizi() {
+    fn decode_Jiz_I() {
         assert_eq!(
-            Instruction::decode(4293930752u32), Instruction::Jizi { rd :
+            Instruction::decode(4293930752u32), Instruction::Jiz_I { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
     #[test]
-    fn encode_Jizi() {
+    fn encode_Jiz_I() {
         assert_eq!(
-            Instruction::Jizi { rd : Register::General_Purpose(5), imm : - 16, }
+            Instruction::Jiz_I { rd : Register::General_Purpose(5), imm : - 16, }
             .encode(), 4293930752u32
         );
     }
@@ -6244,72 +6050,72 @@ mod tests {
         );
     }
     #[test]
-    fn decode_Loadi() {
+    fn decode_Load_I() {
         assert_eq!(
-            Instruction::decode(4293930049u32), Instruction::Loadi { rd :
+            Instruction::decode(4293930049u32), Instruction::Load_I { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
     #[test]
-    fn encode_Loadi() {
+    fn encode_Load_I() {
         assert_eq!(
-            Instruction::Loadi { rd : Register::General_Purpose(5), imm : - 16, }
+            Instruction::Load_I { rd : Register::General_Purpose(5), imm : - 16, }
             .encode(), 4293930049u32
         );
     }
     #[test]
-    fn decode_Loada_8() {
+    fn decode_Load_A_8() {
         assert_eq!(
-            Instruction::decode(4293930113u32), Instruction::Loada_8 { rd :
+            Instruction::decode(4293930113u32), Instruction::Load_A_8 { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
     #[test]
-    fn encode_Loada_8() {
+    fn encode_Load_A_8() {
         assert_eq!(
-            Instruction::Loada_8 { rd : Register::General_Purpose(5), imm : - 16, }
+            Instruction::Load_A_8 { rd : Register::General_Purpose(5), imm : - 16, }
             .encode(), 4293930113u32
         );
     }
     #[test]
-    fn decode_Loada_16() {
+    fn decode_Load_A_16() {
         assert_eq!(
-            Instruction::decode(4293930177u32), Instruction::Loada_16 { rd :
+            Instruction::decode(4293930177u32), Instruction::Load_A_16 { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
     #[test]
-    fn encode_Loada_16() {
+    fn encode_Load_A_16() {
         assert_eq!(
-            Instruction::Loada_16 { rd : Register::General_Purpose(5), imm : - 16, }
+            Instruction::Load_A_16 { rd : Register::General_Purpose(5), imm : - 16, }
             .encode(), 4293930177u32
         );
     }
     #[test]
-    fn decode_Loada_32() {
+    fn decode_Load_A_32() {
         assert_eq!(
-            Instruction::decode(4293930241u32), Instruction::Loada_32 { rd :
+            Instruction::decode(4293930241u32), Instruction::Load_A_32 { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
     #[test]
-    fn encode_Loada_32() {
+    fn encode_Load_A_32() {
         assert_eq!(
-            Instruction::Loada_32 { rd : Register::General_Purpose(5), imm : - 16, }
+            Instruction::Load_A_32 { rd : Register::General_Purpose(5), imm : - 16, }
             .encode(), 4293930241u32
         );
     }
     #[test]
-    fn decode_Loada_64() {
+    fn decode_Load_A_64() {
         assert_eq!(
-            Instruction::decode(4293930305u32), Instruction::Loada_64 { rd :
+            Instruction::decode(4293930305u32), Instruction::Load_A_64 { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
     #[test]
-    fn encode_Loada_64() {
+    fn encode_Load_A_64() {
         assert_eq!(
-            Instruction::Loada_64 { rd : Register::General_Purpose(5), imm : - 16, }
+            Instruction::Load_A_64 { rd : Register::General_Purpose(5), imm : - 16, }
             .encode(), 4293930305u32
         );
     }
@@ -6370,16 +6176,16 @@ mod tests {
         );
     }
     #[test]
-    fn decode_Storei() {
+    fn decode_Store_I() {
         assert_eq!(
-            Instruction::decode(4293930433u32), Instruction::Storei { rd :
+            Instruction::decode(4293930433u32), Instruction::Store_I { rd :
             Register::General_Purpose(5), imm : - 16, }
         );
     }
     #[test]
-    fn encode_Storei() {
+    fn encode_Store_I() {
         assert_eq!(
-            Instruction::Storei { rd : Register::General_Purpose(5), imm : - 16, }
+            Instruction::Store_I { rd : Register::General_Purpose(5), imm : - 16, }
             .encode(), 4293930433u32
         );
     }
@@ -6411,14 +6217,14 @@ mod tests {
         );
     }
     #[test]
-    fn decode_Pushi() {
+    fn decode_Push_I() {
         assert_eq!(
-            Instruction::decode(4293919361u32), Instruction::Pushi { imm : - 16, }
+            Instruction::decode(4293919361u32), Instruction::Push_I { imm : - 16, }
         );
     }
     #[test]
-    fn encode_Pushi() {
-        assert_eq!(Instruction::Pushi { imm : - 16, } .encode(), 4293919361u32);
+    fn encode_Push_I() {
+        assert_eq!(Instruction::Push_I { imm : - 16, } .encode(), 4293919361u32);
     }
     #[test]
     fn decode_Pop() {
@@ -7474,1154 +7280,1154 @@ mod tests {
         );
     }
     #[test]
-    fn decode_Rotl_i8() {
+    fn decode_Rot_L_i8() {
         assert_eq!(
-            Instruction::decode(2198744451u32), Instruction::Rotl_i8 { rd :
+            Instruction::decode(2198744451u32), Instruction::Rot_L_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotl_i8() {
+    fn encode_Rot_L_i8() {
         assert_eq!(
-            Instruction::Rotl_i8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_L_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 2198744451u32
         );
     }
     #[test]
-    fn decode_Rotl_i16() {
+    fn decode_Rot_L_i16() {
         assert_eq!(
-            Instruction::decode(2467179907u32), Instruction::Rotl_i16 { rd :
+            Instruction::decode(2467179907u32), Instruction::Rot_L_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotl_i16() {
+    fn encode_Rot_L_i16() {
         assert_eq!(
-            Instruction::Rotl_i16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_L_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 2467179907u32
         );
     }
     #[test]
-    fn decode_Rotl_i32() {
+    fn decode_Rot_L_i32() {
         assert_eq!(
-            Instruction::decode(2735615363u32), Instruction::Rotl_i32 { rd :
+            Instruction::decode(2735615363u32), Instruction::Rot_L_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotl_i32() {
+    fn encode_Rot_L_i32() {
         assert_eq!(
-            Instruction::Rotl_i32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_L_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 2735615363u32
         );
     }
     #[test]
-    fn decode_Rotl_i64() {
+    fn decode_Rot_L_i64() {
         assert_eq!(
-            Instruction::decode(3004050819u32), Instruction::Rotl_i64 { rd :
+            Instruction::decode(3004050819u32), Instruction::Rot_L_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotl_i64() {
+    fn encode_Rot_L_i64() {
         assert_eq!(
-            Instruction::Rotl_i64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_L_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 3004050819u32
         );
     }
     #[test]
-    fn decode_Rotl_u8() {
+    fn decode_Rot_L_u8() {
         assert_eq!(
-            Instruction::decode(51260803u32), Instruction::Rotl_u8 { rd :
+            Instruction::decode(51260803u32), Instruction::Rot_L_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotl_u8() {
+    fn encode_Rot_L_u8() {
         assert_eq!(
-            Instruction::Rotl_u8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_L_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 51260803u32
         );
     }
     #[test]
-    fn decode_Rotl_u16() {
+    fn decode_Rot_L_u16() {
         assert_eq!(
-            Instruction::decode(319696259u32), Instruction::Rotl_u16 { rd :
+            Instruction::decode(319696259u32), Instruction::Rot_L_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotl_u16() {
+    fn encode_Rot_L_u16() {
         assert_eq!(
-            Instruction::Rotl_u16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_L_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 319696259u32
         );
     }
     #[test]
-    fn decode_Rotl_u32() {
+    fn decode_Rot_L_u32() {
         assert_eq!(
-            Instruction::decode(588131715u32), Instruction::Rotl_u32 { rd :
+            Instruction::decode(588131715u32), Instruction::Rot_L_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotl_u32() {
+    fn encode_Rot_L_u32() {
         assert_eq!(
-            Instruction::Rotl_u32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_L_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 588131715u32
         );
     }
     #[test]
-    fn decode_Rotl_u64() {
+    fn decode_Rot_L_u64() {
         assert_eq!(
-            Instruction::decode(856567171u32), Instruction::Rotl_u64 { rd :
+            Instruction::decode(856567171u32), Instruction::Rot_L_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotl_u64() {
+    fn encode_Rot_L_u64() {
         assert_eq!(
-            Instruction::Rotl_u64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_L_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 856567171u32
         );
     }
     #[test]
-    fn decode_Rotr_i8() {
+    fn decode_Rot_R_i8() {
         assert_eq!(
-            Instruction::decode(2198744515u32), Instruction::Rotr_i8 { rd :
+            Instruction::decode(2198744515u32), Instruction::Rot_R_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotr_i8() {
+    fn encode_Rot_R_i8() {
         assert_eq!(
-            Instruction::Rotr_i8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_R_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 2198744515u32
         );
     }
     #[test]
-    fn decode_Rotr_i16() {
+    fn decode_Rot_R_i16() {
         assert_eq!(
-            Instruction::decode(2467179971u32), Instruction::Rotr_i16 { rd :
+            Instruction::decode(2467179971u32), Instruction::Rot_R_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotr_i16() {
+    fn encode_Rot_R_i16() {
         assert_eq!(
-            Instruction::Rotr_i16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_R_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 2467179971u32
         );
     }
     #[test]
-    fn decode_Rotr_i32() {
+    fn decode_Rot_R_i32() {
         assert_eq!(
-            Instruction::decode(2735615427u32), Instruction::Rotr_i32 { rd :
+            Instruction::decode(2735615427u32), Instruction::Rot_R_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotr_i32() {
+    fn encode_Rot_R_i32() {
         assert_eq!(
-            Instruction::Rotr_i32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_R_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 2735615427u32
         );
     }
     #[test]
-    fn decode_Rotr_i64() {
+    fn decode_Rot_R_i64() {
         assert_eq!(
-            Instruction::decode(3004050883u32), Instruction::Rotr_i64 { rd :
+            Instruction::decode(3004050883u32), Instruction::Rot_R_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotr_i64() {
+    fn encode_Rot_R_i64() {
         assert_eq!(
-            Instruction::Rotr_i64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_R_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 3004050883u32
         );
     }
     #[test]
-    fn decode_Rotr_u8() {
+    fn decode_Rot_R_u8() {
         assert_eq!(
-            Instruction::decode(51260867u32), Instruction::Rotr_u8 { rd :
+            Instruction::decode(51260867u32), Instruction::Rot_R_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotr_u8() {
+    fn encode_Rot_R_u8() {
         assert_eq!(
-            Instruction::Rotr_u8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_R_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 51260867u32
         );
     }
     #[test]
-    fn decode_Rotr_u16() {
+    fn decode_Rot_R_u16() {
         assert_eq!(
-            Instruction::decode(319696323u32), Instruction::Rotr_u16 { rd :
+            Instruction::decode(319696323u32), Instruction::Rot_R_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotr_u16() {
+    fn encode_Rot_R_u16() {
         assert_eq!(
-            Instruction::Rotr_u16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_R_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 319696323u32
         );
     }
     #[test]
-    fn decode_Rotr_u32() {
+    fn decode_Rot_R_u32() {
         assert_eq!(
-            Instruction::decode(588131779u32), Instruction::Rotr_u32 { rd :
+            Instruction::decode(588131779u32), Instruction::Rot_R_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotr_u32() {
+    fn encode_Rot_R_u32() {
         assert_eq!(
-            Instruction::Rotr_u32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_R_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 588131779u32
         );
     }
     #[test]
-    fn decode_Rotr_u64() {
+    fn decode_Rot_R_u64() {
         assert_eq!(
-            Instruction::decode(856567235u32), Instruction::Rotr_u64 { rd :
+            Instruction::decode(856567235u32), Instruction::Rot_R_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
             Register::General_Purpose(6), }
         );
     }
     #[test]
-    fn encode_Rotr_u64() {
+    fn encode_Rot_R_u64() {
         assert_eq!(
-            Instruction::Rotr_u64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::Rot_R_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), rs2 : Register::General_Purpose(6), }
             .encode(), 856567235u32
         );
     }
     #[test]
-    fn decode_Count_Ones_i8() {
+    fn decode_C_Ones_i8() {
         assert_eq!(
-            Instruction::decode(2148412931u32), Instruction::Count_Ones_i8 { rd :
+            Instruction::decode(2148412931u32), Instruction::C_Ones_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Ones_i8() {
+    fn encode_C_Ones_i8() {
         assert_eq!(
-            Instruction::Count_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148412931u32
         );
     }
     #[test]
-    fn decode_Count_Ones_i16() {
+    fn decode_C_Ones_i16() {
         assert_eq!(
-            Instruction::decode(2416848387u32), Instruction::Count_Ones_i16 { rd :
+            Instruction::decode(2416848387u32), Instruction::C_Ones_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Ones_i16() {
+    fn encode_C_Ones_i16() {
         assert_eq!(
-            Instruction::Count_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416848387u32
         );
     }
     #[test]
-    fn decode_Count_Ones_i32() {
+    fn decode_C_Ones_i32() {
         assert_eq!(
-            Instruction::decode(2685283843u32), Instruction::Count_Ones_i32 { rd :
+            Instruction::decode(2685283843u32), Instruction::C_Ones_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Ones_i32() {
+    fn encode_C_Ones_i32() {
         assert_eq!(
-            Instruction::Count_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2685283843u32
         );
     }
     #[test]
-    fn decode_Count_Ones_i64() {
+    fn decode_C_Ones_i64() {
         assert_eq!(
-            Instruction::decode(2953719299u32), Instruction::Count_Ones_i64 { rd :
+            Instruction::decode(2953719299u32), Instruction::C_Ones_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Ones_i64() {
+    fn encode_C_Ones_i64() {
         assert_eq!(
-            Instruction::Count_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953719299u32
         );
     }
     #[test]
-    fn decode_Count_Ones_u8() {
+    fn decode_C_Ones_u8() {
         assert_eq!(
-            Instruction::decode(929283u32), Instruction::Count_Ones_u8 { rd :
+            Instruction::decode(929283u32), Instruction::C_Ones_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Ones_u8() {
+    fn encode_C_Ones_u8() {
         assert_eq!(
-            Instruction::Count_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 929283u32
         );
     }
     #[test]
-    fn decode_Count_Ones_u16() {
+    fn decode_C_Ones_u16() {
         assert_eq!(
-            Instruction::decode(269364739u32), Instruction::Count_Ones_u16 { rd :
+            Instruction::decode(269364739u32), Instruction::C_Ones_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Ones_u16() {
+    fn encode_C_Ones_u16() {
         assert_eq!(
-            Instruction::Count_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 269364739u32
         );
     }
     #[test]
-    fn decode_Count_Ones_u32() {
+    fn decode_C_Ones_u32() {
         assert_eq!(
-            Instruction::decode(537800195u32), Instruction::Count_Ones_u32 { rd :
+            Instruction::decode(537800195u32), Instruction::C_Ones_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Ones_u32() {
+    fn encode_C_Ones_u32() {
         assert_eq!(
-            Instruction::Count_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537800195u32
         );
     }
     #[test]
-    fn decode_Count_Ones_u64() {
+    fn decode_C_Ones_u64() {
         assert_eq!(
-            Instruction::decode(806235651u32), Instruction::Count_Ones_u64 { rd :
+            Instruction::decode(806235651u32), Instruction::C_Ones_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Ones_u64() {
+    fn encode_C_Ones_u64() {
         assert_eq!(
-            Instruction::Count_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 806235651u32
         );
     }
     #[test]
-    fn decode_Leading_Ones_i8() {
+    fn decode_L_Ones_i8() {
         assert_eq!(
-            Instruction::decode(2148412995u32), Instruction::Leading_Ones_i8 { rd :
+            Instruction::decode(2148412995u32), Instruction::L_Ones_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Ones_i8() {
+    fn encode_L_Ones_i8() {
         assert_eq!(
-            Instruction::Leading_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148412995u32
         );
     }
     #[test]
-    fn decode_Leading_Ones_i16() {
+    fn decode_L_Ones_i16() {
         assert_eq!(
-            Instruction::decode(2416848451u32), Instruction::Leading_Ones_i16 { rd :
+            Instruction::decode(2416848451u32), Instruction::L_Ones_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Ones_i16() {
+    fn encode_L_Ones_i16() {
         assert_eq!(
-            Instruction::Leading_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416848451u32
         );
     }
     #[test]
-    fn decode_Leading_Ones_i32() {
+    fn decode_L_Ones_i32() {
         assert_eq!(
-            Instruction::decode(2685283907u32), Instruction::Leading_Ones_i32 { rd :
+            Instruction::decode(2685283907u32), Instruction::L_Ones_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Ones_i32() {
+    fn encode_L_Ones_i32() {
         assert_eq!(
-            Instruction::Leading_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2685283907u32
         );
     }
     #[test]
-    fn decode_Leading_Ones_i64() {
+    fn decode_L_Ones_i64() {
         assert_eq!(
-            Instruction::decode(2953719363u32), Instruction::Leading_Ones_i64 { rd :
+            Instruction::decode(2953719363u32), Instruction::L_Ones_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Ones_i64() {
+    fn encode_L_Ones_i64() {
         assert_eq!(
-            Instruction::Leading_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953719363u32
         );
     }
     #[test]
-    fn decode_Leading_Ones_u8() {
+    fn decode_L_Ones_u8() {
         assert_eq!(
-            Instruction::decode(929347u32), Instruction::Leading_Ones_u8 { rd :
+            Instruction::decode(929347u32), Instruction::L_Ones_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Ones_u8() {
+    fn encode_L_Ones_u8() {
         assert_eq!(
-            Instruction::Leading_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 929347u32
         );
     }
     #[test]
-    fn decode_Leading_Ones_u16() {
+    fn decode_L_Ones_u16() {
         assert_eq!(
-            Instruction::decode(269364803u32), Instruction::Leading_Ones_u16 { rd :
+            Instruction::decode(269364803u32), Instruction::L_Ones_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Ones_u16() {
+    fn encode_L_Ones_u16() {
         assert_eq!(
-            Instruction::Leading_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 269364803u32
         );
     }
     #[test]
-    fn decode_Leading_Ones_u32() {
+    fn decode_L_Ones_u32() {
         assert_eq!(
-            Instruction::decode(537800259u32), Instruction::Leading_Ones_u32 { rd :
+            Instruction::decode(537800259u32), Instruction::L_Ones_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Ones_u32() {
+    fn encode_L_Ones_u32() {
         assert_eq!(
-            Instruction::Leading_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537800259u32
         );
     }
     #[test]
-    fn decode_Leading_Ones_u64() {
+    fn decode_L_Ones_u64() {
         assert_eq!(
-            Instruction::decode(806235715u32), Instruction::Leading_Ones_u64 { rd :
+            Instruction::decode(806235715u32), Instruction::L_Ones_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Ones_u64() {
+    fn encode_L_Ones_u64() {
         assert_eq!(
-            Instruction::Leading_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 806235715u32
         );
     }
     #[test]
-    fn decode_Trailing_Ones_i8() {
+    fn decode_T_Ones_i8() {
         assert_eq!(
-            Instruction::decode(2148413059u32), Instruction::Trailing_Ones_i8 { rd :
+            Instruction::decode(2148413059u32), Instruction::T_Ones_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Ones_i8() {
+    fn encode_T_Ones_i8() {
         assert_eq!(
-            Instruction::Trailing_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148413059u32
         );
     }
     #[test]
-    fn decode_Trailing_Ones_i16() {
+    fn decode_T_Ones_i16() {
         assert_eq!(
-            Instruction::decode(2416848515u32), Instruction::Trailing_Ones_i16 { rd :
+            Instruction::decode(2416848515u32), Instruction::T_Ones_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Ones_i16() {
+    fn encode_T_Ones_i16() {
         assert_eq!(
-            Instruction::Trailing_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416848515u32
         );
     }
     #[test]
-    fn decode_Trailing_Ones_i32() {
+    fn decode_T_Ones_i32() {
         assert_eq!(
-            Instruction::decode(2685283971u32), Instruction::Trailing_Ones_i32 { rd :
+            Instruction::decode(2685283971u32), Instruction::T_Ones_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Ones_i32() {
+    fn encode_T_Ones_i32() {
         assert_eq!(
-            Instruction::Trailing_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2685283971u32
         );
     }
     #[test]
-    fn decode_Trailing_Ones_i64() {
+    fn decode_T_Ones_i64() {
         assert_eq!(
-            Instruction::decode(2953719427u32), Instruction::Trailing_Ones_i64 { rd :
+            Instruction::decode(2953719427u32), Instruction::T_Ones_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Ones_i64() {
+    fn encode_T_Ones_i64() {
         assert_eq!(
-            Instruction::Trailing_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953719427u32
         );
     }
     #[test]
-    fn decode_Trailing_Ones_u8() {
+    fn decode_T_Ones_u8() {
         assert_eq!(
-            Instruction::decode(929411u32), Instruction::Trailing_Ones_u8 { rd :
+            Instruction::decode(929411u32), Instruction::T_Ones_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Ones_u8() {
+    fn encode_T_Ones_u8() {
         assert_eq!(
-            Instruction::Trailing_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 929411u32
         );
     }
     #[test]
-    fn decode_Trailing_Ones_u16() {
+    fn decode_T_Ones_u16() {
         assert_eq!(
-            Instruction::decode(269364867u32), Instruction::Trailing_Ones_u16 { rd :
+            Instruction::decode(269364867u32), Instruction::T_Ones_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Ones_u16() {
+    fn encode_T_Ones_u16() {
         assert_eq!(
-            Instruction::Trailing_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 269364867u32
         );
     }
     #[test]
-    fn decode_Trailing_Ones_u32() {
+    fn decode_T_Ones_u32() {
         assert_eq!(
-            Instruction::decode(537800323u32), Instruction::Trailing_Ones_u32 { rd :
+            Instruction::decode(537800323u32), Instruction::T_Ones_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Ones_u32() {
+    fn encode_T_Ones_u32() {
         assert_eq!(
-            Instruction::Trailing_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537800323u32
         );
     }
     #[test]
-    fn decode_Trailing_Ones_u64() {
+    fn decode_T_Ones_u64() {
         assert_eq!(
-            Instruction::decode(806235779u32), Instruction::Trailing_Ones_u64 { rd :
+            Instruction::decode(806235779u32), Instruction::T_Ones_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Ones_u64() {
+    fn encode_T_Ones_u64() {
         assert_eq!(
-            Instruction::Trailing_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 806235779u32
         );
     }
     #[test]
-    fn decode_Count_Zeros_i8() {
+    fn decode_C_Zeros_i8() {
         assert_eq!(
-            Instruction::decode(2148413123u32), Instruction::Count_Zeros_i8 { rd :
+            Instruction::decode(2148413123u32), Instruction::C_Zeros_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Zeros_i8() {
+    fn encode_C_Zeros_i8() {
         assert_eq!(
-            Instruction::Count_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148413123u32
         );
     }
     #[test]
-    fn decode_Count_Zeros_i16() {
+    fn decode_C_Zeros_i16() {
         assert_eq!(
-            Instruction::decode(2416848579u32), Instruction::Count_Zeros_i16 { rd :
+            Instruction::decode(2416848579u32), Instruction::C_Zeros_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Zeros_i16() {
+    fn encode_C_Zeros_i16() {
         assert_eq!(
-            Instruction::Count_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416848579u32
         );
     }
     #[test]
-    fn decode_Count_Zeros_i32() {
+    fn decode_C_Zeros_i32() {
         assert_eq!(
-            Instruction::decode(2685284035u32), Instruction::Count_Zeros_i32 { rd :
+            Instruction::decode(2685284035u32), Instruction::C_Zeros_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Zeros_i32() {
+    fn encode_C_Zeros_i32() {
         assert_eq!(
-            Instruction::Count_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2685284035u32
         );
     }
     #[test]
-    fn decode_Count_Zeros_i64() {
+    fn decode_C_Zeros_i64() {
         assert_eq!(
-            Instruction::decode(2953719491u32), Instruction::Count_Zeros_i64 { rd :
+            Instruction::decode(2953719491u32), Instruction::C_Zeros_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Zeros_i64() {
+    fn encode_C_Zeros_i64() {
         assert_eq!(
-            Instruction::Count_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953719491u32
         );
     }
     #[test]
-    fn decode_Count_Zeros_u8() {
+    fn decode_C_Zeros_u8() {
         assert_eq!(
-            Instruction::decode(929475u32), Instruction::Count_Zeros_u8 { rd :
+            Instruction::decode(929475u32), Instruction::C_Zeros_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Zeros_u8() {
+    fn encode_C_Zeros_u8() {
         assert_eq!(
-            Instruction::Count_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 929475u32
         );
     }
     #[test]
-    fn decode_Count_Zeros_u16() {
+    fn decode_C_Zeros_u16() {
         assert_eq!(
-            Instruction::decode(269364931u32), Instruction::Count_Zeros_u16 { rd :
+            Instruction::decode(269364931u32), Instruction::C_Zeros_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Zeros_u16() {
+    fn encode_C_Zeros_u16() {
         assert_eq!(
-            Instruction::Count_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 269364931u32
         );
     }
     #[test]
-    fn decode_Count_Zeros_u32() {
+    fn decode_C_Zeros_u32() {
         assert_eq!(
-            Instruction::decode(537800387u32), Instruction::Count_Zeros_u32 { rd :
+            Instruction::decode(537800387u32), Instruction::C_Zeros_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Zeros_u32() {
+    fn encode_C_Zeros_u32() {
         assert_eq!(
-            Instruction::Count_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537800387u32
         );
     }
     #[test]
-    fn decode_Count_Zeros_u64() {
+    fn decode_C_Zeros_u64() {
         assert_eq!(
-            Instruction::decode(806235843u32), Instruction::Count_Zeros_u64 { rd :
+            Instruction::decode(806235843u32), Instruction::C_Zeros_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Count_Zeros_u64() {
+    fn encode_C_Zeros_u64() {
         assert_eq!(
-            Instruction::Count_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::C_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 806235843u32
         );
     }
     #[test]
-    fn decode_Leading_Zeros_i8() {
+    fn decode_L_Zeros_i8() {
         assert_eq!(
-            Instruction::decode(2148413187u32), Instruction::Leading_Zeros_i8 { rd :
+            Instruction::decode(2148413187u32), Instruction::L_Zeros_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Zeros_i8() {
+    fn encode_L_Zeros_i8() {
         assert_eq!(
-            Instruction::Leading_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148413187u32
         );
     }
     #[test]
-    fn decode_Leading_Zeros_i16() {
+    fn decode_L_Zeros_i16() {
         assert_eq!(
-            Instruction::decode(2416848643u32), Instruction::Leading_Zeros_i16 { rd :
+            Instruction::decode(2416848643u32), Instruction::L_Zeros_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Zeros_i16() {
+    fn encode_L_Zeros_i16() {
         assert_eq!(
-            Instruction::Leading_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416848643u32
         );
     }
     #[test]
-    fn decode_Leading_Zeros_i32() {
+    fn decode_L_Zeros_i32() {
         assert_eq!(
-            Instruction::decode(2685284099u32), Instruction::Leading_Zeros_i32 { rd :
+            Instruction::decode(2685284099u32), Instruction::L_Zeros_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Zeros_i32() {
+    fn encode_L_Zeros_i32() {
         assert_eq!(
-            Instruction::Leading_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2685284099u32
         );
     }
     #[test]
-    fn decode_Leading_Zeros_i64() {
+    fn decode_L_Zeros_i64() {
         assert_eq!(
-            Instruction::decode(2953719555u32), Instruction::Leading_Zeros_i64 { rd :
+            Instruction::decode(2953719555u32), Instruction::L_Zeros_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Zeros_i64() {
+    fn encode_L_Zeros_i64() {
         assert_eq!(
-            Instruction::Leading_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953719555u32
         );
     }
     #[test]
-    fn decode_Leading_Zeros_u8() {
+    fn decode_L_Zeros_u8() {
         assert_eq!(
-            Instruction::decode(929539u32), Instruction::Leading_Zeros_u8 { rd :
+            Instruction::decode(929539u32), Instruction::L_Zeros_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Zeros_u8() {
+    fn encode_L_Zeros_u8() {
         assert_eq!(
-            Instruction::Leading_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 929539u32
         );
     }
     #[test]
-    fn decode_Leading_Zeros_u16() {
+    fn decode_L_Zeros_u16() {
         assert_eq!(
-            Instruction::decode(269364995u32), Instruction::Leading_Zeros_u16 { rd :
+            Instruction::decode(269364995u32), Instruction::L_Zeros_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Zeros_u16() {
+    fn encode_L_Zeros_u16() {
         assert_eq!(
-            Instruction::Leading_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 269364995u32
         );
     }
     #[test]
-    fn decode_Leading_Zeros_u32() {
+    fn decode_L_Zeros_u32() {
         assert_eq!(
-            Instruction::decode(537800451u32), Instruction::Leading_Zeros_u32 { rd :
+            Instruction::decode(537800451u32), Instruction::L_Zeros_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Zeros_u32() {
+    fn encode_L_Zeros_u32() {
         assert_eq!(
-            Instruction::Leading_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537800451u32
         );
     }
     #[test]
-    fn decode_Leading_Zeros_u64() {
+    fn decode_L_Zeros_u64() {
         assert_eq!(
-            Instruction::decode(806235907u32), Instruction::Leading_Zeros_u64 { rd :
+            Instruction::decode(806235907u32), Instruction::L_Zeros_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Leading_Zeros_u64() {
+    fn encode_L_Zeros_u64() {
         assert_eq!(
-            Instruction::Leading_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::L_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 806235907u32
         );
     }
     #[test]
-    fn decode_Trailing_Zeros_i8() {
+    fn decode_T_Zeros_i8() {
         assert_eq!(
-            Instruction::decode(2148413251u32), Instruction::Trailing_Zeros_i8 { rd :
+            Instruction::decode(2148413251u32), Instruction::T_Zeros_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Zeros_i8() {
+    fn encode_T_Zeros_i8() {
         assert_eq!(
-            Instruction::Trailing_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148413251u32
         );
     }
     #[test]
-    fn decode_Trailing_Zeros_i16() {
+    fn decode_T_Zeros_i16() {
         assert_eq!(
-            Instruction::decode(2416848707u32), Instruction::Trailing_Zeros_i16 { rd :
+            Instruction::decode(2416848707u32), Instruction::T_Zeros_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Zeros_i16() {
+    fn encode_T_Zeros_i16() {
         assert_eq!(
-            Instruction::Trailing_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416848707u32
         );
     }
     #[test]
-    fn decode_Trailing_Zeros_i32() {
+    fn decode_T_Zeros_i32() {
         assert_eq!(
-            Instruction::decode(2685284163u32), Instruction::Trailing_Zeros_i32 { rd :
+            Instruction::decode(2685284163u32), Instruction::T_Zeros_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Zeros_i32() {
+    fn encode_T_Zeros_i32() {
         assert_eq!(
-            Instruction::Trailing_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2685284163u32
         );
     }
     #[test]
-    fn decode_Trailing_Zeros_i64() {
+    fn decode_T_Zeros_i64() {
         assert_eq!(
-            Instruction::decode(2953719619u32), Instruction::Trailing_Zeros_i64 { rd :
+            Instruction::decode(2953719619u32), Instruction::T_Zeros_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Zeros_i64() {
+    fn encode_T_Zeros_i64() {
         assert_eq!(
-            Instruction::Trailing_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953719619u32
         );
     }
     #[test]
-    fn decode_Trailing_Zeros_u8() {
+    fn decode_T_Zeros_u8() {
         assert_eq!(
-            Instruction::decode(929603u32), Instruction::Trailing_Zeros_u8 { rd :
+            Instruction::decode(929603u32), Instruction::T_Zeros_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Zeros_u8() {
+    fn encode_T_Zeros_u8() {
         assert_eq!(
-            Instruction::Trailing_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 929603u32
         );
     }
     #[test]
-    fn decode_Trailing_Zeros_u16() {
+    fn decode_T_Zeros_u16() {
         assert_eq!(
-            Instruction::decode(269365059u32), Instruction::Trailing_Zeros_u16 { rd :
+            Instruction::decode(269365059u32), Instruction::T_Zeros_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Zeros_u16() {
+    fn encode_T_Zeros_u16() {
         assert_eq!(
-            Instruction::Trailing_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 269365059u32
         );
     }
     #[test]
-    fn decode_Trailing_Zeros_u32() {
+    fn decode_T_Zeros_u32() {
         assert_eq!(
-            Instruction::decode(537800515u32), Instruction::Trailing_Zeros_u32 { rd :
+            Instruction::decode(537800515u32), Instruction::T_Zeros_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Zeros_u32() {
+    fn encode_T_Zeros_u32() {
         assert_eq!(
-            Instruction::Trailing_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537800515u32
         );
     }
     #[test]
-    fn decode_Trailing_Zeros_u64() {
+    fn decode_T_Zeros_u64() {
         assert_eq!(
-            Instruction::decode(806235971u32), Instruction::Trailing_Zeros_u64 { rd :
+            Instruction::decode(806235971u32), Instruction::T_Zeros_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Trailing_Zeros_u64() {
+    fn encode_T_Zeros_u64() {
         assert_eq!(
-            Instruction::Trailing_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::T_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 806235971u32
         );
     }
     #[test]
-    fn decode_Reverse_Bytes_i8() {
+    fn decode_R_Bytes_i8() {
         assert_eq!(
-            Instruction::decode(2148413315u32), Instruction::Reverse_Bytes_i8 { rd :
+            Instruction::decode(2148413315u32), Instruction::R_Bytes_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bytes_i8() {
+    fn encode_R_Bytes_i8() {
         assert_eq!(
-            Instruction::Reverse_Bytes_i8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bytes_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148413315u32
         );
     }
     #[test]
-    fn decode_Reverse_Bytes_i16() {
+    fn decode_R_Bytes_i16() {
         assert_eq!(
-            Instruction::decode(2416848771u32), Instruction::Reverse_Bytes_i16 { rd :
+            Instruction::decode(2416848771u32), Instruction::R_Bytes_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bytes_i16() {
+    fn encode_R_Bytes_i16() {
         assert_eq!(
-            Instruction::Reverse_Bytes_i16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bytes_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416848771u32
         );
     }
     #[test]
-    fn decode_Reverse_Bytes_i32() {
+    fn decode_R_Bytes_i32() {
         assert_eq!(
-            Instruction::decode(2685284227u32), Instruction::Reverse_Bytes_i32 { rd :
+            Instruction::decode(2685284227u32), Instruction::R_Bytes_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bytes_i32() {
+    fn encode_R_Bytes_i32() {
         assert_eq!(
-            Instruction::Reverse_Bytes_i32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bytes_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2685284227u32
         );
     }
     #[test]
-    fn decode_Reverse_Bytes_i64() {
+    fn decode_R_Bytes_i64() {
         assert_eq!(
-            Instruction::decode(2953719683u32), Instruction::Reverse_Bytes_i64 { rd :
+            Instruction::decode(2953719683u32), Instruction::R_Bytes_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bytes_i64() {
+    fn encode_R_Bytes_i64() {
         assert_eq!(
-            Instruction::Reverse_Bytes_i64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bytes_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953719683u32
         );
     }
     #[test]
-    fn decode_Reverse_Bytes_u8() {
+    fn decode_R_Bytes_u8() {
         assert_eq!(
-            Instruction::decode(929667u32), Instruction::Reverse_Bytes_u8 { rd :
+            Instruction::decode(929667u32), Instruction::R_Bytes_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bytes_u8() {
+    fn encode_R_Bytes_u8() {
         assert_eq!(
-            Instruction::Reverse_Bytes_u8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bytes_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 929667u32
         );
     }
     #[test]
-    fn decode_Reverse_Bytes_u16() {
+    fn decode_R_Bytes_u16() {
         assert_eq!(
-            Instruction::decode(269365123u32), Instruction::Reverse_Bytes_u16 { rd :
+            Instruction::decode(269365123u32), Instruction::R_Bytes_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bytes_u16() {
+    fn encode_R_Bytes_u16() {
         assert_eq!(
-            Instruction::Reverse_Bytes_u16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bytes_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 269365123u32
         );
     }
     #[test]
-    fn decode_Reverse_Bytes_u32() {
+    fn decode_R_Bytes_u32() {
         assert_eq!(
-            Instruction::decode(537800579u32), Instruction::Reverse_Bytes_u32 { rd :
+            Instruction::decode(537800579u32), Instruction::R_Bytes_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bytes_u32() {
+    fn encode_R_Bytes_u32() {
         assert_eq!(
-            Instruction::Reverse_Bytes_u32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bytes_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537800579u32
         );
     }
     #[test]
-    fn decode_Reverse_Bytes_u64() {
+    fn decode_R_Bytes_u64() {
         assert_eq!(
-            Instruction::decode(806236035u32), Instruction::Reverse_Bytes_u64 { rd :
+            Instruction::decode(806236035u32), Instruction::R_Bytes_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bytes_u64() {
+    fn encode_R_Bytes_u64() {
         assert_eq!(
-            Instruction::Reverse_Bytes_u64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bytes_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 806236035u32
         );
     }
     #[test]
-    fn decode_Reverse_Bits_i8() {
+    fn decode_R_Bits_i8() {
         assert_eq!(
-            Instruction::decode(2148413379u32), Instruction::Reverse_Bits_i8 { rd :
+            Instruction::decode(2148413379u32), Instruction::R_Bits_i8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bits_i8() {
+    fn encode_R_Bits_i8() {
         assert_eq!(
-            Instruction::Reverse_Bits_i8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bits_i8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2148413379u32
         );
     }
     #[test]
-    fn decode_Reverse_Bits_i16() {
+    fn decode_R_Bits_i16() {
         assert_eq!(
-            Instruction::decode(2416848835u32), Instruction::Reverse_Bits_i16 { rd :
+            Instruction::decode(2416848835u32), Instruction::R_Bits_i16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bits_i16() {
+    fn encode_R_Bits_i16() {
         assert_eq!(
-            Instruction::Reverse_Bits_i16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bits_i16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2416848835u32
         );
     }
     #[test]
-    fn decode_Reverse_Bits_i32() {
+    fn decode_R_Bits_i32() {
         assert_eq!(
-            Instruction::decode(2685284291u32), Instruction::Reverse_Bits_i32 { rd :
+            Instruction::decode(2685284291u32), Instruction::R_Bits_i32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bits_i32() {
+    fn encode_R_Bits_i32() {
         assert_eq!(
-            Instruction::Reverse_Bits_i32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bits_i32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2685284291u32
         );
     }
     #[test]
-    fn decode_Reverse_Bits_i64() {
+    fn decode_R_Bits_i64() {
         assert_eq!(
-            Instruction::decode(2953719747u32), Instruction::Reverse_Bits_i64 { rd :
+            Instruction::decode(2953719747u32), Instruction::R_Bits_i64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bits_i64() {
+    fn encode_R_Bits_i64() {
         assert_eq!(
-            Instruction::Reverse_Bits_i64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bits_i64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 2953719747u32
         );
     }
     #[test]
-    fn decode_Reverse_Bits_u8() {
+    fn decode_R_Bits_u8() {
         assert_eq!(
-            Instruction::decode(929731u32), Instruction::Reverse_Bits_u8 { rd :
+            Instruction::decode(929731u32), Instruction::R_Bits_u8 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bits_u8() {
+    fn encode_R_Bits_u8() {
         assert_eq!(
-            Instruction::Reverse_Bits_u8 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bits_u8 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 929731u32
         );
     }
     #[test]
-    fn decode_Reverse_Bits_u16() {
+    fn decode_R_Bits_u16() {
         assert_eq!(
-            Instruction::decode(269365187u32), Instruction::Reverse_Bits_u16 { rd :
+            Instruction::decode(269365187u32), Instruction::R_Bits_u16 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bits_u16() {
+    fn encode_R_Bits_u16() {
         assert_eq!(
-            Instruction::Reverse_Bits_u16 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bits_u16 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 269365187u32
         );
     }
     #[test]
-    fn decode_Reverse_Bits_u32() {
+    fn decode_R_Bits_u32() {
         assert_eq!(
-            Instruction::decode(537800643u32), Instruction::Reverse_Bits_u32 { rd :
+            Instruction::decode(537800643u32), Instruction::R_Bits_u32 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bits_u32() {
+    fn encode_R_Bits_u32() {
         assert_eq!(
-            Instruction::Reverse_Bits_u32 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bits_u32 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 537800643u32
         );
     }
     #[test]
-    fn decode_Reverse_Bits_u64() {
+    fn decode_R_Bits_u64() {
         assert_eq!(
-            Instruction::decode(806236099u32), Instruction::Reverse_Bits_u64 { rd :
+            Instruction::decode(806236099u32), Instruction::R_Bits_u64 { rd :
             Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
         );
     }
     #[test]
-    fn encode_Reverse_Bits_u64() {
+    fn encode_R_Bits_u64() {
         assert_eq!(
-            Instruction::Reverse_Bits_u64 { rd : Register::General_Purpose(5), rs1 :
+            Instruction::R_Bits_u64 { rd : Register::General_Purpose(5), rs1 :
             Register::General_Purpose(8), } .encode(), 806236099u32
         );
     }

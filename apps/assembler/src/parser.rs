@@ -9,37 +9,37 @@ pub fn parse_instruction<'source>(asm: &mut Assembler<'source>) {
             0u64 => parse_Halt(asm),
             1u64 => parse_Trap(asm),
             2u64 => parse_Call(asm),
-            3u64 => parse_Callr(asm),
-            4u64 => parse_Calli(asm),
+            3u64 => parse_Call_R(asm),
+            4u64 => parse_Call_I(asm),
             5u64 => parse_Ret(asm),
             6u64 => parse_Ecall(asm),
             7u64 => parse_Break(asm),
             8u64 => parse_Jal(asm),
-            9u64 => parse_Jalr(asm),
-            10u64 => parse_Jali(asm),
+            9u64 => parse_Jal_R(asm),
+            10u64 => parse_Jal_I(asm),
             11u64 => parse_Jnz(asm),
-            12u64 => parse_Jnzr(asm),
-            13u64 => parse_Jnzi(asm),
+            12u64 => parse_Jnz_R(asm),
+            13u64 => parse_Jnz_I(asm),
             14u64 => parse_Jiz(asm),
-            15u64 => parse_Jizr(asm),
-            16u64 => parse_Jizi(asm),
+            15u64 => parse_Jiz_R(asm),
+            16u64 => parse_Jiz_I(asm),
             17u64 => parse_Load_8(asm),
             18u64 => parse_Load_16(asm),
             19u64 => parse_Load_32(asm),
             20u64 => parse_Load_64(asm),
-            21u64 => parse_Loadi(asm),
-            22u64 => parse_Loada_8(asm),
-            23u64 => parse_Loada_16(asm),
-            24u64 => parse_Loada_32(asm),
-            25u64 => parse_Loada_64(asm),
+            21u64 => parse_Load_I(asm),
+            22u64 => parse_Load_A_8(asm),
+            23u64 => parse_Load_A_16(asm),
+            24u64 => parse_Load_A_32(asm),
+            25u64 => parse_Load_A_64(asm),
             26u64 => parse_Store_8(asm),
             27u64 => parse_Store_16(asm),
             28u64 => parse_Store_32(asm),
             29u64 => parse_Store_64(asm),
-            30u64 => parse_Storei(asm),
+            30u64 => parse_Store_I(asm),
             31u64 => parse_Move(asm),
             32u64 => parse_Push(asm),
-            33u64 => parse_Pushi(asm),
+            33u64 => parse_Push_I(asm),
             34u64 => parse_Pop(asm),
             35u64 => parse_Ie(asm),
             36u64 => parse_Ie_f32(asm),
@@ -107,86 +107,86 @@ pub fn parse_instruction<'source>(asm: &mut Assembler<'source>) {
             98u64 => parse_Shr_u16(asm),
             99u64 => parse_Shr_u32(asm),
             100u64 => parse_Shr_u64(asm),
-            101u64 => parse_Rotl_i8(asm),
-            102u64 => parse_Rotl_i16(asm),
-            103u64 => parse_Rotl_i32(asm),
-            104u64 => parse_Rotl_i64(asm),
-            105u64 => parse_Rotl_u8(asm),
-            106u64 => parse_Rotl_u16(asm),
-            107u64 => parse_Rotl_u32(asm),
-            108u64 => parse_Rotl_u64(asm),
-            109u64 => parse_Rotr_i8(asm),
-            110u64 => parse_Rotr_i16(asm),
-            111u64 => parse_Rotr_i32(asm),
-            112u64 => parse_Rotr_i64(asm),
-            113u64 => parse_Rotr_u8(asm),
-            114u64 => parse_Rotr_u16(asm),
-            115u64 => parse_Rotr_u32(asm),
-            116u64 => parse_Rotr_u64(asm),
-            117u64 => parse_Count_Ones_i8(asm),
-            118u64 => parse_Count_Ones_i16(asm),
-            119u64 => parse_Count_Ones_i32(asm),
-            120u64 => parse_Count_Ones_i64(asm),
-            121u64 => parse_Count_Ones_u8(asm),
-            122u64 => parse_Count_Ones_u16(asm),
-            123u64 => parse_Count_Ones_u32(asm),
-            124u64 => parse_Count_Ones_u64(asm),
-            125u64 => parse_Leading_Ones_i8(asm),
-            126u64 => parse_Leading_Ones_i16(asm),
-            127u64 => parse_Leading_Ones_i32(asm),
-            128u64 => parse_Leading_Ones_i64(asm),
-            129u64 => parse_Leading_Ones_u8(asm),
-            130u64 => parse_Leading_Ones_u16(asm),
-            131u64 => parse_Leading_Ones_u32(asm),
-            132u64 => parse_Leading_Ones_u64(asm),
-            133u64 => parse_Trailing_Ones_i8(asm),
-            134u64 => parse_Trailing_Ones_i16(asm),
-            135u64 => parse_Trailing_Ones_i32(asm),
-            136u64 => parse_Trailing_Ones_i64(asm),
-            137u64 => parse_Trailing_Ones_u8(asm),
-            138u64 => parse_Trailing_Ones_u16(asm),
-            139u64 => parse_Trailing_Ones_u32(asm),
-            140u64 => parse_Trailing_Ones_u64(asm),
-            141u64 => parse_Count_Zeros_i8(asm),
-            142u64 => parse_Count_Zeros_i16(asm),
-            143u64 => parse_Count_Zeros_i32(asm),
-            144u64 => parse_Count_Zeros_i64(asm),
-            145u64 => parse_Count_Zeros_u8(asm),
-            146u64 => parse_Count_Zeros_u16(asm),
-            147u64 => parse_Count_Zeros_u32(asm),
-            148u64 => parse_Count_Zeros_u64(asm),
-            149u64 => parse_Leading_Zeros_i8(asm),
-            150u64 => parse_Leading_Zeros_i16(asm),
-            151u64 => parse_Leading_Zeros_i32(asm),
-            152u64 => parse_Leading_Zeros_i64(asm),
-            153u64 => parse_Leading_Zeros_u8(asm),
-            154u64 => parse_Leading_Zeros_u16(asm),
-            155u64 => parse_Leading_Zeros_u32(asm),
-            156u64 => parse_Leading_Zeros_u64(asm),
-            157u64 => parse_Trailing_Zeros_i8(asm),
-            158u64 => parse_Trailing_Zeros_i16(asm),
-            159u64 => parse_Trailing_Zeros_i32(asm),
-            160u64 => parse_Trailing_Zeros_i64(asm),
-            161u64 => parse_Trailing_Zeros_u8(asm),
-            162u64 => parse_Trailing_Zeros_u16(asm),
-            163u64 => parse_Trailing_Zeros_u32(asm),
-            164u64 => parse_Trailing_Zeros_u64(asm),
-            165u64 => parse_Reverse_Bytes_i8(asm),
-            166u64 => parse_Reverse_Bytes_i16(asm),
-            167u64 => parse_Reverse_Bytes_i32(asm),
-            168u64 => parse_Reverse_Bytes_i64(asm),
-            169u64 => parse_Reverse_Bytes_u8(asm),
-            170u64 => parse_Reverse_Bytes_u16(asm),
-            171u64 => parse_Reverse_Bytes_u32(asm),
-            172u64 => parse_Reverse_Bytes_u64(asm),
-            173u64 => parse_Reverse_Bits_i8(asm),
-            174u64 => parse_Reverse_Bits_i16(asm),
-            175u64 => parse_Reverse_Bits_i32(asm),
-            176u64 => parse_Reverse_Bits_i64(asm),
-            177u64 => parse_Reverse_Bits_u8(asm),
-            178u64 => parse_Reverse_Bits_u16(asm),
-            179u64 => parse_Reverse_Bits_u32(asm),
-            180u64 => parse_Reverse_Bits_u64(asm),
+            101u64 => parse_Rot_L_i8(asm),
+            102u64 => parse_Rot_L_i16(asm),
+            103u64 => parse_Rot_L_i32(asm),
+            104u64 => parse_Rot_L_i64(asm),
+            105u64 => parse_Rot_L_u8(asm),
+            106u64 => parse_Rot_L_u16(asm),
+            107u64 => parse_Rot_L_u32(asm),
+            108u64 => parse_Rot_L_u64(asm),
+            109u64 => parse_Rot_R_i8(asm),
+            110u64 => parse_Rot_R_i16(asm),
+            111u64 => parse_Rot_R_i32(asm),
+            112u64 => parse_Rot_R_i64(asm),
+            113u64 => parse_Rot_R_u8(asm),
+            114u64 => parse_Rot_R_u16(asm),
+            115u64 => parse_Rot_R_u32(asm),
+            116u64 => parse_Rot_R_u64(asm),
+            117u64 => parse_C_Ones_i8(asm),
+            118u64 => parse_C_Ones_i16(asm),
+            119u64 => parse_C_Ones_i32(asm),
+            120u64 => parse_C_Ones_i64(asm),
+            121u64 => parse_C_Ones_u8(asm),
+            122u64 => parse_C_Ones_u16(asm),
+            123u64 => parse_C_Ones_u32(asm),
+            124u64 => parse_C_Ones_u64(asm),
+            125u64 => parse_L_Ones_i8(asm),
+            126u64 => parse_L_Ones_i16(asm),
+            127u64 => parse_L_Ones_i32(asm),
+            128u64 => parse_L_Ones_i64(asm),
+            129u64 => parse_L_Ones_u8(asm),
+            130u64 => parse_L_Ones_u16(asm),
+            131u64 => parse_L_Ones_u32(asm),
+            132u64 => parse_L_Ones_u64(asm),
+            133u64 => parse_T_Ones_i8(asm),
+            134u64 => parse_T_Ones_i16(asm),
+            135u64 => parse_T_Ones_i32(asm),
+            136u64 => parse_T_Ones_i64(asm),
+            137u64 => parse_T_Ones_u8(asm),
+            138u64 => parse_T_Ones_u16(asm),
+            139u64 => parse_T_Ones_u32(asm),
+            140u64 => parse_T_Ones_u64(asm),
+            141u64 => parse_C_Zeros_i8(asm),
+            142u64 => parse_C_Zeros_i16(asm),
+            143u64 => parse_C_Zeros_i32(asm),
+            144u64 => parse_C_Zeros_i64(asm),
+            145u64 => parse_C_Zeros_u8(asm),
+            146u64 => parse_C_Zeros_u16(asm),
+            147u64 => parse_C_Zeros_u32(asm),
+            148u64 => parse_C_Zeros_u64(asm),
+            149u64 => parse_L_Zeros_i8(asm),
+            150u64 => parse_L_Zeros_i16(asm),
+            151u64 => parse_L_Zeros_i32(asm),
+            152u64 => parse_L_Zeros_i64(asm),
+            153u64 => parse_L_Zeros_u8(asm),
+            154u64 => parse_L_Zeros_u16(asm),
+            155u64 => parse_L_Zeros_u32(asm),
+            156u64 => parse_L_Zeros_u64(asm),
+            157u64 => parse_T_Zeros_i8(asm),
+            158u64 => parse_T_Zeros_i16(asm),
+            159u64 => parse_T_Zeros_i32(asm),
+            160u64 => parse_T_Zeros_i64(asm),
+            161u64 => parse_T_Zeros_u8(asm),
+            162u64 => parse_T_Zeros_u16(asm),
+            163u64 => parse_T_Zeros_u32(asm),
+            164u64 => parse_T_Zeros_u64(asm),
+            165u64 => parse_R_Bytes_i8(asm),
+            166u64 => parse_R_Bytes_i16(asm),
+            167u64 => parse_R_Bytes_i32(asm),
+            168u64 => parse_R_Bytes_i64(asm),
+            169u64 => parse_R_Bytes_u8(asm),
+            170u64 => parse_R_Bytes_u16(asm),
+            171u64 => parse_R_Bytes_u32(asm),
+            172u64 => parse_R_Bytes_u64(asm),
+            173u64 => parse_R_Bits_i8(asm),
+            174u64 => parse_R_Bits_i16(asm),
+            175u64 => parse_R_Bits_i32(asm),
+            176u64 => parse_R_Bits_i64(asm),
+            177u64 => parse_R_Bits_u8(asm),
+            178u64 => parse_R_Bits_u16(asm),
+            179u64 => parse_R_Bits_u32(asm),
+            180u64 => parse_R_Bits_u64(asm),
             181u64 => parse_C_Abs_i8(asm),
             182u64 => parse_C_Abs_i16(asm),
             183u64 => parse_C_Abs_i32(asm),
@@ -541,15 +541,15 @@ fn parse_Call<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Callr<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Callr {
+fn parse_Call_R<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Call_R {
         rs2: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Calli<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Calli {
+fn parse_Call_I<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Call_I {
         imm: parse_imm(asm),
     };
     asm.expects(Token_Kind::Newline);
@@ -579,15 +579,15 @@ fn parse_Jal<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Jalr<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Jalr {
+fn parse_Jal_R<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Jal_R {
         rs2: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Jali<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Jali {
+fn parse_Jal_I<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Jal_I {
         imm: parse_imm(asm),
     };
     asm.expects(Token_Kind::Newline);
@@ -601,16 +601,16 @@ fn parse_Jnz<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Jnzr<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Jnzr {
+fn parse_Jnz_R<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Jnz_R {
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Jnzi<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Jnzi {
+fn parse_Jnz_I<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Jnz_I {
         rd: parse_register_comma(asm),
         imm: parse_imm(asm),
     };
@@ -625,16 +625,16 @@ fn parse_Jiz<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Jizr<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Jizr {
+fn parse_Jiz_R<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Jiz_R {
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Jizi<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Jizi {
+fn parse_Jiz_I<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Jiz_I {
         rd: parse_register_comma(asm),
         imm: parse_imm(asm),
     };
@@ -673,40 +673,40 @@ fn parse_Load_64<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Loadi<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Loadi {
+fn parse_Load_I<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Load_I {
         rd: parse_register_comma(asm),
         imm: parse_imm(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Loada_8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Loada_8 {
+fn parse_Load_A_8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Load_A_8 {
         rd: parse_register_comma(asm),
         imm: parse_imm(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Loada_16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Loada_16 {
+fn parse_Load_A_16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Load_A_16 {
         rd: parse_register_comma(asm),
         imm: parse_imm(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Loada_32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Loada_32 {
+fn parse_Load_A_32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Load_A_32 {
         rd: parse_register_comma(asm),
         imm: parse_imm(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Loada_64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Loada_64 {
+fn parse_Load_A_64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Load_A_64 {
         rd: parse_register_comma(asm),
         imm: parse_imm(asm),
     };
@@ -745,8 +745,8 @@ fn parse_Store_64<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Storei<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Storei {
+fn parse_Store_I<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Store_I {
         rd: parse_register_comma(asm),
         imm: parse_imm(asm),
     };
@@ -768,8 +768,8 @@ fn parse_Push<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Pushi<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Pushi {
+fn parse_Push_I<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Push_I {
         imm: parse_imm(asm),
     };
     asm.expects(Token_Kind::Newline);
@@ -1368,8 +1368,8 @@ fn parse_Shr_u64<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotl_i8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotl_i8 {
+fn parse_Rot_L_i8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_L_i8 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1377,8 +1377,8 @@ fn parse_Rotl_i8<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotl_i16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotl_i16 {
+fn parse_Rot_L_i16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_L_i16 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1386,8 +1386,8 @@ fn parse_Rotl_i16<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotl_i32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotl_i32 {
+fn parse_Rot_L_i32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_L_i32 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1395,8 +1395,8 @@ fn parse_Rotl_i32<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotl_i64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotl_i64 {
+fn parse_Rot_L_i64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_L_i64 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1404,8 +1404,8 @@ fn parse_Rotl_i64<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotl_u8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotl_u8 {
+fn parse_Rot_L_u8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_L_u8 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1413,8 +1413,8 @@ fn parse_Rotl_u8<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotl_u16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotl_u16 {
+fn parse_Rot_L_u16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_L_u16 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1422,8 +1422,8 @@ fn parse_Rotl_u16<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotl_u32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotl_u32 {
+fn parse_Rot_L_u32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_L_u32 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1431,8 +1431,8 @@ fn parse_Rotl_u32<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotl_u64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotl_u64 {
+fn parse_Rot_L_u64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_L_u64 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1440,8 +1440,8 @@ fn parse_Rotl_u64<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotr_i8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotr_i8 {
+fn parse_Rot_R_i8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_R_i8 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1449,8 +1449,8 @@ fn parse_Rotr_i8<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotr_i16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotr_i16 {
+fn parse_Rot_R_i16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_R_i16 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1458,8 +1458,8 @@ fn parse_Rotr_i16<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotr_i32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotr_i32 {
+fn parse_Rot_R_i32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_R_i32 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1467,8 +1467,8 @@ fn parse_Rotr_i32<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotr_i64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotr_i64 {
+fn parse_Rot_R_i64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_R_i64 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1476,8 +1476,8 @@ fn parse_Rotr_i64<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotr_u8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotr_u8 {
+fn parse_Rot_R_u8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_R_u8 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1485,8 +1485,8 @@ fn parse_Rotr_u8<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotr_u16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotr_u16 {
+fn parse_Rot_R_u16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_R_u16 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1494,8 +1494,8 @@ fn parse_Rotr_u16<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotr_u32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotr_u32 {
+fn parse_Rot_R_u32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_R_u32 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1503,8 +1503,8 @@ fn parse_Rotr_u32<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Rotr_u64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Rotr_u64 {
+fn parse_Rot_R_u64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::Rot_R_u64 {
         rd: parse_register_comma(asm),
         rs1: parse_register_comma(asm),
         rs2: parse_register(asm),
@@ -1512,512 +1512,512 @@ fn parse_Rotr_u64<'source>(asm: &mut Assembler<'source>) {
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Ones_i8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Ones_i8 {
+fn parse_C_Ones_i8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Ones_i8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Ones_i16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Ones_i16 {
+fn parse_C_Ones_i16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Ones_i16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Ones_i32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Ones_i32 {
+fn parse_C_Ones_i32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Ones_i32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Ones_i64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Ones_i64 {
+fn parse_C_Ones_i64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Ones_i64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Ones_u8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Ones_u8 {
+fn parse_C_Ones_u8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Ones_u8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Ones_u16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Ones_u16 {
+fn parse_C_Ones_u16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Ones_u16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Ones_u32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Ones_u32 {
+fn parse_C_Ones_u32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Ones_u32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Ones_u64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Ones_u64 {
+fn parse_C_Ones_u64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Ones_u64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Ones_i8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Ones_i8 {
+fn parse_L_Ones_i8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Ones_i8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Ones_i16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Ones_i16 {
+fn parse_L_Ones_i16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Ones_i16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Ones_i32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Ones_i32 {
+fn parse_L_Ones_i32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Ones_i32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Ones_i64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Ones_i64 {
+fn parse_L_Ones_i64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Ones_i64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Ones_u8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Ones_u8 {
+fn parse_L_Ones_u8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Ones_u8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Ones_u16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Ones_u16 {
+fn parse_L_Ones_u16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Ones_u16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Ones_u32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Ones_u32 {
+fn parse_L_Ones_u32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Ones_u32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Ones_u64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Ones_u64 {
+fn parse_L_Ones_u64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Ones_u64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Ones_i8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Ones_i8 {
+fn parse_T_Ones_i8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Ones_i8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Ones_i16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Ones_i16 {
+fn parse_T_Ones_i16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Ones_i16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Ones_i32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Ones_i32 {
+fn parse_T_Ones_i32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Ones_i32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Ones_i64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Ones_i64 {
+fn parse_T_Ones_i64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Ones_i64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Ones_u8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Ones_u8 {
+fn parse_T_Ones_u8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Ones_u8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Ones_u16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Ones_u16 {
+fn parse_T_Ones_u16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Ones_u16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Ones_u32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Ones_u32 {
+fn parse_T_Ones_u32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Ones_u32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Ones_u64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Ones_u64 {
+fn parse_T_Ones_u64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Ones_u64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Zeros_i8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Zeros_i8 {
+fn parse_C_Zeros_i8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Zeros_i8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Zeros_i16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Zeros_i16 {
+fn parse_C_Zeros_i16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Zeros_i16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Zeros_i32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Zeros_i32 {
+fn parse_C_Zeros_i32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Zeros_i32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Zeros_i64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Zeros_i64 {
+fn parse_C_Zeros_i64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Zeros_i64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Zeros_u8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Zeros_u8 {
+fn parse_C_Zeros_u8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Zeros_u8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Zeros_u16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Zeros_u16 {
+fn parse_C_Zeros_u16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Zeros_u16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Zeros_u32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Zeros_u32 {
+fn parse_C_Zeros_u32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Zeros_u32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Count_Zeros_u64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Count_Zeros_u64 {
+fn parse_C_Zeros_u64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::C_Zeros_u64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Zeros_i8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Zeros_i8 {
+fn parse_L_Zeros_i8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Zeros_i8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Zeros_i16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Zeros_i16 {
+fn parse_L_Zeros_i16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Zeros_i16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Zeros_i32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Zeros_i32 {
+fn parse_L_Zeros_i32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Zeros_i32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Zeros_i64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Zeros_i64 {
+fn parse_L_Zeros_i64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Zeros_i64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Zeros_u8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Zeros_u8 {
+fn parse_L_Zeros_u8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Zeros_u8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Zeros_u16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Zeros_u16 {
+fn parse_L_Zeros_u16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Zeros_u16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Zeros_u32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Zeros_u32 {
+fn parse_L_Zeros_u32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Zeros_u32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Leading_Zeros_u64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Leading_Zeros_u64 {
+fn parse_L_Zeros_u64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::L_Zeros_u64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Zeros_i8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Zeros_i8 {
+fn parse_T_Zeros_i8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Zeros_i8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Zeros_i16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Zeros_i16 {
+fn parse_T_Zeros_i16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Zeros_i16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Zeros_i32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Zeros_i32 {
+fn parse_T_Zeros_i32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Zeros_i32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Zeros_i64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Zeros_i64 {
+fn parse_T_Zeros_i64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Zeros_i64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Zeros_u8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Zeros_u8 {
+fn parse_T_Zeros_u8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Zeros_u8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Zeros_u16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Zeros_u16 {
+fn parse_T_Zeros_u16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Zeros_u16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Zeros_u32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Zeros_u32 {
+fn parse_T_Zeros_u32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Zeros_u32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Trailing_Zeros_u64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Trailing_Zeros_u64 {
+fn parse_T_Zeros_u64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::T_Zeros_u64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bytes_i8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bytes_i8 {
+fn parse_R_Bytes_i8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bytes_i8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bytes_i16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bytes_i16 {
+fn parse_R_Bytes_i16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bytes_i16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bytes_i32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bytes_i32 {
+fn parse_R_Bytes_i32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bytes_i32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bytes_i64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bytes_i64 {
+fn parse_R_Bytes_i64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bytes_i64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bytes_u8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bytes_u8 {
+fn parse_R_Bytes_u8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bytes_u8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bytes_u16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bytes_u16 {
+fn parse_R_Bytes_u16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bytes_u16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bytes_u32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bytes_u32 {
+fn parse_R_Bytes_u32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bytes_u32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bytes_u64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bytes_u64 {
+fn parse_R_Bytes_u64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bytes_u64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bits_i8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bits_i8 {
+fn parse_R_Bits_i8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bits_i8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bits_i16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bits_i16 {
+fn parse_R_Bits_i16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bits_i16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bits_i32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bits_i32 {
+fn parse_R_Bits_i32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bits_i32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bits_i64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bits_i64 {
+fn parse_R_Bits_i64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bits_i64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bits_u8<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bits_u8 {
+fn parse_R_Bits_u8<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bits_u8 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bits_u16<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bits_u16 {
+fn parse_R_Bits_u16<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bits_u16 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bits_u32<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bits_u32 {
+fn parse_R_Bits_u32<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bits_u32 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr);
 }
-fn parse_Reverse_Bits_u64<'source>(asm: &mut Assembler<'source>) {
-    let instr = Instruction::Reverse_Bits_u64 {
+fn parse_R_Bits_u64<'source>(asm: &mut Assembler<'source>) {
+    let instr = Instruction::R_Bits_u64 {
         rd: parse_register_comma(asm),
         rs1: parse_register(asm),
     };

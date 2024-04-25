@@ -8,7 +8,7 @@ mod token;
 
 static TEST: &str = r#"
 [code]
-    calli :fibonacci
+    call_i :fibonacci
     halt
 
 [data]
@@ -16,14 +16,14 @@ static TEST: &str = r#"
 
 [code]
 fibonacci:
-    loada.32  r0,   &count
-    move      r2,   r1
+    load_a.32  r0,   &count
+    move       r2,   r1
 loop:
-    s_sub.i32 r0,   r0, one
-    s_add.i32 r3,   r1, r2
-    move      r1,   r2
-    move      r2,   r3
-    jnzi      r5,   :loop
+    s_sub.i32  r0,   r0, one
+    s_add.i32  r3,   r1, r2
+    move       r1,   r2
+    move       r2,   r3
+    jnz_i      r5,   :loop
     ret
 "#;
 
