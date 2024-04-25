@@ -188,7 +188,7 @@ impl<'program> Virtual_Machine<'program> {
     fn execute(&mut self, instruction: Instruction) -> Instruction_Pointer {
         macro_rules! op1 {
             ($rd:expr, $rs1:expr, ($op:tt), $source:ty) => {{
-                let source_1 = <$source>::from_u64(self.register($rs1));
+                let source_1 = <$source>::from_bits_64(self.register($rs1));
 
                 ($op source_1).store(self, $rd);
 
@@ -196,7 +196,7 @@ impl<'program> Virtual_Machine<'program> {
             }};
 
             ($rd:expr, $rs1:expr, $op:ident, $source:ty) => {{
-                let source_1 = <$source>::from_u64(self.register($rs1));
+                let source_1 = <$source>::from_bits_64(self.register($rs1));
 
                 source_1.$op().store(self, $rd);
 
@@ -206,8 +206,8 @@ impl<'program> Virtual_Machine<'program> {
 
         macro_rules! op2 {
             ($rd:expr, $rs1:expr, $rs2:expr, ($op:tt), $source:ty) => {{
-                let source_1 = <$source>::from_u64(self.register($rs1));
-                let source_2 = <$source>::from_u64(self.register($rs2));
+                let source_1 = <$source>::from_bits_64(self.register($rs1));
+                let source_2 = <$source>::from_bits_64(self.register($rs2));
 
                 (source_1 $op source_2).store(self, $rd);
 
@@ -215,8 +215,8 @@ impl<'program> Virtual_Machine<'program> {
             }};
 
             ($rd:expr, $rs1:expr, $rs2:expr, $op:ident, $source:ty) => {{
-                let source_1 = <$source>::from_u64(self.register($rs1));
-                let source_2 = <$source>::from_u64(self.register($rs2));
+                let source_1 = <$source>::from_bits_64(self.register($rs1));
+                let source_2 = <$source>::from_bits_64(self.register($rs2));
 
                 source_1.$op(source_2).store(self, $rd);
 
@@ -224,8 +224,8 @@ impl<'program> Virtual_Machine<'program> {
             }};
 
             ($rd:expr, $rs1:expr, $rs2:expr, $op:ident, $source_1:ty, $source_2:ty) => {{
-                let source_1 = <$source_1>::from_u64(self.register($rs1));
-                let source_2 = <$source_2>::from_u64(self.register($rs2));
+                let source_1 = <$source_1>::from_bits_64(self.register($rs1));
+                let source_2 = <$source_2>::from_bits_64(self.register($rs2));
 
                 source_1.$op(source_2).store(self, $rd);
 
