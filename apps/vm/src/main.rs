@@ -7,7 +7,7 @@ mod vm;
 
 use std::io;
 
-use byte_code::{Instruction, Register};
+use byte_code::Instruction;
 
 use crate::{program::Program, vm::Virtual_Machine};
 
@@ -17,53 +17,14 @@ fn main() {
     // assembler::Assembler::new().assemble();
 
     let program = Program {
-        data:  vec![],
-        code:  vec![
-            Instruction::Loadi {
-                rd:  Register::General_Purpose(5),
-                imm: 3,
-            },
-            Instruction::Call {
-                rs2: Register::General_Purpose(5),
-            },
-            Instruction::Halt,
-            Instruction::Loadi {
-                rd:  Register::General_Purpose(10),
-                imm: -4,
-            },
-            Instruction::Loadi {
-                rd:  Register::General_Purpose(5),
-                imm: 10,
-            },
-            Instruction::Move {
-                rd:  Register::General_Purpose(7),
-                rs1: Register::One,
-            },
-            Instruction::S_Sub_i32 {
-                rd:  Register::General_Purpose(5),
-                rs1: Register::General_Purpose(5),
-                rs2: Register::One,
-            },
-            Instruction::S_Add_i32 {
-                rd:  Register::General_Purpose(8),
-                rs1: Register::General_Purpose(7),
-                rs2: Register::General_Purpose(6),
-            },
-            Instruction::Move {
-                rd:  Register::General_Purpose(6),
-                rs1: Register::General_Purpose(7),
-            },
-            Instruction::Move {
-                rd:  Register::General_Purpose(7),
-                rs1: Register::General_Purpose(8),
-            },
-            Instruction::Jnz_R {
-                rd:  Register::General_Purpose(9),
-                rs1: Register::General_Purpose(5),
-                rs2: Register::General_Purpose(10),
-            },
-            Instruction::Ret,
-        ],
+        data:  vec![10, 0, 0, 0],
+        code:  [
+            131264, 0, 6401, 74241, 2688949126, 2718377030, 531969, 598529, 4294711872, 256,
+        ]
+        .iter()
+        .copied()
+        .map(Instruction::decode)
+        .collect(),
         start: 0,
     };
 

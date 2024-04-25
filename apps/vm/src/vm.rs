@@ -80,11 +80,11 @@ impl<'program> Virtual_Machine<'program> {
                 },
             }
 
-            println!("r0: {}", self.register(Register::from_index(5)));
-            println!("r1: {}", self.register(Register::from_index(6)));
-            println!("r2: {}", self.register(Register::from_index(7)));
-            println!("r3: {}", self.register(Register::from_index(8)));
-            println!("r5: {:b}", self.register(Register::from_index(10)));
+            println!("r0: {}", self.register(Register::General_Purpose(0)));
+            println!("r1: {}", self.register(Register::General_Purpose(1)));
+            println!("r2: {}", self.register(Register::General_Purpose(2)));
+            println!("r3: {}", self.register(Register::General_Purpose(3)));
+            println!("r4: {}", self.register(Register::General_Purpose(4)));
         } else {
             should_continue = false;
         }
