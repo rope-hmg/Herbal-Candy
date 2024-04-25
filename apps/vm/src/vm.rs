@@ -359,6 +359,13 @@ impl<'program> Virtual_Machine<'program> {
                 Instruction_Pointer::Next
             },
 
+            Loada { rd, imm } => {
+                todo!();
+                // self.load(rd, Memory_Address(imm as u64), bit_width);
+
+                // Instruction_Pointer::Next
+            },
+
             Store { rd, rs1, size } => {
                 self.store(Memory_Address(self.register(rd)), self.register(rs1), size);
 

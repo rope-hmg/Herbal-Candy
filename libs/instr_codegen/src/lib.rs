@@ -131,12 +131,13 @@ pub static INSTRUCTIONS: &[(&str, Instr)] = &[
     // ------
     instr!(r_type => "load",   0b000001, 0x0, [size, rs1, rd], {}),
     instr!(i_type => "loadi",  0b000001, 0x1, [      imm, rd]    ),
-    instr!(r_type => "store",  0b000001, 0x2, [size, rs1, rd], {}),
-    instr!(i_type => "storei", 0b000001, 0x3, [      imm, rd]    ),
-    instr!(r_type => "move",   0b000001, 0x4, [      rs1, rd], {}),
-    instr!(i_type => "push",   0b000001, 0x5, [           rd]    ),
-    instr!(i_type => "pushi",  0b000001, 0x6, [      imm    ]    ),
-    instr!(i_type => "pop",    0b000001, 0x7, [           rd]    ),
+    instr!(i_type => "loada",  0b000001, 0x2, [      imm, rd]    ),
+    instr!(r_type => "store",  0b000001, 0x3, [size, rs1, rd], {}),
+    instr!(i_type => "storei", 0b000001, 0x4, [      imm, rd]    ),
+    instr!(r_type => "move",   0b000001, 0x5, [      rs1, rd], {}),
+    instr!(i_type => "push",   0b000001, 0x6, [           rd]    ),
+    instr!(i_type => "pushi",  0b000001, 0x7, [      imm    ]    ),
+    instr!(i_type => "pop",    0b000001, 0x8, [           rd]    ),
     // Comparison
     // ----------
     instr!(r_type => "ie",     0b000010, 0x0, [rs2, rs1, rd], {           f: 0 }),
