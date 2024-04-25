@@ -1,8 +1,12 @@
 [workspace]
 resolver = "2"
-members  = [
+members = [
     "apps/*",
     "libs/*",
+    "apps/debugger/src-tauri",
+]
+exclude = [
+    "apps/debugger",
 ]
 
 [workspace.dependencies]
