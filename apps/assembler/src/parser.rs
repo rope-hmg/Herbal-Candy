@@ -507,11 +507,6 @@ fn parse_register_comma<'source>(asm: &mut Assembler<'source>) -> Register {
     Register::from_index(index as u8)
 }
 #[inline(always)]
-fn parse_size<'source>(asm: &mut Assembler<'source>) -> u8 {
-    asm.expects(Token_Kind::Type);
-    unsafe { asm.entry().value.integer as u8 }
-}
-#[inline(always)]
 fn parse_imm<'source>(asm: &mut Assembler<'source>) -> i16 {
     if asm.matches(Token_Kind::Colon) {
         asm.expects(Token_Kind::Identifier);

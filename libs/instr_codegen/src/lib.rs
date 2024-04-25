@@ -1,12 +1,9 @@
 #![allow(non_camel_case_types)]
 
 pub struct R_Type_Fields {
-    pub rd:   bool,
-    pub rs1:  bool,
-    pub rs2:  bool,
-    pub size: bool,
-    pub f:    bool,
-    pub s:    bool,
+    pub rd:  bool,
+    pub rs1: bool,
+    pub rs2: bool,
 }
 
 pub struct R_Type_Conditions {
@@ -38,9 +35,6 @@ macro_rules! instr {
                     rd:   false,
                     rs1:  false,
                     rs2:  false,
-                    size: false,
-                    f:    false,
-                    s:    false,
                 };
 
                 $(fields.$field = true;)*

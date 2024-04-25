@@ -32,7 +32,7 @@ fn main() {
 
             Instr::R_Type { fields, .. } => {
                 let parse_rd = if fields.rd {
-                    let register = if fields.rs1 || fields.rs2 || fields.size {
+                    let register = if fields.rs1 || fields.rs2 {
                         quote!(parse_register_comma(asm))
                     } else {
                         quote!(parse_register(asm))
@@ -46,7 +46,7 @@ fn main() {
                 };
 
                 let parse_rs1 = if fields.rs1 {
-                    let register = if fields.rs2 || fields.size {
+                    let register = if fields.rs2 {
                         quote!(parse_register_comma(asm))
                     } else {
                         quote!(parse_register(asm))
@@ -60,22 +60,8 @@ fn main() {
                 };
 
                 let parse_rs2 = if fields.rs2 {
-                    let register = if fields.size {
-                        quote!(parse_register_comma(asm))
-                    } else {
-                        quote!(parse_register(asm))
-                    };
-
                     quote! {
-                        rs2: #register,
-                    }
-                } else {
-                    quote!()
-                };
-
-                let parse_size = if fields.size {
-                    quote! {
-                        size: parse_size(asm),
+                        rs2: parse_register(asm),
                     }
                 } else {
                     quote!()
@@ -86,7 +72,6 @@ fn main() {
                         #parse_rd
                         #parse_rs1
                         #parse_rs2
-                        #parse_size
                     }
                 }
             },
@@ -302,12 +287,6 @@ fn main() {
             let index = unsafe { asm.entry().value.integer };
             asm.expects(Token_Kind::Comma);
             Register::from_index(index as u8)
-        }
-
-        #[inline(always)]
-        fn parse_size<'source>(asm: &mut Assembler<'source>) -> u8 {
-            asm.expects(Token_Kind::Type);
-            unsafe { asm.entry().value.integer as u8 }
         }
 
         #[inline(always)]

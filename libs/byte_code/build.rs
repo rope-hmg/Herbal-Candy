@@ -80,69 +80,27 @@ fn main() {
                     (quote!(), quote!(), quote!(0), quote!(), 0)
                 };
 
-                let (size_match_condition, (size_byte, size_value, size_encode)) =
+                let (size_match_condition, size_byte, size_encode) =
                     if let Some(size) = conditions.size {
                         (
                             quote!(&& size == #size),
-                            (map_size(size), size, quote!(encode_size(#size))),
+                            map_size(size),
+                            quote!(encode_size(#size)),
                         )
                     } else {
-                        (
-                            quote!(),
-                            if fields.size {
-                                (0b11, 64, quote!(encode_size(*size)))
-                            } else {
-                                (0, 0, quote!(0))
-                            },
-                        )
+                        (quote!(), 0, quote!(0))
                     };
 
-                let (size_decl, size_decode, size_test) = if fields.size {
-                    (quote!(size: u8,), quote!(size,), quote!(size: #size_value,))
+                let (f_match_condition, f_byte, f_encode) = if let Some(f) = conditions.f {
+                    (quote!(&& f == #f), f, quote!(encode_f(#f)))
                 } else {
-                    (quote!(), quote!(), quote!())
+                    (quote!(), 0, quote!(0))
                 };
 
-                let (f_match_condition, f_byte, f_value, f_encode) = if let Some(f) = conditions.f {
-                    (quote!(&& f == #f), f, f == 1, quote!(encode_f(#f)))
+                let (s_match_condition, s_byte, s_encode) = if let Some(s) = conditions.s {
+                    (quote!(&& s == #s), s, quote!(encode_s(#s)))
                 } else {
-                    (
-                        quote!(),
-                        0,
-                        false,
-                        if fields.f {
-                            quote!(encode_f(*f))
-                        } else {
-                            quote!(0)
-                        },
-                    )
-                };
-
-                let (f_decl, f_decode, f_test) = if fields.f {
-                    (quote!(f: bool,), quote!(f,), quote!(f: #f_value,))
-                } else {
-                    (quote!(), quote!(), quote!())
-                };
-
-                let (s_match_condition, s_byte, s_value, s_encode) = if let Some(s) = conditions.s {
-                    (quote!(&& s == #s), s, s == 1, quote!(encode_s(#s)))
-                } else {
-                    (
-                        quote!(),
-                        0,
-                        false,
-                        if fields.s {
-                            quote!(encode_s(*s))
-                        } else {
-                            quote!(0)
-                        },
-                    )
-                };
-
-                let (s_decl, s_decode, s_test) = if fields.s {
-                    (quote!(s: bool,), quote!(s,), quote!(s: #s_value,))
-                } else {
-                    (quote!(), quote!(), quote!())
+                    (quote!(), 0, quote!(0))
                 };
 
                 let instr_match = quote! {
@@ -150,9 +108,6 @@ fn main() {
                         #rd_decode
                         #rs1_decode
                         #rs2_decode
-                        #size_decode
-                        #f_decode
-                        #s_decode
                     }
                 };
 
@@ -162,9 +117,6 @@ fn main() {
                             #rd_decl
                             #rs1_decl
                             #rs2_decl
-                            #size_decl
-                            #f_decl
-                            #s_decl
                         },
                     },
                     quote! {
@@ -188,9 +140,6 @@ fn main() {
                         #rd_test
                         #rs1_test
                         #rs2_test
-                        #size_test
-                        #f_test
-                        #s_test
                     }),
                 )
             },
