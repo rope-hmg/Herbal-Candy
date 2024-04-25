@@ -3,11 +3,12 @@
 mod assembler;
 mod lexer;
 mod object;
+mod parser;
 mod token;
 
 static TEST: &str = r#"
 [code]
-    call fibonacci
+    calli :fibonacci
     halt
 
 [data]
@@ -15,15 +16,15 @@ static TEST: &str = r#"
 
 [code]
 fibonacci:
-    load_32       r0,   &count
-    move          r2,   r1
+    loada.32  r0,   &count
+    move      r2,   r1
 loop:
-    sub_i32_s     r0,   r0, one
-    add_i32_s     r3,   r1, r2
-    move          r1,   r2
-    move          r2,   r3
-    jump_not_zero loop, r0
-    return
+    s_sub.i32 r0,   r0, one
+    s_add.i32 r3,   r1, r2
+    move      r1,   r2
+    move      r2,   r3
+    jnzi      r5,   :loop
+    ret
 "#;
 
 fn main() {

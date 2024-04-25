@@ -4,6 +4,7 @@ use std::fmt;
 pub enum Token_Kind {
     Identifier,
     Instruction,
+    Register,
     Code_Segment,
     Data_Segment,
     Type,
@@ -17,7 +18,7 @@ pub enum Token_Kind {
 #[derive(Clone, Copy)]
 pub union Token_Value {
     pub integer: u64,
-    pub none: (),
+    pub none:    (),
 }
 
 impl Token_Value {
@@ -38,11 +39,11 @@ impl fmt::Debug for Token_Value {
 
 #[derive(Debug, Clone, Copy)]
 pub struct Token {
-    pub kind: Token_Kind,
+    pub kind:  Token_Kind,
     pub value: Token_Value,
     pub flags: u8,
-    start: usize,
-    end: usize,
+    start:     usize,
+    end:       usize,
 }
 
 impl Token {

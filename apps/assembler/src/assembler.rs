@@ -3,18 +3,21 @@ use std::mem;
 use crate::{
     lexer::Assembly_Lexer,
     object::Object,
+    parser::parse_instruction,
     token::{Token, Token_Kind},
 };
 
 pub struct Assembler<'source> {
-    source: &'source str,
-    lexer: Assembly_Lexer<'source>,
-    object: Object,
-    data_mode: bool,
-    can_continue: bool,
-    this_token: Token,
-    next_token: Token,
-    debug_depth: usize,
+    source:          &'source str,
+    lexer:           Assembly_Lexer<'source>,
+    pub object:      Object, // TEMP pub
+    patch_labels:    Vec<(usize, &'source str)>,
+    patch_addresses: Vec<(usize, &'source str)>,
+    data_mode:       bool,
+    can_continue:    bool,
+    this_token:      Token,
+    next_token:      Token,
+    debug_depth:     usize,
 }
 
 impl<'source> Assembler<'source> {
@@ -28,6 +31,8 @@ impl<'source> Assembler<'source> {
             source,
             lexer,
             object: Object::new(),
+            patch_labels: Vec::new(),
+            patch_addresses: Vec::new(),
             data_mode: false,
             can_continue: true,
             this_token: n,
@@ -66,6 +71,34 @@ impl<'source> Assembler<'source> {
             }
         }
 
+        for (instr_index, label) in self.patch_labels.drain(..) {
+            if let Some(label_index) = self.object.code_labels.get(label) {
+                // All immediate jumps are relative to the current instruction, so we calculate the
+                // offset.
+                let offset = *label_index as isize - instr_index as isize;
+                let instr = &mut self.object.code_instrs[instr_index];
+
+                println!("We will patch {:?} to {}", instr, offset);
+
+                // instr.imm = offset as i16;
+            } else {
+                panic!("Unknown label: {}", label);
+            }
+        }
+
+        for (index, label) in self.patch_addresses.drain(..) {
+            if let Some(layout) = self.object.data_layout.get(label) {
+                // TODO: Check the instruction size matches the data size
+                let instr = &mut self.object.code_instrs[index];
+
+                println!("We will patch {:?} to {}", instr, layout.address);
+
+                // instr.imm = offset as i16;
+            } else {
+                panic!("Unknown label: {}", label);
+            }
+        }
+
         println!("Object: {}", self.object);
 
         self.object
@@ -87,7 +120,7 @@ impl<'source> Assembler<'source> {
                 self.object.add_data_entry(
                     lexeme,
                     type_bit_width,
-                    &value.to_le_bytes()[..type_bit_width / 4],
+                    &value.to_le_bytes()[..type_bit_width / 8],
                 );
             }
 
@@ -107,36 +140,51 @@ impl<'source> Assembler<'source> {
             self.object.add_label(lexeme);
         }
 
-        if self.matches(Instruction) {
-            // object.code_bytes.push(0);
+        parse_instruction(self);
+    }
 
-            while !self.matches(Newline) {
-                if self.matches(Identifier) {
-                    // register or label
-                } else if self.matches(Ampersand) {
-                    self.expects(Identifier);
-                    // data reference
-                } else {
-                    // TODO: Better error handling
-                    panic!(
-                        "Unexpected token while parsing instruction arguments: {:?}",
-                        self.next_token.slice(self.source)
-                    );
-                }
+    pub fn patch_address(&mut self) -> i16 {
+        let label = self.entry().slice(self.source);
+        let index = self.object.data_layout.get(label);
 
-                if !self.matches(Comma) {
-                    break;
-                }
-            }
+        if let Some(layout) = index {
+            layout.address as i16
+        } else {
+            // We couldn't find the label, so we'll patch it later. We record the index of the
+            // the instruction in the stream and the label. The current instruction hasn't been
+            // pushed yet, the index is the current length.
+            self.patch_labels
+                .push((self.object.code_instrs.len(), label));
+
+            0
+        }
+    }
+
+    pub fn patch_label(&mut self) -> i16 {
+        let label = self.entry().slice(self.source);
+
+        let label_index = self.object.code_labels.get(label);
+        let instr_index = self.object.code_instrs.len();
+
+        if let Some(label_index) = label_index {
+            (*label_index as isize - instr_index as isize) as i16
+        } else {
+            // We couldn't find the label, so we'll patch it later. We record the index of the
+            // the instruction in the stream and the label. The current instruction hasn't been
+            // pushed yet, the index is the current length.
+            self.patch_labels
+                .push((self.object.code_instrs.len(), label));
+
+            0
         }
     }
 
     /// Remember that calling `matches` or `expects` will change the current token.
-    fn entry(&self) -> Token {
+    pub fn entry(&self) -> Token {
         self.this_token
     }
 
-    fn expects(&mut self, expected: Token_Kind) {
+    pub fn expects(&mut self, expected: Token_Kind) {
         if !self.matches(expected) {
             // TODO: Better error handling
             panic!(
@@ -148,7 +196,7 @@ impl<'source> Assembler<'source> {
         }
     }
 
-    fn matches(&mut self, expected: Token_Kind) -> bool {
+    pub fn matches(&mut self, expected: Token_Kind) -> bool {
         let matches = self.next_token.kind == expected;
 
         if matches {
