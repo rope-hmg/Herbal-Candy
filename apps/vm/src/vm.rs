@@ -247,12 +247,12 @@ impl<'program> Virtual_Machine<'program> {
                 Instruction_Pointer::Abs(self.register(rs2))
             },
 
-            Callr { rs2 } => {
+            Call_R { rs2 } => {
                 self.call();
                 Instruction_Pointer::Rel(i64::from_bits_64(self.register(rs2)))
             },
 
-            Calli { imm } => {
+            Call_I { imm } => {
                 self.call();
                 Instruction_Pointer::Rel(imm as i64)
             },
@@ -281,12 +281,12 @@ impl<'program> Virtual_Machine<'program> {
                 Instruction_Pointer::Abs(self.register(rs2))
             },
 
-            Jalr { rs2 } => {
+            Jal_R { rs2 } => {
                 self.link();
                 Instruction_Pointer::Rel(i64::from_bits_64(self.register(rs2)))
             },
 
-            Jali { imm } => {
+            Jal_I { imm } => {
                 self.link();
                 Instruction_Pointer::Rel(imm as i64)
             },
@@ -300,7 +300,7 @@ impl<'program> Virtual_Machine<'program> {
                 }
             },
 
-            Jnzr { rs1, rs2 } => {
+            Jnz_R { rs1, rs2 } => {
                 if self.register(rs1) != 0 {
                     self.link();
                     Instruction_Pointer::Rel(i64::from_bits_64(self.register(rs2)))
@@ -309,7 +309,7 @@ impl<'program> Virtual_Machine<'program> {
                 }
             },
 
-            Jnzi { rd, imm } => {
+            Jnz_I { rd, imm } => {
                 if self.register(rd) != 0 {
                     self.link();
                     Instruction_Pointer::Rel(imm as i64)
@@ -327,7 +327,7 @@ impl<'program> Virtual_Machine<'program> {
                 }
             },
 
-            Jizr { rs1, rs2 } => {
+            Jiz_R { rs1, rs2 } => {
                 if self.register(rs1) == 0 {
                     self.link();
                     Instruction_Pointer::Rel(i64::from_bits_64(self.register(rs2)))
@@ -336,7 +336,7 @@ impl<'program> Virtual_Machine<'program> {
                 }
             },
 
-            Jizi { rd, imm } => {
+            Jiz_I { rd, imm } => {
                 if self.register(rd) == 0 {
                     self.link();
                     Instruction_Pointer::Rel(imm as i64)
@@ -347,64 +347,64 @@ impl<'program> Virtual_Machine<'program> {
 
             // Memory
             // ------
-            Load_8 { rd, rs1 } => {
+            Ld_8 { rd, rs1 } => {
                 self.load(rd, Memory_Address(self.register(rs1)), 8);
                 Instruction_Pointer::Next
             },
-            Load_16 { rd, rs1 } => {
+            Ld_16 { rd, rs1 } => {
                 self.load(rd, Memory_Address(self.register(rs1)), 16);
                 Instruction_Pointer::Next
             },
-            Load_32 { rd, rs1 } => {
+            Ld_32 { rd, rs1 } => {
                 self.load(rd, Memory_Address(self.register(rs1)), 32);
                 Instruction_Pointer::Next
             },
-            Load_64 { rd, rs1 } => {
+            Ld_64 { rd, rs1 } => {
                 self.load(rd, Memory_Address(self.register(rs1)), 64);
                 Instruction_Pointer::Next
             },
 
-            Loadi { rd, imm } => {
+            Ld_I { rd, imm } => {
                 self.set_register(rd, imm.to_bits_64());
 
                 Instruction_Pointer::Next
             },
 
-            Loada_8 { rd, imm } => {
+            Ld_A_8 { rd, imm } => {
                 self.load(rd, Memory_Address(imm as u64), 8);
                 Instruction_Pointer::Next
             },
-            Loada_16 { rd, imm } => {
+            Ld_A_16 { rd, imm } => {
                 self.load(rd, Memory_Address(imm as u64), 16);
                 Instruction_Pointer::Next
             },
-            Loada_32 { rd, imm } => {
+            Ld_A_32 { rd, imm } => {
                 self.load(rd, Memory_Address(imm as u64), 32);
                 Instruction_Pointer::Next
             },
-            Loada_64 { rd, imm } => {
+            Ld_A_64 { rd, imm } => {
                 self.load(rd, Memory_Address(imm as u64), 64);
                 Instruction_Pointer::Next
             },
 
-            Store_8 { rd, rs1 } => {
+            St_8 { rd, rs1 } => {
                 self.store(Memory_Address(self.register(rd)), self.register(rs1), 8);
                 Instruction_Pointer::Next
             },
-            Store_16 { rd, rs1 } => {
+            St_16 { rd, rs1 } => {
                 self.store(Memory_Address(self.register(rd)), self.register(rs1), 16);
                 Instruction_Pointer::Next
             },
-            Store_32 { rd, rs1 } => {
+            St_32 { rd, rs1 } => {
                 self.store(Memory_Address(self.register(rd)), self.register(rs1), 32);
                 Instruction_Pointer::Next
             },
-            Store_64 { rd, rs1 } => {
+            St_64 { rd, rs1 } => {
                 self.store(Memory_Address(self.register(rd)), self.register(rs1), 64);
                 Instruction_Pointer::Next
             },
 
-            Storei { rd, imm } => {
+            St_I { rd, imm } => {
                 let address = self.register(rd);
                 let bytes = imm.to_le_bytes();
 
@@ -413,17 +413,17 @@ impl<'program> Virtual_Machine<'program> {
                 Instruction_Pointer::Next
             },
 
-            Move { rd, rs1 } => {
+            Mov { rd, rs1 } => {
                 self.set_register(rd, self.register(rs1));
                 Instruction_Pointer::Next
             },
 
-            Push { rd } => {
+            Psh { rd } => {
                 self.push(rd);
                 Instruction_Pointer::Next
             },
 
-            Pushi { imm } => {
+            Psh_I { imm } => {
                 self.push_immediate(imm.to_bits_64());
                 Instruction_Pointer::Next
             },
@@ -506,86 +506,86 @@ impl<'program> Virtual_Machine<'program> {
             Shr_i16 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, (>>), i16),
             Shr_i32 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, (>>), i32),
             Shr_i64 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, (>>), i64),
-            Rotl_i8 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, u8, u32),
-            Rotl_i16 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, u16, u32),
-            Rotl_i32 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, u32, u32),
-            Rotl_i64 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, u64, u32),
-            Rotl_u8 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, i8, u32),
-            Rotl_u16 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, i16, u32),
-            Rotl_u32 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, i32, u32),
-            Rotl_u64 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, i64, u32),
-            Rotr_i8 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, u8, u32),
-            Rotr_i16 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, u16, u32),
-            Rotr_i32 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, u32, u32),
-            Rotr_i64 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, u64, u32),
-            Rotr_u8 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, i8, u32),
-            Rotr_u16 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, i16, u32),
-            Rotr_u32 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, i32, u32),
-            Rotr_u64 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, i64, u32),
-            Count_Ones_u8 { rd, rs1 } => op1!(rd, rs1, count_ones, u8),
-            Count_Ones_u16 { rd, rs1 } => op1!(rd, rs1, count_ones, u16),
-            Count_Ones_u32 { rd, rs1 } => op1!(rd, rs1, count_ones, u32),
-            Count_Ones_u64 { rd, rs1 } => op1!(rd, rs1, count_ones, u64),
-            Count_Ones_i8 { rd, rs1 } => op1!(rd, rs1, count_ones, i8),
-            Count_Ones_i16 { rd, rs1 } => op1!(rd, rs1, count_ones, i16),
-            Count_Ones_i32 { rd, rs1 } => op1!(rd, rs1, count_ones, i32),
-            Count_Ones_i64 { rd, rs1 } => op1!(rd, rs1, count_ones, i64),
-            Leading_Ones_u8 { rd, rs1 } => op1!(rd, rs1, leading_ones, u8),
-            Leading_Ones_u16 { rd, rs1 } => op1!(rd, rs1, leading_ones, u16),
-            Leading_Ones_u32 { rd, rs1 } => op1!(rd, rs1, leading_ones, u32),
-            Leading_Ones_u64 { rd, rs1 } => op1!(rd, rs1, leading_ones, u64),
-            Leading_Ones_i8 { rd, rs1 } => op1!(rd, rs1, leading_ones, i8),
-            Leading_Ones_i16 { rd, rs1 } => op1!(rd, rs1, leading_ones, i16),
-            Leading_Ones_i32 { rd, rs1 } => op1!(rd, rs1, leading_ones, i32),
-            Leading_Ones_i64 { rd, rs1 } => op1!(rd, rs1, leading_ones, i64),
-            Trailing_Ones_u8 { rd, rs1 } => op1!(rd, rs1, trailing_ones, u8),
-            Trailing_Ones_u16 { rd, rs1 } => op1!(rd, rs1, trailing_ones, u16),
-            Trailing_Ones_u32 { rd, rs1 } => op1!(rd, rs1, trailing_ones, u32),
-            Trailing_Ones_u64 { rd, rs1 } => op1!(rd, rs1, trailing_ones, u64),
-            Trailing_Ones_i8 { rd, rs1 } => op1!(rd, rs1, trailing_ones, i8),
-            Trailing_Ones_i16 { rd, rs1 } => op1!(rd, rs1, trailing_ones, i16),
-            Trailing_Ones_i32 { rd, rs1 } => op1!(rd, rs1, trailing_ones, i32),
-            Trailing_Ones_i64 { rd, rs1 } => op1!(rd, rs1, trailing_ones, i64),
-            Count_Zeros_u8 { rd, rs1 } => op1!(rd, rs1, count_zeros, u8),
-            Count_Zeros_u16 { rd, rs1 } => op1!(rd, rs1, count_zeros, u16),
-            Count_Zeros_u32 { rd, rs1 } => op1!(rd, rs1, count_zeros, u32),
-            Count_Zeros_u64 { rd, rs1 } => op1!(rd, rs1, count_zeros, u64),
-            Count_Zeros_i8 { rd, rs1 } => op1!(rd, rs1, count_zeros, i8),
-            Count_Zeros_i16 { rd, rs1 } => op1!(rd, rs1, count_zeros, i16),
-            Count_Zeros_i32 { rd, rs1 } => op1!(rd, rs1, count_zeros, i32),
-            Count_Zeros_i64 { rd, rs1 } => op1!(rd, rs1, count_zeros, i64),
-            Leading_Zeros_u8 { rd, rs1 } => op1!(rd, rs1, leading_zeros, u8),
-            Leading_Zeros_u16 { rd, rs1 } => op1!(rd, rs1, leading_zeros, u16),
-            Leading_Zeros_u32 { rd, rs1 } => op1!(rd, rs1, leading_zeros, u32),
-            Leading_Zeros_u64 { rd, rs1 } => op1!(rd, rs1, leading_zeros, u64),
-            Leading_Zeros_i8 { rd, rs1 } => op1!(rd, rs1, leading_zeros, i8),
-            Leading_Zeros_i16 { rd, rs1 } => op1!(rd, rs1, leading_zeros, i16),
-            Leading_Zeros_i32 { rd, rs1 } => op1!(rd, rs1, leading_zeros, i32),
-            Leading_Zeros_i64 { rd, rs1 } => op1!(rd, rs1, leading_zeros, i64),
-            Trailing_Zeros_u8 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, u8),
-            Trailing_Zeros_u16 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, u16),
-            Trailing_Zeros_u32 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, u32),
-            Trailing_Zeros_u64 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, u64),
-            Trailing_Zeros_i8 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, i8),
-            Trailing_Zeros_i16 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, i16),
-            Trailing_Zeros_i32 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, i32),
-            Trailing_Zeros_i64 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, i64),
-            Reverse_Bytes_u8 { rd, rs1 } => op1!(rd, rs1, swap_bytes, u8),
-            Reverse_Bytes_u16 { rd, rs1 } => op1!(rd, rs1, swap_bytes, u16),
-            Reverse_Bytes_u32 { rd, rs1 } => op1!(rd, rs1, swap_bytes, u32),
-            Reverse_Bytes_u64 { rd, rs1 } => op1!(rd, rs1, swap_bytes, u64),
-            Reverse_Bytes_i8 { rd, rs1 } => op1!(rd, rs1, swap_bytes, i8),
-            Reverse_Bytes_i16 { rd, rs1 } => op1!(rd, rs1, swap_bytes, i16),
-            Reverse_Bytes_i32 { rd, rs1 } => op1!(rd, rs1, swap_bytes, i32),
-            Reverse_Bytes_i64 { rd, rs1 } => op1!(rd, rs1, swap_bytes, i64),
-            Reverse_Bits_u8 { rd, rs1 } => op1!(rd, rs1, reverse_bits, u8),
-            Reverse_Bits_u16 { rd, rs1 } => op1!(rd, rs1, reverse_bits, u16),
-            Reverse_Bits_u32 { rd, rs1 } => op1!(rd, rs1, reverse_bits, u32),
-            Reverse_Bits_u64 { rd, rs1 } => op1!(rd, rs1, reverse_bits, u64),
-            Reverse_Bits_i8 { rd, rs1 } => op1!(rd, rs1, reverse_bits, i8),
-            Reverse_Bits_i16 { rd, rs1 } => op1!(rd, rs1, reverse_bits, i16),
-            Reverse_Bits_i32 { rd, rs1 } => op1!(rd, rs1, reverse_bits, i32),
-            Reverse_Bits_i64 { rd, rs1 } => op1!(rd, rs1, reverse_bits, i64),
+            Rot_L_i8 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, u8, u32),
+            Rot_L_i16 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, u16, u32),
+            Rot_L_i32 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, u32, u32),
+            Rot_L_i64 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, u64, u32),
+            Rot_L_u8 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, i8, u32),
+            Rot_L_u16 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, i16, u32),
+            Rot_L_u32 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, i32, u32),
+            Rot_L_u64 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_left, i64, u32),
+            Rot_R_i8 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, u8, u32),
+            Rot_R_i16 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, u16, u32),
+            Rot_R_i32 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, u32, u32),
+            Rot_R_i64 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, u64, u32),
+            Rot_R_u8 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, i8, u32),
+            Rot_R_u16 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, i16, u32),
+            Rot_R_u32 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, i32, u32),
+            Rot_R_u64 { rd, rs1, rs2 } => op2!(rd, rs1, rs2, rotate_right, i64, u32),
+            C_Ones_u8 { rd, rs1 } => op1!(rd, rs1, count_ones, u8),
+            C_Ones_u16 { rd, rs1 } => op1!(rd, rs1, count_ones, u16),
+            C_Ones_u32 { rd, rs1 } => op1!(rd, rs1, count_ones, u32),
+            C_Ones_u64 { rd, rs1 } => op1!(rd, rs1, count_ones, u64),
+            C_Ones_i8 { rd, rs1 } => op1!(rd, rs1, count_ones, i8),
+            C_Ones_i16 { rd, rs1 } => op1!(rd, rs1, count_ones, i16),
+            C_Ones_i32 { rd, rs1 } => op1!(rd, rs1, count_ones, i32),
+            C_Ones_i64 { rd, rs1 } => op1!(rd, rs1, count_ones, i64),
+            L_Ones_u8 { rd, rs1 } => op1!(rd, rs1, leading_ones, u8),
+            L_Ones_u16 { rd, rs1 } => op1!(rd, rs1, leading_ones, u16),
+            L_Ones_u32 { rd, rs1 } => op1!(rd, rs1, leading_ones, u32),
+            L_Ones_u64 { rd, rs1 } => op1!(rd, rs1, leading_ones, u64),
+            L_Ones_i8 { rd, rs1 } => op1!(rd, rs1, leading_ones, i8),
+            L_Ones_i16 { rd, rs1 } => op1!(rd, rs1, leading_ones, i16),
+            L_Ones_i32 { rd, rs1 } => op1!(rd, rs1, leading_ones, i32),
+            L_Ones_i64 { rd, rs1 } => op1!(rd, rs1, leading_ones, i64),
+            T_Ones_u8 { rd, rs1 } => op1!(rd, rs1, trailing_ones, u8),
+            T_Ones_u16 { rd, rs1 } => op1!(rd, rs1, trailing_ones, u16),
+            T_Ones_u32 { rd, rs1 } => op1!(rd, rs1, trailing_ones, u32),
+            T_Ones_u64 { rd, rs1 } => op1!(rd, rs1, trailing_ones, u64),
+            T_Ones_i8 { rd, rs1 } => op1!(rd, rs1, trailing_ones, i8),
+            T_Ones_i16 { rd, rs1 } => op1!(rd, rs1, trailing_ones, i16),
+            T_Ones_i32 { rd, rs1 } => op1!(rd, rs1, trailing_ones, i32),
+            T_Ones_i64 { rd, rs1 } => op1!(rd, rs1, trailing_ones, i64),
+            C_Zeros_u8 { rd, rs1 } => op1!(rd, rs1, count_zeros, u8),
+            C_Zeros_u16 { rd, rs1 } => op1!(rd, rs1, count_zeros, u16),
+            C_Zeros_u32 { rd, rs1 } => op1!(rd, rs1, count_zeros, u32),
+            C_Zeros_u64 { rd, rs1 } => op1!(rd, rs1, count_zeros, u64),
+            C_Zeros_i8 { rd, rs1 } => op1!(rd, rs1, count_zeros, i8),
+            C_Zeros_i16 { rd, rs1 } => op1!(rd, rs1, count_zeros, i16),
+            C_Zeros_i32 { rd, rs1 } => op1!(rd, rs1, count_zeros, i32),
+            C_Zeros_i64 { rd, rs1 } => op1!(rd, rs1, count_zeros, i64),
+            L_Zeros_u8 { rd, rs1 } => op1!(rd, rs1, leading_zeros, u8),
+            L_Zeros_u16 { rd, rs1 } => op1!(rd, rs1, leading_zeros, u16),
+            L_Zeros_u32 { rd, rs1 } => op1!(rd, rs1, leading_zeros, u32),
+            L_Zeros_u64 { rd, rs1 } => op1!(rd, rs1, leading_zeros, u64),
+            L_Zeros_i8 { rd, rs1 } => op1!(rd, rs1, leading_zeros, i8),
+            L_Zeros_i16 { rd, rs1 } => op1!(rd, rs1, leading_zeros, i16),
+            L_Zeros_i32 { rd, rs1 } => op1!(rd, rs1, leading_zeros, i32),
+            L_Zeros_i64 { rd, rs1 } => op1!(rd, rs1, leading_zeros, i64),
+            T_Zeros_u8 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, u8),
+            T_Zeros_u16 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, u16),
+            T_Zeros_u32 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, u32),
+            T_Zeros_u64 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, u64),
+            T_Zeros_i8 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, i8),
+            T_Zeros_i16 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, i16),
+            T_Zeros_i32 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, i32),
+            T_Zeros_i64 { rd, rs1 } => op1!(rd, rs1, trailing_zeros, i64),
+            R_Bytes_u8 { rd, rs1 } => op1!(rd, rs1, swap_bytes, u8),
+            R_Bytes_u16 { rd, rs1 } => op1!(rd, rs1, swap_bytes, u16),
+            R_Bytes_u32 { rd, rs1 } => op1!(rd, rs1, swap_bytes, u32),
+            R_Bytes_u64 { rd, rs1 } => op1!(rd, rs1, swap_bytes, u64),
+            R_Bytes_i8 { rd, rs1 } => op1!(rd, rs1, swap_bytes, i8),
+            R_Bytes_i16 { rd, rs1 } => op1!(rd, rs1, swap_bytes, i16),
+            R_Bytes_i32 { rd, rs1 } => op1!(rd, rs1, swap_bytes, i32),
+            R_Bytes_i64 { rd, rs1 } => op1!(rd, rs1, swap_bytes, i64),
+            R_Bits_u8 { rd, rs1 } => op1!(rd, rs1, reverse_bits, u8),
+            R_Bits_u16 { rd, rs1 } => op1!(rd, rs1, reverse_bits, u16),
+            R_Bits_u32 { rd, rs1 } => op1!(rd, rs1, reverse_bits, u32),
+            R_Bits_u64 { rd, rs1 } => op1!(rd, rs1, reverse_bits, u64),
+            R_Bits_i8 { rd, rs1 } => op1!(rd, rs1, reverse_bits, i8),
+            R_Bits_i16 { rd, rs1 } => op1!(rd, rs1, reverse_bits, i16),
+            R_Bits_i32 { rd, rs1 } => op1!(rd, rs1, reverse_bits, i32),
+            R_Bits_i64 { rd, rs1 } => op1!(rd, rs1, reverse_bits, i64),
 
             // Checked Arithmetic
             // ------------------

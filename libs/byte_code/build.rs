@@ -13,29 +13,64 @@ pub fn map_size(size: u8) -> u8 {
     }
 }
 
+macro_rules! quote_if {
+    ($cond:expr, $($tokens:tt)*) => {
+        if $cond {
+            quote!($($tokens)*)
+        } else {
+            quote!()
+        }
+    };
+}
+
+macro_rules! quote_if_let {
+    ($pattern:pat = $ident:expr, $($tokens:tt)*) => {
+        if let Some($pattern) = $ident {
+            quote!($($tokens)*)
+        } else {
+            quote!()
+        }
+    };
+}
+
 fn main() {
-    let mut enum_variants = Vec::new();
-    let mut decode_match_arms = Vec::new();
-    let mut encode_match_arms = Vec::new();
-    let mut test_functs = Vec::new();
+    let mut instr_idents = Vec::new();
+    let mut instr_definitions = Vec::new();
+    let mut instr_decode_match_arms = Vec::new();
+    let mut instr_fields = Vec::new();
+    let mut encode_exprs = Vec::new();
+    let mut decode_test_idents = Vec::new();
+    let mut encode_test_idents = Vec::new();
+    let mut test_instances = Vec::new();
+    let mut test_instrs = Vec::new();
 
-    for (name, instr) in INSTRUCTIONS.iter() {
+    for (name, descriptor) in INSTRUCTIONS.iter() {
         let instr_ident = format_ident!("{}", make_name_good(name));
-        let decode_test_ident = format_ident!("decode_{}", instr_ident);
-        let encode_test_ident = format_ident!("encode_{}", instr_ident);
+        let decode_test_ident = format_ident!("decode_{}", instr_ident.to_string().to_lowercase());
+        let encode_test_ident = format_ident!("encode_{}", instr_ident.to_string().to_lowercase());
 
-        let (enum_definition, decode_match_arm, encode_match_arm, bytes, instr) = match instr {
-            Instr::V_Type { op_code, funct } => {
-                let encoded = (*funct as u32) << 6 | *op_code as u32;
+        let instr_definition = match descriptor {
+            Instr::V_Type { .. } => quote!(,),
 
-                (
-                    quote!(#instr_ident,),
-                    quote!(#op_code if funct == #funct => Instruction::#instr_ident,),
-                    quote!(Instruction::#instr_ident => #encoded,),
-                    encoded,
-                    quote!(Instruction::#instr_ident),
-                )
+            Instr::R_Type { fields, .. } => {
+                let rd = quote_if!(fields.rd, rd:  Register,);
+                let rs1 = quote_if!(fields.rs1, rs1: Register,);
+                let rs2 = quote_if!(fields.rs2, rs2: Register,);
+
+                quote!({ #rd #rs1 #rs2 },)
             },
+
+            #[rustfmt::skip]
+            Instr::I_Type { fields, .. } => {
+                let rd = quote_if!(fields.rd, rd: Register,);
+                let imm = quote_if!(fields.imm, imm: i16,);
+
+                quote!({ #rd #imm },)
+            },
+        };
+
+        let instr_decode_match_arm = match descriptor {
+            Instr::V_Type { op_code, funct } => quote!(#op_code if funct == #funct),
 
             Instr::R_Type {
                 op_code,
@@ -43,104 +78,136 @@ fn main() {
                 fields,
                 conditions,
             } => {
-                let (rd_check, rd_decl, rd_decode, rd_encode, rd_test, rd_bytes) = if fields.rd {
-                    (
-                        quote!(&&!rd.is_readonly()),
-                        quote!(rd: Register,),
-                        quote!(rd,),
-                        quote!(encode_rd(*rd)),
-                        quote!(rd: Register::General_Purpose(5),),
-                        5 + 6,
-                    )
+                let size_check = quote_if_let!(size = conditions.size, && size == #size);
+                let f_check = quote_if_let!(f = conditions.f, && f == #f);
+                let s_check = quote_if_let!(s = conditions.s, && s == #s);
+                let rd_check = quote_if!(fields.rd, &&!rd.is_readonly());
+
+                quote! {
+                    #op_code if funct == #funct
+                        #size_check
+                        #f_check
+                        #s_check
+                        #rd_check
+                }
+            },
+
+            Instr::I_Type {
+                op_code,
+                funct,
+                fields,
+            } => {
+                let rd_check = if fields.rd {
+                    quote!(&&!rd.is_readonly())
                 } else {
-                    (quote!(), quote!(), quote!(), quote!(0), quote!(), 0)
+                    quote!()
                 };
 
-                let (rs1_decl, rs1_decode, rs1_encode, rs1_test, rs1_bytes) = if fields.rs1 {
-                    (
-                        quote!(rs1: Register,),
-                        quote!(rs1,),
-                        quote!(encode_rs1(*rs1)),
-                        quote!(rs1: Register::General_Purpose(8),),
-                        8 + 6,
-                    )
-                } else {
-                    (quote!(), quote!(), quote!(0), quote!(), 0)
-                };
+                quote!(#op_code if funct == #funct #rd_check)
+            },
+        };
 
-                let (rs2_decl, rs2_decode, rs2_encode, rs2_test, rs2_bytes) = if fields.rs2 {
-                    (
-                        quote!(rs2: Register,),
-                        quote!(rs2,),
-                        quote!(encode_rs2(*rs2)),
-                        quote!(rs2: Register::General_Purpose(6),),
-                        6 + 6,
-                    )
-                } else {
-                    (quote!(), quote!(), quote!(0), quote!(), 0)
-                };
+        let instr_field = match descriptor {
+            Instr::V_Type { .. } => quote!(),
 
-                let (size_match_condition, size_byte, size_encode) =
-                    if let Some(size) = conditions.size {
-                        (
-                            quote!(&& size == #size),
-                            map_size(size),
-                            quote!(encode_size(#size)),
-                        )
-                    } else {
-                        (quote!(), 0, quote!(0))
-                    };
+            #[rustfmt::skip]
+            Instr::R_Type { fields, .. } => {
+                let rd  = if fields.rd  { quote!(rd, ) } else { quote!() };
+                let rs1 = if fields.rs1 { quote!(rs1,) } else { quote!() };
+                let rs2 = if fields.rs2 { quote!(rs2,) } else { quote!() };
 
-                let (f_match_condition, f_byte, f_encode) = if let Some(f) = conditions.f {
-                    (quote!(&& f == #f), f, quote!(encode_f(#f)))
-                } else {
-                    (quote!(), 0, quote!(0))
-                };
+                quote!({ #rd #rs1 #rs2 })
+            },
 
-                let (s_match_condition, s_byte, s_encode) = if let Some(s) = conditions.s {
-                    (quote!(&& s == #s), s, quote!(encode_s(#s)))
-                } else {
-                    (quote!(), 0, quote!(0))
-                };
+            #[rustfmt::skip]
+            Instr::I_Type { fields, .. } => {
+                let rd  = if fields.rd  { quote!(rd, ) } else { quote!() };
+                let imm = if fields.imm { quote!(imm,) } else { quote!() };
 
-                let instr_match = quote! {
-                    Instruction::#instr_ident {
-                        #rd_decode
-                        #rs1_decode
-                        #rs2_decode
-                    }
-                };
+                quote!({ #rd #imm })
+            },
+        };
+
+        let encode_expr = match descriptor {
+            Instr::V_Type { op_code, funct } => {
+                quote!(encode_funct(#funct) | encode_op_code(#op_code))
+            },
+            Instr::R_Type {
+                op_code,
+                funct,
+                fields,
+                conditions,
+            } => {
+                let rd = quote_if!(fields.rd, encode_rd(*rd) |);
+                let rs1 = quote_if!(fields.rs1, encode_rs1(*rs1) |);
+                let rs2 = quote_if!(fields.rs2, encode_rs2(*rs2) |);
+                let size = quote_if_let!(size = conditions.size, encode_size(#size) |);
+                let f = quote_if_let!(f = conditions.f, encode_f(#f) |);
+                let s = quote_if_let!(s = conditions.s, encode_s(#s) |);
+
+                quote!(#s #f #size #rs2 #rs1 #rd encode_funct(#funct) | encode_op_code(#op_code))
+            },
+            Instr::I_Type {
+                op_code,
+                funct,
+                fields,
+            } => {
+                let rd = quote_if!(fields.rd, encode_rd(*rd) |);
+                let imm = quote_if!(fields.imm, encode_imm(*imm) |);
+
+                quote!(#imm #rd encode_funct(#funct) | encode_op_code(#op_code))
+            },
+        };
+
+        // TODO: These should be encoded using the `encode_x` functions, but I'm not sure what the
+        // best way to share code between build and runtime is. Might need to lift the encoding out
+        // into it's own crate. Although it wouldn't actually affect if the tests pass or not, since
+        // they're using the runtime encode and decode functions.
+        let (test_instr, test_instance) = match descriptor {
+            Instr::V_Type { op_code, funct } => (
+                ((*funct as u32) << 6) | *op_code as u32,
+                quote!(Instruction::#instr_ident),
+            ),
+
+            Instr::R_Type {
+                op_code,
+                funct,
+                fields,
+                conditions,
+            } => {
+                let mut instr = 0u32;
+                let mut body = quote!();
+
+                if fields.rd {
+                    instr |= (5 + 6) << 10;
+                    body = quote!(#body rd: Register::General_Purpose(5),);
+                }
+
+                if fields.rs1 {
+                    instr |= (8 + 6) << 16;
+                    body = quote!(#body rs1: Register::General_Purpose(8),);
+                }
+
+                if fields.rs2 {
+                    instr |= (30 + 6) << 22;
+                    body = quote!(#body rs2: Register::General_Purpose(30),);
+                }
+
+                if let Some(size) = conditions.size {
+                    instr |= (map_size(size) as u32) << 28;
+                }
+
+                if let Some(f) = conditions.f {
+                    instr |= (f as u32) << 30;
+                }
+
+                if let Some(s) = conditions.s {
+                    instr |= (s as u32) << 31;
+                }
 
                 (
-                    quote! {
-                        #instr_ident {
-                            #rd_decl
-                            #rs1_decl
-                            #rs2_decl
-                        },
-                    },
-                    quote! {
-                        #op_code if funct == #funct
-                            #size_match_condition
-                            #f_match_condition
-                            #s_match_condition
-                            #rd_check
-                            => #instr_match,
-                    },
-                    quote!(#instr_match => #s_encode | #f_encode | #size_encode | #rs2_encode | #rs1_encode | #rd_encode | encode_funct(#funct) | encode_op_code(#op_code),),
-                    (s_byte as u32) << 31
-                        | (f_byte as u32) << 30
-                        | (size_byte as u32) << 28
-                        | (rs2_bytes as u32) << 22
-                        | (rs1_bytes as u32) << 16
-                        | (rd_bytes as u32) << 10
-                        | (*funct as u32) << 6
-                        | *op_code as u32,
-                    quote!(Instruction::#instr_ident {
-                        #rd_test
-                        #rs1_test
-                        #rs2_test
-                    }),
+                    instr | ((*funct as u32) << 6) | *op_code as u32,
+                    quote!(Instruction::#instr_ident { #body }),
                 )
             },
 
@@ -149,77 +216,35 @@ fn main() {
                 funct,
                 fields,
             } => {
-                let (rd_check, rd_decl, rd_decode, rd_encode, rd_test, rd_bytes) = if fields.rd {
-                    (
-                        quote!(&&!rd.is_readonly()),
-                        quote!(rd: Register,),
-                        quote!(rd,),
-                        quote!(encode_rd(*rd)),
-                        quote!(rd: Register::General_Purpose(5),),
-                        5 + 6,
-                    )
-                } else {
-                    (quote!(), quote!(), quote!(), quote!(0), quote!(), 0)
-                };
+                let mut instr = 0u32;
+                let mut body = quote!();
 
-                let (imm_decl, imm_decode, imm_encode, imm_test, imm_bytes) = if fields.imm {
-                    (
-                        quote!(imm: i16,),
-                        quote!(imm,),
-                        quote!(encode_imm(*imm)),
-                        quote!(imm: -16,),
-                        0b1111111111110000,
-                    )
-                } else {
-                    (quote!(), quote!(), quote!(0), quote!(), 0)
-                };
+                if fields.rd {
+                    instr |= (5 + 6) << 10;
+                    body = quote!(#body rd: Register::General_Purpose(5),);
+                }
 
-                let instr_match = quote! {
-                    Instruction::#instr_ident {
-                        #rd_decode
-                        #imm_decode
-                    }
-                };
+                if fields.imm {
+                    instr |= 0b1111111111110000 << 16;
+                    body = quote!(#body imm: -16,);
+                }
 
                 (
-                    quote! {
-                        #instr_ident {
-                            #rd_decl
-                            #imm_decl
-                        },
-                    },
-                    quote! {
-                        #op_code if funct == #funct
-                            #rd_check
-                            => #instr_match,
-                    },
-                    quote!(#instr_match => #imm_encode | #rd_encode | encode_funct(#funct) | encode_op_code(#op_code),),
-                    (imm_bytes as u32) << 16
-                        | (rd_bytes as u32) << 10
-                        | (*funct as u32) << 6
-                        | *op_code as u32,
-                    quote!(Instruction::#instr_ident {
-                        #rd_test
-                        #imm_test
-                    }),
+                    instr | ((*funct as u32) << 6) | *op_code as u32,
+                    quote!(Instruction::#instr_ident { #body }),
                 )
             },
         };
 
-        enum_variants.push(enum_definition);
-        decode_match_arms.push(decode_match_arm);
-        encode_match_arms.push(encode_match_arm);
-        test_functs.push(quote! {
-            #[test]
-            fn #decode_test_ident() {
-                assert_eq!(Instruction::decode(#bytes), #instr);
-            }
-
-            #[test]
-            fn #encode_test_ident() {
-                assert_eq!(#instr.encode(), #bytes);
-            }
-        });
+        instr_idents.push(instr_ident);
+        instr_definitions.push(instr_definition);
+        instr_decode_match_arms.push(instr_decode_match_arm);
+        instr_fields.push(instr_field);
+        encode_exprs.push(encode_expr);
+        decode_test_idents.push(decode_test_ident);
+        encode_test_idents.push(encode_test_ident);
+        test_instrs.push(test_instr);
+        test_instances.push(test_instance);
     }
 
     let output = quote! {
@@ -228,12 +253,12 @@ fn main() {
 
         #[derive(Debug, Clone, Copy, PartialEq, Eq)]
         pub enum Instruction {
-            #(#enum_variants)*
+            #(#instr_idents #instr_definitions)*
             Invalid(u32),
         }
 
         impl Instruction {
-            pub fn decode(instr: u32) -> Instruction {
+            pub fn decode(instr: u32) -> Self {
                 let op_code   = decode_op_code(instr);
                 let funct     = decode_funct  (instr);
                 let rd        = decode_rd     (instr);
@@ -245,15 +270,19 @@ fn main() {
                 let imm       = decode_imm    (instr);
 
                 match op_code {
-                    #(#decode_match_arms)*
-                    _ => Instruction::Invalid(instr),
+                    #(
+                        #instr_decode_match_arms => Self::#instr_idents #instr_fields,
+                    )*
+                    _ => Self::Invalid(instr),
                 }
             }
 
             pub fn encode(&self) -> u32 {
                 match self {
-                    #(#encode_match_arms)*
-                    Instruction::Invalid(instr) => *instr,
+                    #(
+                        Self::#instr_idents #instr_fields => #encode_exprs,
+                    )*
+                    Self::Invalid(instr) => *instr,
                 }
             }
         }
@@ -263,7 +292,17 @@ fn main() {
             #![allow(non_snake_case)]
             use super::*;
 
-            #(#test_functs)*
+            #(
+                #[test]
+                fn #decode_test_idents() {
+                    assert_eq!(Instruction::decode(#test_instrs), #test_instances);
+                }
+
+                #[test]
+                fn #encode_test_idents() {
+                    assert_eq!(#test_instances.encode(), #test_instrs);
+                }
+            )*
         }
     };
 

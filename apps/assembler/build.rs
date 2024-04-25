@@ -21,7 +21,7 @@ fn main() {
         let index = index as u64;
 
         let instr_name = format_ident!("{}", make_name_good(name));
-        let parser_ident = format_ident!("parse_{}", instr_name);
+        let parser_ident = format_ident!("parse_{}", instr_name.to_string().to_lowercase());
 
         let instr = match instr {
             Instr::V_Type { .. } => {
