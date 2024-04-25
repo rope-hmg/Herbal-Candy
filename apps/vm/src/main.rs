@@ -14,8 +14,6 @@ use crate::{program::Program, vm::Virtual_Machine};
 fn main() {
     let mut vm = Virtual_Machine::new(1024 * 1024);
 
-    // assembler::Assembler::new().assemble();
-
     let program = Program {
         data:  vec![10, 0, 0, 0],
         code:  [
