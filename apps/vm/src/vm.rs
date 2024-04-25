@@ -249,7 +249,7 @@ impl<'program> Virtual_Machine<'program> {
 
             Callr { rs2 } => {
                 self.call();
-                Instruction_Pointer::Rel(i64::from_u64(self.register(rs2)))
+                Instruction_Pointer::Rel(i64::from_bits_64(self.register(rs2)))
             },
 
             Calli { imm } => {
@@ -283,7 +283,7 @@ impl<'program> Virtual_Machine<'program> {
 
             Jalr { rs2 } => {
                 self.link();
-                Instruction_Pointer::Rel(i64::from_u64(self.register(rs2)))
+                Instruction_Pointer::Rel(i64::from_bits_64(self.register(rs2)))
             },
 
             Jali { imm } => {
@@ -303,7 +303,7 @@ impl<'program> Virtual_Machine<'program> {
             Jnzr { rs1, rs2 } => {
                 if self.register(rs1) != 0 {
                     self.link();
-                    Instruction_Pointer::Rel(i64::from_u64(self.register(rs2)))
+                    Instruction_Pointer::Rel(i64::from_bits_64(self.register(rs2)))
                 } else {
                     Instruction_Pointer::Next
                 }
@@ -330,7 +330,7 @@ impl<'program> Virtual_Machine<'program> {
             Jizr { rs1, rs2 } => {
                 if self.register(rs1) == 0 {
                     self.link();
-                    Instruction_Pointer::Rel(i64::from_u64(self.register(rs2)))
+                    Instruction_Pointer::Rel(i64::from_bits_64(self.register(rs2)))
                 } else {
                     Instruction_Pointer::Next
                 }
@@ -354,7 +354,7 @@ impl<'program> Virtual_Machine<'program> {
             },
 
             Loadi { rd, imm } => {
-                self.set_register(rd, imm.into_u64());
+                self.set_register(rd, imm.to_bits_64());
 
                 Instruction_Pointer::Next
             },
@@ -385,7 +385,7 @@ impl<'program> Virtual_Machine<'program> {
             },
 
             Pushi { imm } => {
-                self.push_immediate(imm.into_u64());
+                self.push_immediate(imm.to_bits_64());
                 Instruction_Pointer::Next
             },
 
@@ -897,7 +897,7 @@ where
     T: Destination,
 {
     fn store(&self, vm: &mut Virtual_Machine, register: Register) {
-        vm.set_register(register, self.into_u64());
+        vm.set_register(register, self.to_bits_64());
     }
 }
 
@@ -907,7 +907,7 @@ where
 {
     fn store(&self, vm: &mut Virtual_Machine, register: Register) {
         if let Some(value) = self {
-            vm.set_register(register, value.into_u64());
+            vm.set_register(register, value.to_bits_64());
         } else {
             // Set overflow flag
         }
@@ -919,7 +919,7 @@ where
     T: Destination,
 {
     fn store(&self, vm: &mut Virtual_Machine, register: Register) {
-        vm.set_register(register, self.0.into_u64());
+        vm.set_register(register, self.0.to_bits_64());
 
         if self.1 {
             // Set overflow flag
