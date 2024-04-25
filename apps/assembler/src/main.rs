@@ -16,14 +16,14 @@ static TEST: &str = r#"
 
 [code]
 fibonacci:
-    load_a.32  r0,   &count
-    move       r2,   r1
+    ld_a.32   r0,   &count
+    mov       r2,   one
 loop:
-    s_sub.i32  r0,   r0, one
-    s_add.i32  r3,   r1, r2
-    move       r1,   r2
-    move       r2,   r3
-    jnz_i      r5,   :loop
+    s_sub.i32 r0,   r0, one
+    s_add.i32 r3,   r1, r2
+    mov       r1,   r2
+    mov       r2,   r3
+    jnz_i     r0,   :loop
     ret
 "#;
 
