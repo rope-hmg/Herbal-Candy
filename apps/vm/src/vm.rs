@@ -272,10 +272,6 @@ impl<'program> Virtual_Machine<'program> {
                 Instruction_Pointer::Next
             },
 
-            Break => {
-                todo!()
-            },
-
             Jal { rs2 } => {
                 self.link();
                 Instruction_Pointer::Abs(self.register(rs2))
