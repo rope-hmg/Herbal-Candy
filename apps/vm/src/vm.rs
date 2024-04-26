@@ -76,7 +76,7 @@ impl<'program> Virtual_Machine<'program> {
                         .register(Register::Instruction_Pointer)
                         .wrapping_add_signed(relative_address);
 
-                    self.increment_register_n(Register::Instruction_Pointer, absolute_address);
+                    self.set_register(Register::Instruction_Pointer, absolute_address);
                 },
             }
 
