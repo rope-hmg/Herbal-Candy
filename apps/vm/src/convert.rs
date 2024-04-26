@@ -1,162 +1,69 @@
-use std::mem::transmute;
+//! This module provides the `Source` and `Destination` traits for converting the primitive types to
+//! and from `u64`. The primary reason this exists is to ease the writing of generic code for the
+//! virtual machine.
 
-pub trait Source<T: Copy> {
+pub trait Source {
     fn from_bits_64(value: u64) -> Self;
 }
+
+macro_rules! source_integer {
+    ($($t:ty),*) => {
+        $(
+            impl Source for $t {
+                #[inline(always)]
+                fn from_bits_64(value: u64) -> Self {
+                    value as Self
+                }
+            }
+        )*
+    };
+}
+
+macro_rules! source_float {
+    ($($t:ty),*) => {
+        $(
+            impl Source for $t {
+                #[inline(always)]
+                fn from_bits_64(value: u64) -> Self {
+                    f64::from_bits(value) as $t
+                }
+            }
+        )*
+    };
+}
+
+source_integer!(u8, u16, u32, u64, i8, i16, i32, i64);
+source_float!(f32, f64);
 
 pub trait Destination: Copy {
     fn to_bits_64(self) -> u64;
 }
 
-// Source
-// ------
-
-impl Source<u64> for u8 {
-    #[inline(always)]
-    fn from_bits_64(value: u64) -> Self {
-        value as u8
-    }
+macro_rules! destination_integer {
+    ($($t:ty),*) => {
+        $(
+            impl Destination for $t {
+                #[inline(always)]
+                fn to_bits_64(self) -> u64 {
+                    self as u64
+                }
+            }
+        )*
+    };
 }
 
-impl Source<u64> for u16 {
-    #[inline(always)]
-    fn from_bits_64(value: u64) -> Self {
-        value as u16
-    }
+macro_rules! destination_float {
+    ($($t:ty),*) => {
+        $(
+            impl Destination for $t {
+                #[inline(always)]
+                fn to_bits_64(self) -> u64 {
+                    (self as f64).to_bits()
+                }
+            }
+        )*
+    };
 }
 
-impl Source<u64> for u32 {
-    #[inline(always)]
-    fn from_bits_64(value: u64) -> Self {
-        value as u32
-    }
-}
-
-impl Source<u64> for u64 {
-    #[inline(always)]
-    fn from_bits_64(value: u64) -> Self {
-        value
-    }
-}
-
-impl Source<u64> for i8 {
-    #[inline(always)]
-    fn from_bits_64(value: u64) -> Self {
-        unsafe { transmute::<u64, i64>(value) as i8 }
-    }
-}
-
-impl Source<u64> for i16 {
-    #[inline(always)]
-    fn from_bits_64(value: u64) -> Self {
-        unsafe { transmute::<u64, i64>(value) as i16 }
-    }
-}
-
-impl Source<u64> for i32 {
-    #[inline(always)]
-    fn from_bits_64(value: u64) -> Self {
-        unsafe { transmute::<u64, i64>(value) as i32 }
-    }
-}
-
-impl Source<u64> for i64 {
-    #[inline(always)]
-    fn from_bits_64(value: u64) -> Self {
-        unsafe { transmute::<u64, i64>(value) as i64 }
-    }
-}
-
-impl Source<u64> for f32 {
-    #[inline(always)]
-    fn from_bits_64(value: u64) -> Self {
-        f64::from_bits(value) as f32
-    }
-}
-
-impl Source<u64> for f64 {
-    #[inline(always)]
-    fn from_bits_64(value: u64) -> Self {
-        f64::from_bits(value)
-    }
-}
-
-// Destination
-// -----------
-
-impl Destination for u8 {
-    #[inline(always)]
-    fn to_bits_64(self) -> u64 {
-        self as u64
-    }
-}
-
-impl Destination for u16 {
-    #[inline(always)]
-    fn to_bits_64(self) -> u64 {
-        self as u64
-    }
-}
-
-impl Destination for u32 {
-    #[inline(always)]
-    fn to_bits_64(self) -> u64 {
-        self as u64
-    }
-}
-
-impl Destination for u64 {
-    #[inline(always)]
-    fn to_bits_64(self) -> u64 {
-        self
-    }
-}
-
-impl Destination for i8 {
-    #[inline(always)]
-    fn to_bits_64(self) -> u64 {
-        unsafe { transmute(self as i64) }
-    }
-}
-
-impl Destination for i16 {
-    #[inline(always)]
-    fn to_bits_64(self) -> u64 {
-        unsafe { transmute(self as i64) }
-    }
-}
-
-impl Destination for i32 {
-    #[inline(always)]
-    fn to_bits_64(self) -> u64 {
-        unsafe { transmute(self as i64) }
-    }
-}
-
-impl Destination for i64 {
-    #[inline(always)]
-    fn to_bits_64(self) -> u64 {
-        unsafe { transmute(self) }
-    }
-}
-
-impl Destination for f32 {
-    #[inline(always)]
-    fn to_bits_64(self) -> u64 {
-        (self as f64).to_bits()
-    }
-}
-
-impl Destination for f64 {
-    #[inline(always)]
-    fn to_bits_64(self) -> u64 {
-        self.to_bits()
-    }
-}
-
-impl Destination for bool {
-    #[inline(always)]
-    fn to_bits_64(self) -> u64 {
-        self as u64
-    }
-}
+destination_integer!(u8, u16, u32, u64, i8, i16, i32, i64, bool);
+destination_float!(f32, f64);
