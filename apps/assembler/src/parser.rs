@@ -515,7 +515,7 @@ fn parse_imm<'source>(asm: &mut Assembler<'source>) -> i16 {
         asm.patch_address()
     } else {
         asm.expects(Token_Kind::Number);
-        unsafe { std::mem::transmute::<u64, i64>(asm.entry().value.integer) as i16 }
+        unsafe { asm.entry().value.integer as i16 }
     }
 }
 fn parse_halt<'source>(asm: &mut Assembler<'source>) {
@@ -673,7 +673,7 @@ fn parse_ld_i<'source>(asm: &mut Assembler<'source>) {
 fn parse_ld_a_8<'source>(asm: &mut Assembler<'source>) {
     let instr = Instruction::Ld_A_8 {
         rd: parse_register_comma(asm),
-        imm: parse_imm(asm),
+        imm: parse_imm(asm) as u16,
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr.encode());
@@ -681,7 +681,7 @@ fn parse_ld_a_8<'source>(asm: &mut Assembler<'source>) {
 fn parse_ld_a_16<'source>(asm: &mut Assembler<'source>) {
     let instr = Instruction::Ld_A_16 {
         rd: parse_register_comma(asm),
-        imm: parse_imm(asm),
+        imm: parse_imm(asm) as u16,
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr.encode());
@@ -689,7 +689,7 @@ fn parse_ld_a_16<'source>(asm: &mut Assembler<'source>) {
 fn parse_ld_a_32<'source>(asm: &mut Assembler<'source>) {
     let instr = Instruction::Ld_A_32 {
         rd: parse_register_comma(asm),
-        imm: parse_imm(asm),
+        imm: parse_imm(asm) as u16,
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr.encode());
@@ -697,7 +697,7 @@ fn parse_ld_a_32<'source>(asm: &mut Assembler<'source>) {
 fn parse_ld_a_64<'source>(asm: &mut Assembler<'source>) {
     let instr = Instruction::Ld_A_64 {
         rd: parse_register_comma(asm),
-        imm: parse_imm(asm),
+        imm: parse_imm(asm) as u16,
     };
     asm.expects(Token_Kind::Newline);
     asm.object.code_instrs.push(instr.encode());

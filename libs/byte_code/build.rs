@@ -37,7 +37,8 @@ fn main() {
     let mut instr_idents = Vec::new();
     let mut instr_definitions = Vec::new();
     let mut instr_decode_match_arms = Vec::new();
-    let mut instr_fields = Vec::new();
+    let mut instr_patterns = Vec::new();
+    let mut instr_creates = Vec::new();
     let mut encode_exprs = Vec::new();
     let mut decode_test_idents = Vec::new();
     let mut encode_test_idents = Vec::new();
@@ -60,12 +61,20 @@ fn main() {
                 quote!({ #rd #rs1 #rs2 },)
             },
 
-            #[rustfmt::skip]
-            Instr::I_Type { fields, .. } => {
-                let rd = quote_if!(fields.rd, rd: Register,);
-                let imm = quote_if!(fields.imm, imm: i16,);
+            Instr::I_Type {
+                fields, conditions, ..
+            } => {
+                let mut body = quote_if!(fields.rd, rd: Register,);
 
-                quote!({ #rd #imm },)
+                if fields.imm {
+                    body = if conditions.sign {
+                        quote!(#body imm: i16,)
+                    } else {
+                        quote!(#body imm: u16,)
+                    };
+                }
+
+                quote!({ #body },)
             },
         };
 
@@ -96,6 +105,7 @@ fn main() {
                 op_code,
                 funct,
                 fields,
+                ..
             } => {
                 let rd_check = if fields.rd {
                     quote!(&&!rd.is_readonly())
@@ -107,24 +117,37 @@ fn main() {
             },
         };
 
-        let instr_field = match descriptor {
-            Instr::V_Type { .. } => quote!(),
+        let (instr_pattern, instr_create) = match descriptor {
+            Instr::V_Type { .. } => (quote!(), quote!()),
 
-            #[rustfmt::skip]
             Instr::R_Type { fields, .. } => {
-                let rd  = if fields.rd  { quote!(rd, ) } else { quote!() };
-                let rs1 = if fields.rs1 { quote!(rs1,) } else { quote!() };
-                let rs2 = if fields.rs2 { quote!(rs2,) } else { quote!() };
+                let rd = quote_if!(fields.rd, rd,);
+                let rs1 = quote_if!(fields.rs1, rs1,);
+                let rs2 = quote_if!(fields.rs2, rs2,);
 
-                quote!({ #rd #rs1 #rs2 })
+                (quote!({ #rd #rs1 #rs2 }), quote!({ #rd #rs1 #rs2 }))
             },
 
-            #[rustfmt::skip]
-            Instr::I_Type { fields, .. } => {
-                let rd  = if fields.rd  { quote!(rd, ) } else { quote!() };
-                let imm = if fields.imm { quote!(imm,) } else { quote!() };
+            Instr::I_Type {
+                fields, conditions, ..
+            } => {
+                let rd = quote_if!(fields.rd, rd,);
 
-                quote!({ #rd #imm })
+                let mut p = quote!();
+                let mut b = quote!();
+                if fields.imm {
+                    p = quote!(imm,);
+                    b = quote!(imm: imm as u16,);
+                }
+
+                (
+                    quote!({ #rd #p }),
+                    if conditions.sign {
+                        quote!({ #rd #p })
+                    } else {
+                        quote!({ #rd #b })
+                    },
+                )
             },
         };
 
@@ -151,9 +174,18 @@ fn main() {
                 op_code,
                 funct,
                 fields,
+                conditions,
             } => {
                 let rd = quote_if!(fields.rd, encode_rd(*rd) |);
-                let imm = quote_if!(fields.imm, encode_imm(*imm) |);
+
+                let mut imm = quote!();
+                if fields.imm {
+                    if conditions.sign {
+                        imm = quote!(encode_imm(*imm) |)
+                    } else {
+                        imm = quote!(encode_imm(*imm as i16) |)
+                    }
+                }
 
                 quote!(#imm #rd encode_funct(#funct) | encode_op_code(#op_code))
             },
@@ -215,6 +247,7 @@ fn main() {
                 op_code,
                 funct,
                 fields,
+                conditions,
             } => {
                 let mut instr = 0u32;
                 let mut body = quote!();
@@ -225,8 +258,13 @@ fn main() {
                 }
 
                 if fields.imm {
-                    instr |= 0b1111111111110000 << 16;
-                    body = quote!(#body imm: -16,);
+                    if conditions.sign {
+                        instr |= 0b1111111111110000 << 16;
+                        body = quote!(#body imm: -16,);
+                    } else {
+                        instr |= 0b000000000010000 << 16;
+                        body = quote!(#body imm: 16,);
+                    }
                 }
 
                 (
@@ -239,7 +277,8 @@ fn main() {
         instr_idents.push(instr_ident);
         instr_definitions.push(instr_definition);
         instr_decode_match_arms.push(instr_decode_match_arm);
-        instr_fields.push(instr_field);
+        instr_patterns.push(instr_pattern);
+        instr_creates.push(instr_create);
         encode_exprs.push(encode_expr);
         decode_test_idents.push(decode_test_ident);
         encode_test_idents.push(encode_test_ident);
@@ -271,7 +310,7 @@ fn main() {
 
                 match op_code {
                     #(
-                        #instr_decode_match_arms => Self::#instr_idents #instr_fields,
+                        #instr_decode_match_arms => Self::#instr_idents #instr_creates,
                     )*
                     _ => Self::Invalid(instr),
                 }
@@ -280,7 +319,7 @@ fn main() {
             pub fn encode(&self) -> u32 {
                 match self {
                     #(
-                        Self::#instr_idents #instr_fields => #encode_exprs,
+                        Self::#instr_idents #instr_patterns => #encode_exprs,
                     )*
                     Self::Invalid(instr) => *instr,
                 }

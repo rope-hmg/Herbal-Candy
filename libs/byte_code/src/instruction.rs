@@ -23,10 +23,10 @@ pub enum Instruction {
     Ld_32 { rd: Register, rs1: Register },
     Ld_64 { rd: Register, rs1: Register },
     Ld_I { rd: Register, imm: i16 },
-    Ld_A_8 { rd: Register, imm: i16 },
-    Ld_A_16 { rd: Register, imm: i16 },
-    Ld_A_32 { rd: Register, imm: i16 },
-    Ld_A_64 { rd: Register, imm: i16 },
+    Ld_A_8 { rd: Register, imm: u16 },
+    Ld_A_16 { rd: Register, imm: u16 },
+    Ld_A_32 { rd: Register, imm: u16 },
+    Ld_A_64 { rd: Register, imm: u16 },
     St_8 { rd: Register, rs1: Register },
     St_16 { rd: Register, rs1: Register },
     St_32 { rd: Register, rs1: Register },
@@ -527,10 +527,30 @@ impl Instruction {
                 Self::Ld_64 { rd, rs1 }
             }
             1u8 if funct == 1u8 && !rd.is_readonly() => Self::Ld_I { rd, imm },
-            1u8 if funct == 2u8 && !rd.is_readonly() => Self::Ld_A_8 { rd, imm },
-            1u8 if funct == 3u8 && !rd.is_readonly() => Self::Ld_A_16 { rd, imm },
-            1u8 if funct == 4u8 && !rd.is_readonly() => Self::Ld_A_32 { rd, imm },
-            1u8 if funct == 5u8 && !rd.is_readonly() => Self::Ld_A_64 { rd, imm },
+            1u8 if funct == 2u8 && !rd.is_readonly() => {
+                Self::Ld_A_8 {
+                    rd,
+                    imm: imm as u16,
+                }
+            }
+            1u8 if funct == 3u8 && !rd.is_readonly() => {
+                Self::Ld_A_16 {
+                    rd,
+                    imm: imm as u16,
+                }
+            }
+            1u8 if funct == 4u8 && !rd.is_readonly() => {
+                Self::Ld_A_32 {
+                    rd,
+                    imm: imm as u16,
+                }
+            }
+            1u8 if funct == 5u8 && !rd.is_readonly() => {
+                Self::Ld_A_64 {
+                    rd,
+                    imm: imm as u16,
+                }
+            }
             1u8 if funct == 6u8 && size == 8u8 && !rd.is_readonly() => {
                 Self::St_8 { rd, rs1 }
             }
@@ -1540,19 +1560,19 @@ impl Instruction {
                     | encode_op_code(1u8)
             }
             Self::Ld_A_8 { rd, imm } => {
-                encode_imm(*imm) | encode_rd(*rd) | encode_funct(2u8)
+                encode_imm(*imm as i16) | encode_rd(*rd) | encode_funct(2u8)
                     | encode_op_code(1u8)
             }
             Self::Ld_A_16 { rd, imm } => {
-                encode_imm(*imm) | encode_rd(*rd) | encode_funct(3u8)
+                encode_imm(*imm as i16) | encode_rd(*rd) | encode_funct(3u8)
                     | encode_op_code(1u8)
             }
             Self::Ld_A_32 { rd, imm } => {
-                encode_imm(*imm) | encode_rd(*rd) | encode_funct(4u8)
+                encode_imm(*imm as i16) | encode_rd(*rd) | encode_funct(4u8)
                     | encode_op_code(1u8)
             }
             Self::Ld_A_64 { rd, imm } => {
-                encode_imm(*imm) | encode_rd(*rd) | encode_funct(5u8)
+                encode_imm(*imm as i16) | encode_rd(*rd) | encode_funct(5u8)
                     | encode_op_code(1u8)
             }
             Self::St_8 { rd, rs1 } => {
@@ -3969,57 +3989,57 @@ mod tests {
     #[test]
     fn decode_ld_a_8() {
         assert_eq!(
-            Instruction::decode(4293930113u32), Instruction::Ld_A_8 { rd :
-            Register::General_Purpose(5), imm : - 16, }
+            Instruction::decode(1059969u32), Instruction::Ld_A_8 { rd :
+            Register::General_Purpose(5), imm : 16, }
         );
     }
     #[test]
     fn encode_ld_a_8() {
         assert_eq!(
-            Instruction::Ld_A_8 { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293930113u32
+            Instruction::Ld_A_8 { rd : Register::General_Purpose(5), imm : 16, }
+            .encode(), 1059969u32
         );
     }
     #[test]
     fn decode_ld_a_16() {
         assert_eq!(
-            Instruction::decode(4293930177u32), Instruction::Ld_A_16 { rd :
-            Register::General_Purpose(5), imm : - 16, }
+            Instruction::decode(1060033u32), Instruction::Ld_A_16 { rd :
+            Register::General_Purpose(5), imm : 16, }
         );
     }
     #[test]
     fn encode_ld_a_16() {
         assert_eq!(
-            Instruction::Ld_A_16 { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293930177u32
+            Instruction::Ld_A_16 { rd : Register::General_Purpose(5), imm : 16, }
+            .encode(), 1060033u32
         );
     }
     #[test]
     fn decode_ld_a_32() {
         assert_eq!(
-            Instruction::decode(4293930241u32), Instruction::Ld_A_32 { rd :
-            Register::General_Purpose(5), imm : - 16, }
+            Instruction::decode(1060097u32), Instruction::Ld_A_32 { rd :
+            Register::General_Purpose(5), imm : 16, }
         );
     }
     #[test]
     fn encode_ld_a_32() {
         assert_eq!(
-            Instruction::Ld_A_32 { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293930241u32
+            Instruction::Ld_A_32 { rd : Register::General_Purpose(5), imm : 16, }
+            .encode(), 1060097u32
         );
     }
     #[test]
     fn decode_ld_a_64() {
         assert_eq!(
-            Instruction::decode(4293930305u32), Instruction::Ld_A_64 { rd :
-            Register::General_Purpose(5), imm : - 16, }
+            Instruction::decode(1060161u32), Instruction::Ld_A_64 { rd :
+            Register::General_Purpose(5), imm : 16, }
         );
     }
     #[test]
     fn encode_ld_a_64() {
         assert_eq!(
-            Instruction::Ld_A_64 { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293930305u32
+            Instruction::Ld_A_64 { rd : Register::General_Purpose(5), imm : 16, }
+            .encode(), 1060161u32
         );
     }
     #[test]

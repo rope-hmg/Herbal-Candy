@@ -17,6 +17,10 @@ pub struct I_Type_Fields {
     pub imm: bool,
 }
 
+pub struct I_Type_Conditions {
+    pub sign: bool,
+}
+
 macro_rules! instr {
     (v_type => $name:expr, $op_code:expr, $funct:expr) => {
         ($name, Instr::V_Type {
@@ -56,7 +60,7 @@ macro_rules! instr {
         })
     };
 
-    (i_type => $name:expr, $op_code:expr, $funct:expr, [ $($field:ident),* ]) => {
+    (i_type => $name:expr, $op_code:expr, $funct:expr, [ $($field:ident),* ], { $($condition:ident : $value:expr),* }) => {
         ($name, Instr::I_Type {
             op_code: $op_code,
             funct:   $funct,
@@ -71,6 +75,16 @@ macro_rules! instr {
 
                 fields
             },
+            conditions: {
+                #[allow(unused_mut)]
+                let mut conditions = I_Type_Conditions {
+                    sign: true,
+                };
+
+                $(conditions.$condition = $value;)*
+
+                conditions
+            }
         })
     };
 }
@@ -95,9 +109,10 @@ pub enum Instr {
         conditions: R_Type_Conditions,
     },
     I_Type {
-        op_code: u8,
-        funct:   u8,
-        fields:  I_Type_Fields,
+        op_code:    u8,
+        funct:      u8,
+        fields:     I_Type_Fields,
+        conditions: I_Type_Conditions,
     },
 }
 
@@ -108,38 +123,38 @@ pub static INSTRUCTIONS: &[(&str, Instr)] = &[
     instr!(v_type => "trap",   0b000000, 0x1),
     instr!(r_type => "call",   0b000000, 0x2, [rs2], { s: 0 }),
     instr!(r_type => "call_r", 0b000000, 0x2, [rs2], { s: 1 }),
-    instr!(i_type => "call_i", 0b000000, 0x3, [imm]          ),
+    instr!(i_type => "call_i", 0b000000, 0x3, [imm], {      }),
     instr!(v_type => "ret",    0b000000, 0x4),
-    instr!(i_type => "ecall",  0b000000, 0x5, [imm]),
+    instr!(i_type => "ecall",  0b000000, 0x5, [imm     ], {      }),
     instr!(r_type => "jal",    0b000000, 0x6, [rs2     ], { s: 0 }),
     instr!(r_type => "jal_r",  0b000000, 0x6, [rs2     ], { s: 1 }),
-    instr!(i_type => "jal_i",  0b000000, 0x7, [imm     ]          ),
+    instr!(i_type => "jal_i",  0b000000, 0x7, [imm     ], {      }),
     instr!(r_type => "jnz" ,   0b000000, 0x8, [rs2, rs1], { s: 0 }),
     instr!(r_type => "jnz_r",  0b000000, 0x8, [rs2, rs1], { s: 1 }),
-    instr!(i_type => "jnz_i",  0b000000, 0x9, [imm, rd ]          ),
+    instr!(i_type => "jnz_i",  0b000000, 0x9, [imm, rd ], {      }),
     instr!(r_type => "jiz",    0b000000, 0xA, [rs2, rs1], { s: 0 }),
     instr!(r_type => "jiz_r",  0b000000, 0xA, [rs2, rs1], { s: 1 }),
-    instr!(i_type => "jiz_i",  0b000000, 0xB, [imm, rd ]          ),
+    instr!(i_type => "jiz_i",  0b000000, 0xB, [imm, rd ], {      }),
     // Memory
     // ------
-    instr!(r_type => "ld.8",    0b000001, 0x0, [rs1, rd], { size: 8  }),
-    instr!(r_type => "ld.16",   0b000001, 0x0, [rs1, rd], { size: 16 }),
-    instr!(r_type => "ld.32",   0b000001, 0x0, [rs1, rd], { size: 32 }),
-    instr!(r_type => "ld.64",   0b000001, 0x0, [rs1, rd], { size: 64 }),
-    instr!(i_type => "ld_i",    0b000001, 0x1, [imm, rd]              ),
-    instr!(i_type => "ld_a.8",  0b000001, 0x2, [imm, rd]              ),
-    instr!(i_type => "ld_a.16", 0b000001, 0x3, [imm, rd]              ),
-    instr!(i_type => "ld_a.32", 0b000001, 0x4, [imm, rd]              ),
-    instr!(i_type => "ld_a.64", 0b000001, 0x5, [imm, rd]              ),
-    instr!(r_type => "st.8",    0b000001, 0x6, [rs1, rd], { size: 8  }),
-    instr!(r_type => "st.16",   0b000001, 0x6, [rs1, rd], { size: 16 }),
-    instr!(r_type => "st.32",   0b000001, 0x6, [rs1, rd], { size: 32 }),
-    instr!(r_type => "st.64",   0b000001, 0x6, [rs1, rd], { size: 64 }),
-    instr!(i_type => "st_i",    0b000001, 0x7, [imm, rd]              ),
-    instr!(r_type => "mov",     0b000001, 0x8, [rs1, rd], {          }),
-    instr!(i_type => "psh",     0b000001, 0x9, [     rd]              ),
-    instr!(i_type => "psh_i",   0b000001, 0xA, [imm    ]              ),
-    instr!(i_type => "pop",     0b000001, 0xB, [     rd]              ),
+    instr!(r_type => "ld.8",    0b000001, 0x0, [rs1, rd], { size: 8     }),
+    instr!(r_type => "ld.16",   0b000001, 0x0, [rs1, rd], { size: 16    }),
+    instr!(r_type => "ld.32",   0b000001, 0x0, [rs1, rd], { size: 32    }),
+    instr!(r_type => "ld.64",   0b000001, 0x0, [rs1, rd], { size: 64    }),
+    instr!(i_type => "ld_i",    0b000001, 0x1, [imm, rd], {             }),
+    instr!(i_type => "ld_a.8",  0b000001, 0x2, [imm, rd], { sign: false }),
+    instr!(i_type => "ld_a.16", 0b000001, 0x3, [imm, rd], { sign: false }),
+    instr!(i_type => "ld_a.32", 0b000001, 0x4, [imm, rd], { sign: false }),
+    instr!(i_type => "ld_a.64", 0b000001, 0x5, [imm, rd], { sign: false }),
+    instr!(r_type => "st.8",    0b000001, 0x6, [rs1, rd], { size: 8     }),
+    instr!(r_type => "st.16",   0b000001, 0x6, [rs1, rd], { size: 16    }),
+    instr!(r_type => "st.32",   0b000001, 0x6, [rs1, rd], { size: 32    }),
+    instr!(r_type => "st.64",   0b000001, 0x6, [rs1, rd], { size: 64    }),
+    instr!(i_type => "st_i",    0b000001, 0x7, [imm, rd], {             }),
+    instr!(r_type => "mov",     0b000001, 0x8, [rs1, rd], {             }),
+    instr!(i_type => "psh",     0b000001, 0x9, [     rd], {             }),
+    instr!(i_type => "psh_i",   0b000001, 0xA, [imm    ], {             }),
+    instr!(i_type => "pop",     0b000001, 0xB, [     rd], {             }),
     // Comparison
     // ----------
     instr!(r_type => "ie",     0b000010, 0x0, [rs2, rs1, rd], {           f: 0 }),

@@ -76,7 +76,9 @@ fn main() {
                 }
             },
 
-            Instr::I_Type { fields, .. } => {
+            Instr::I_Type {
+                fields, conditions, ..
+            } => {
                 // TODO: Generalise this.
                 let parse_rd = if fields.rd {
                     let register = if fields.imm {
@@ -93,8 +95,14 @@ fn main() {
                 };
 
                 let parse_imm = if fields.imm {
-                    quote! {
-                        imm: parse_imm(asm),
+                    if conditions.sign {
+                        quote! {
+                            imm: parse_imm(asm),
+                        }
+                    } else {
+                        quote! {
+                            imm: parse_imm(asm) as u16,
+                        }
                     }
                 } else {
                     quote!()
@@ -299,7 +307,7 @@ fn main() {
                 asm.patch_address()
             } else {
                 asm.expects(Token_Kind::Number);
-                unsafe { std::mem::transmute::<u64, i64>(asm.entry().value.integer) as i16 }
+                unsafe { asm.entry().value.integer as i16 }
             }
         }
 
