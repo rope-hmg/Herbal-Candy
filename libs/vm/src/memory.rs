@@ -14,10 +14,7 @@ impl Memory {
         let layout = Layout::from_size_align(size, 8).unwrap();
         let bytes = unsafe { alloc_zeroed(layout) };
 
-        Self {
-            bytes,
-            size,
-        }
+        Self { bytes, size }
     }
 
     // #[inline(always)]
@@ -27,30 +24,20 @@ impl Memory {
 
     #[inline(always)]
     pub fn read(&self, address: Memory_Address, data: &mut [u8]) {
-        let slot = self.slot(address);
-
         unsafe {
+            let slot = self.bytes.add(address.0 as usize);
+
             slot.copy_to_nonoverlapping(data.as_mut_ptr(), data.len());
         }
     }
 
     #[inline(always)]
     pub fn write(&mut self, data: &[u8], address: Memory_Address) {
-        let slot = self.slot_mut(address);
-
         unsafe {
+            let slot = self.bytes.add(address.0 as usize);
+
             slot.copy_from_nonoverlapping(data.as_ptr(), data.len());
         }
-    }
-
-    #[inline(always)]
-    pub fn slot(&self, address: Memory_Address) -> *const u8 {
-        unsafe { self.bytes.add(address.0 as usize) }
-    }
-
-    #[inline(always)]
-    pub fn slot_mut(&mut self, address: Memory_Address) -> *mut u8 {
-        unsafe { self.bytes.add(address.0 as usize) }
     }
 }
 
