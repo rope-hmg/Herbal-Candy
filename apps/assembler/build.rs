@@ -24,54 +24,34 @@ fn main() {
         let parser_ident = format_ident!("parse_{}", instr_name.to_string().to_lowercase());
 
         let instr = match instr {
-            Instr::V_Type { .. } => {
-                quote! {
-                    Instruction::#instr_name
-                }
-            },
+            Instr::V_Type { .. } => quote!(Instruction::#instr_name),
 
             Instr::R_Type { fields, .. } => {
-                let parse_rd = if fields.rd {
-                    let register = if fields.rs1 || fields.rs2 {
-                        quote!(parse_register_comma(asm))
+                let mut body = quote!();
+
+                if fields.rd {
+                    body = if fields.rs1 || fields.rs2 {
+                        quote!(#body rd: parse_register_comma(asm),)
                     } else {
-                        quote!(parse_register(asm))
+                        quote!(#body rd: parse_register(asm),)
                     };
+                }
 
-                    quote! {
-                        rd: #register,
-                    }
-                } else {
-                    quote!()
-                };
-
-                let parse_rs1 = if fields.rs1 {
-                    let register = if fields.rs2 {
-                        quote!(parse_register_comma(asm))
+                if fields.rs1 {
+                    body = if fields.rs2 {
+                        quote!(#body rs1: parse_register_comma(asm),)
                     } else {
-                        quote!(parse_register(asm))
+                        quote!(#body rs1: parse_register(asm),)
                     };
+                }
 
-                    quote! {
-                        rs1: #register,
-                    }
-                } else {
-                    quote!()
-                };
-
-                let parse_rs2 = if fields.rs2 {
-                    quote! {
-                        rs2: parse_register(asm),
-                    }
-                } else {
-                    quote!()
-                };
+                if fields.rs2 {
+                    body = quote!(#body rs2: parse_register(asm),);
+                }
 
                 quote! {
                     Instruction::#instr_name {
-                        #parse_rd
-                        #parse_rs1
-                        #parse_rs2
+                        #body
                     }
                 }
             },
@@ -79,52 +59,42 @@ fn main() {
             Instr::I_Type {
                 fields, conditions, ..
             } => {
+                let mut body = quote!();
+
                 // TODO: Generalise this.
-                let parse_rd = if fields.rd {
-                    let register = if fields.imm {
-                        quote!(parse_register_comma(asm))
+                if fields.rd {
+                    body = if fields.imm {
+                        quote!(#body rd: parse_register_comma(asm),)
                     } else {
-                        quote!(parse_register(asm))
+                        quote!(#body rd: parse_register(asm),)
                     };
+                }
 
-                    quote! {
-                        rd: #register,
-                    }
-                } else {
-                    quote!()
-                };
-
-                let parse_imm = if fields.imm {
-                    if conditions.sign {
-                        quote! {
-                            imm: parse_imm(asm),
-                        }
+                if fields.imm {
+                    body = if conditions.sign {
+                        quote!(#body imm: parse_imm(asm),)
                     } else {
-                        quote! {
-                            imm: parse_imm(asm) as u16,
-                        }
-                    }
-                } else {
-                    quote!()
-                };
+                        quote!(#body imm: parse_imm(asm) as u16,)
+                    };
+                }
 
                 quote! {
                     Instruction::#instr_name {
-                        #parse_rd
-                        #parse_imm
+                        #body
                     }
                 }
             },
         };
 
         token_definitions.push(quote!(#[token(#name)] #instr_name,));
-        token_to_token.push(quote!(
+
+        token_to_token.push(quote! {
             Lexed_Token::#instr_name => (
                 Token_Kind::Instruction,
                 Token_Value::integer(#index),
                 0,
             ),
-        ));
+        });
 
         parsers_fns.push(quote! {
             fn #parser_ident<'source>(asm: &mut Assembler<'source>) {
@@ -133,6 +103,7 @@ fn main() {
                 asm.object.code_instrs.push(instr.encode());
             }
         });
+
         index_to_parser.push(quote! {
             #index => #parser_ident(asm),
         });
