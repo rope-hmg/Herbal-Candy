@@ -1,15 +1,10 @@
 #![allow(non_camel_case_types)]
 
-mod convert;
-mod memory;
-mod program;
-mod vm;
-
 use std::io;
 
 use byte_code::Instruction;
 
-use crate::{program::Program, vm::Virtual_Machine};
+use vm::{Program, Virtual_Machine};
 
 fn main() {
     let mut vm = Virtual_Machine::new(1024 * 1024);
