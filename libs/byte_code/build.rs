@@ -34,6 +34,8 @@ macro_rules! quote_if_let {
 }
 
 fn main() {
+    println!("cargo:rerun-if-changed=../instr_codegen/src/lib.rs");
+
     let mut instr_idents = Vec::new();
     let mut instr_definitions = Vec::new();
     let mut instr_decode_match_arms = Vec::new();

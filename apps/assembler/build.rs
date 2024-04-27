@@ -12,6 +12,8 @@ macro_rules! write_file {
 }
 
 fn main() {
+    println!("cargo:rerun-if-changed=../../libs/instr_codegen/src/lib.rs");
+
     let mut token_definitions = Vec::new();
     let mut token_to_token = Vec::new();
     let mut parsers_fns = Vec::new();
