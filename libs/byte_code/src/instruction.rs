@@ -1,59 +1,77 @@
 use crate::register::Register;
-use crate::encoding::*;
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Instruction {
     Halt,
     Trap,
-    Call { rs2: Register },
-    Call_R { rs2: Register },
-    Call_I { imm: i16 },
+    Call { imm: i32 },
     Ret,
-    Ecall { imm: i16 },
-    Jal { rs2: Register },
-    Jal_R { rs2: Register },
-    Jal_I { imm: i16 },
-    Jnz { rs1: Register, rs2: Register },
-    Jnz_R { rs1: Register, rs2: Register },
-    Jnz_I { rd: Register, imm: i16 },
-    Jiz { rs1: Register, rs2: Register },
-    Jiz_R { rs1: Register, rs2: Register },
-    Jiz_I { rd: Register, imm: i16 },
-    Ld_8 { rd: Register, rs1: Register },
-    Ld_16 { rd: Register, rs1: Register },
-    Ld_32 { rd: Register, rs1: Register },
-    Ld_64 { rd: Register, rs1: Register },
-    Ld_I { rd: Register, imm: i16 },
-    Ld_A_8 { rd: Register, imm: u16 },
-    Ld_A_16 { rd: Register, imm: u16 },
-    Ld_A_32 { rd: Register, imm: u16 },
-    Ld_A_64 { rd: Register, imm: u16 },
-    St_8 { rd: Register, rs1: Register },
-    St_16 { rd: Register, rs1: Register },
-    St_32 { rd: Register, rs1: Register },
-    St_64 { rd: Register, rs1: Register },
-    St_I { rd: Register, imm: i16 },
+    Ecall { imm: i32 },
+    Jal { imm: i32 },
+    Bie { imm: i16, rs1: Register, rs2: Register },
+    Bne { imm: i16, rs1: Register, rs2: Register },
+    Blts { imm: i16, rs1: Register, rs2: Register },
+    Bltu { imm: i16, rs1: Register, rs2: Register },
+    Bles { imm: i16, rs1: Register, rs2: Register },
+    Bleu { imm: i16, rs1: Register, rs2: Register },
+    Bgts { imm: i16, rs1: Register, rs2: Register },
+    Bgtu { imm: i16, rs1: Register, rs2: Register },
+    Bges { imm: i16, rs1: Register, rs2: Register },
+    Bgeu { imm: i16, rs1: Register, rs2: Register },
+    Bie_f32 { imm: i16, rs1: Register, rs2: Register },
+    Bie_f64 { imm: i16, rs1: Register, rs2: Register },
+    Bne_f32 { imm: i16, rs1: Register, rs2: Register },
+    Bne_f64 { imm: i16, rs1: Register, rs2: Register },
+    Blt_f32 { imm: i16, rs1: Register, rs2: Register },
+    Blt_f64 { imm: i16, rs1: Register, rs2: Register },
+    Ble_f32 { imm: i16, rs1: Register, rs2: Register },
+    Ble_f64 { imm: i16, rs1: Register, rs2: Register },
+    Bgt_f32 { imm: i16, rs1: Register, rs2: Register },
+    Bgt_f64 { imm: i16, rs1: Register, rs2: Register },
+    Bge_f32 { imm: i16, rs1: Register, rs2: Register },
+    Bge_f64 { imm: i16, rs1: Register, rs2: Register },
+    Cie { rd: Register, rs1: Register, rs2: Register },
+    Cie_f32 { rd: Register, rs1: Register, rs2: Register },
+    Cie_f64 { rd: Register, rs1: Register, rs2: Register },
+    Cne { rd: Register, rs1: Register, rs2: Register },
+    Cne_f32 { rd: Register, rs1: Register, rs2: Register },
+    Cne_f64 { rd: Register, rs1: Register, rs2: Register },
+    Clts { rd: Register, rs1: Register, rs2: Register },
+    Cltu { rd: Register, rs1: Register, rs2: Register },
+    Clt_f32 { rd: Register, rs1: Register, rs2: Register },
+    Clt_f64 { rd: Register, rs1: Register, rs2: Register },
+    Cles { rd: Register, rs1: Register, rs2: Register },
+    Cleu { rd: Register, rs1: Register, rs2: Register },
+    Cle_f32 { rd: Register, rs1: Register, rs2: Register },
+    Cle_f64 { rd: Register, rs1: Register, rs2: Register },
+    Cgts { rd: Register, rs1: Register, rs2: Register },
+    Cgtu { rd: Register, rs1: Register, rs2: Register },
+    Cgt_f32 { rd: Register, rs1: Register, rs2: Register },
+    Cgt_f64 { rd: Register, rs1: Register, rs2: Register },
+    Cges { rd: Register, rs1: Register, rs2: Register },
+    Cgeu { rd: Register, rs1: Register, rs2: Register },
+    Cge_f32 { rd: Register, rs1: Register, rs2: Register },
+    Cge_f64 { rd: Register, rs1: Register, rs2: Register },
+    Lra_8 { rd: Register, rs1: Register },
+    Lra_16 { rd: Register, rs1: Register },
+    Lra_32 { rd: Register, rs1: Register },
+    Lra_64 { rd: Register, rs1: Register },
+    Lsi { rd: Register, imm: i16 },
+    Lui { rd: Register, imm: u16 },
+    Lia_8 { rd: Register, imm: u16 },
+    Lia_16 { rd: Register, imm: u16 },
+    Lia_32 { rd: Register, imm: u16 },
+    Lia_64 { rd: Register, imm: u16 },
+    Sra_8 { rd: Register, rs1: Register },
+    Sra_16 { rd: Register, rs1: Register },
+    Sra_32 { rd: Register, rs1: Register },
+    Sra_64 { rd: Register, rs1: Register },
+    Ssi { rd: Register, imm: i16 },
+    Sui { rd: Register, imm: u16 },
     Mov { rd: Register, rs1: Register },
-    Psh { rd: Register },
-    Psh_I { imm: i16 },
     Pop { rd: Register },
-    Ie { rd: Register, rs1: Register, rs2: Register },
-    Ie_f32 { rd: Register, rs1: Register, rs2: Register },
-    Ie_f64 { rd: Register, rs1: Register, rs2: Register },
-    Ne { rd: Register, rs1: Register, rs2: Register },
-    Ne_f32 { rd: Register, rs1: Register, rs2: Register },
-    Ne_f64 { rd: Register, rs1: Register, rs2: Register },
-    Lt { rd: Register, rs1: Register, rs2: Register },
-    Lt_f32 { rd: Register, rs1: Register, rs2: Register },
-    Lt_f64 { rd: Register, rs1: Register, rs2: Register },
-    Le { rd: Register, rs1: Register, rs2: Register },
-    Le_f32 { rd: Register, rs1: Register, rs2: Register },
-    Le_f64 { rd: Register, rs1: Register, rs2: Register },
-    Gt { rd: Register, rs1: Register, rs2: Register },
-    Gt_f32 { rd: Register, rs1: Register, rs2: Register },
-    Gt_f64 { rd: Register, rs1: Register, rs2: Register },
-    Ge { rd: Register, rs1: Register, rs2: Register },
-    Ge_f32 { rd: Register, rs1: Register, rs2: Register },
-    Ge_f64 { rd: Register, rs1: Register, rs2: Register },
+    Psh { rd: Register },
+    Psi { imm: i32 },
+    Pui { imm: i32 },
     And_i8 { rd: Register, rs1: Register, rs2: Register },
     And_i16 { rd: Register, rs1: Register, rs2: Register },
     And_i32 { rd: Register, rs1: Register, rs2: Register },
@@ -484,3235 +502,7363 @@ pub enum Instruction {
     Cbrt_f64 { rd: Register, rs1: Register },
     Sub_f32 { rd: Register, rs1: Register, rs2: Register },
     Sub_f64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Add_i8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Add_i16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Add_i32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Add_i64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Add_u8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Add_u16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Add_u32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Add_u64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Sub_i8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Sub_i16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Sub_i32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Sub_i64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Sub_u8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Sub_u16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Sub_u32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Sub_u64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Min_i8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Min_i16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Min_i32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Min_i64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Min_u8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Min_u16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Min_u32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Min_u64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Max_i8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Max_i16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Max_i32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Max_i64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Max_u8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Max_u16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Max_u32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Max_u64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_And_i8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_And_i16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_And_i32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_And_i64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_And_u8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_And_u16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_And_u32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_And_u64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Nand_i8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Nand_i16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Nand_i32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Nand_i64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Nand_u8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Nand_u16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Nand_u32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Nand_u64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Or_i8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Or_i16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Or_i32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Or_i64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Or_u8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Or_u16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Or_u32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Or_u64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Xor_i8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Xor_i16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Xor_i32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Xor_i64 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Xor_u8 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Xor_u16 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Xor_u32 { rd: Register, rs1: Register, rs2: Register },
+    Fetch_Xor_u64 { rd: Register, rs1: Register, rs2: Register },
+    Cmp_Exchg_i8 { rd: Register, rs1: Register, rs2: Register },
+    Cmp_Exchg_i16 { rd: Register, rs1: Register, rs2: Register },
+    Cmp_Exchg_i32 { rd: Register, rs1: Register, rs2: Register },
+    Cmp_Exchg_i64 { rd: Register, rs1: Register, rs2: Register },
+    Cmp_Exchg_u8 { rd: Register, rs1: Register, rs2: Register },
+    Cmp_Exchg_u16 { rd: Register, rs1: Register, rs2: Register },
+    Cmp_Exchg_u32 { rd: Register, rs1: Register, rs2: Register },
+    Cmp_Exchg_u64 { rd: Register, rs1: Register, rs2: Register },
+    Atomic_Ld_8 { rd: Register, rs1: Register },
+    Atomic_Ld_16 { rd: Register, rs1: Register },
+    Atomic_Ld_32 { rd: Register, rs1: Register },
+    Atomic_Ld_64 { rd: Register, rs1: Register },
+    Atomic_St_8 { rd: Register, rs1: Register },
+    Atomic_St_16 { rd: Register, rs1: Register },
+    Atomic_St_32 { rd: Register, rs1: Register },
+    Atomic_St_64 { rd: Register, rs1: Register },
+    Spawn { rd: Register, imm: u16 },
+    Wait { rd: Register, rs1: Register },
+    Notify { rd: Register, rs1: Register },
+    Swap_8 { rd: Register, rs1: Register },
+    Swap_16 { rd: Register, rs1: Register },
+    Swap_32 { rd: Register, rs1: Register },
+    Swap_64 { rd: Register, rs1: Register },
     Invalid(u32),
 }
 impl Instruction {
     pub fn decode(instr: u32) -> Self {
-        let op_code = decode_op_code(instr);
-        let funct = decode_funct(instr);
-        let rd = decode_rd(instr);
-        let rs1 = decode_rs1(instr);
-        let rs2 = decode_rs2(instr);
-        let size = decode_size(instr);
-        let f = decode_f(instr);
-        let s = decode_s(instr);
-        let imm = decode_imm(instr);
+        let op_code = (instr & 15u32) >> 0u32;
+        let funct_4 = (instr & 240u32) >> 4u32;
+        let rd = (instr & 16128u32) >> 8u32;
+        let imm_i16 = (instr & 2147450880u32) >> 15u32;
+        let sign = (instr & 2147483648u32) >> 31u32;
+        let imm_u16 = (instr & 2147450880u32) >> 15u32;
+        let rs1 = (instr & 1032192u32) >> 14u32;
+        let rs2 = (instr & 66060288u32) >> 20u32;
+        let funct_2 = (instr & 201326592u32) >> 26u32;
+        let size = (instr & 805306368u32) >> 28u32;
+        let float = (instr & 1073741824u32) >> 30u32;
+        let imm_24 = (instr & 4294967040u32) >> 8u32;
+        let imm_l6 = (instr & 16128u32) >> 8u32;
+        let imm_h6 = (instr & 4227858432u32) >> 26u32;
         match op_code {
-            0u8 if funct == 0u8 => Self::Halt,
-            0u8 if funct == 1u8 => Self::Trap,
-            0u8 if funct == 2u8 && s == 0u8 => Self::Call { rs2 },
-            0u8 if funct == 2u8 && s == 1u8 => Self::Call_R { rs2 },
-            0u8 if funct == 3u8 => Self::Call_I { imm },
-            0u8 if funct == 4u8 => Self::Ret,
-            0u8 if funct == 5u8 => Self::Ecall { imm },
-            0u8 if funct == 6u8 && s == 0u8 => Self::Jal { rs2 },
-            0u8 if funct == 6u8 && s == 1u8 => Self::Jal_R { rs2 },
-            0u8 if funct == 7u8 => Self::Jal_I { imm },
-            0u8 if funct == 8u8 && s == 0u8 => Self::Jnz { rs1, rs2 },
-            0u8 if funct == 8u8 && s == 1u8 => Self::Jnz_R { rs1, rs2 },
-            0u8 if funct == 9u8 && !rd.is_readonly() => Self::Jnz_I { rd, imm },
-            0u8 if funct == 10u8 && s == 0u8 => Self::Jiz { rs1, rs2 },
-            0u8 if funct == 10u8 && s == 1u8 => Self::Jiz_R { rs1, rs2 },
-            0u8 if funct == 11u8 && !rd.is_readonly() => Self::Jiz_I { rd, imm },
-            1u8 if funct == 0u8 && size == 8u8 && !rd.is_readonly() => {
-                Self::Ld_8 { rd, rs1 }
-            }
-            1u8 if funct == 0u8 && size == 16u8 && !rd.is_readonly() => {
-                Self::Ld_16 { rd, rs1 }
-            }
-            1u8 if funct == 0u8 && size == 32u8 && !rd.is_readonly() => {
-                Self::Ld_32 { rd, rs1 }
-            }
-            1u8 if funct == 0u8 && size == 64u8 && !rd.is_readonly() => {
-                Self::Ld_64 { rd, rs1 }
-            }
-            1u8 if funct == 1u8 && !rd.is_readonly() => Self::Ld_I { rd, imm },
-            1u8 if funct == 2u8 && !rd.is_readonly() => {
-                Self::Ld_A_8 {
-                    rd,
-                    imm: imm as u16,
+            0u32 if funct_4 == 0u32 && imm_24 == 0u32 => Self::Halt,
+            0u32 if funct_4 == 1u32 && imm_24 == 0u32 => Self::Trap,
+            0u32 if funct_4 == 2u32 => Self::Call { imm: imm_24 as i32 },
+            0u32 if funct_4 == 4u32 && imm_24 == 0u32 => Self::Ret,
+            0u32 if funct_4 == 5u32 => Self::Ecall { imm: imm_24 as i32 },
+            0u32 if funct_4 == 6u32 => Self::Jal { imm: imm_24 as i32 },
+            1u32 if funct_4 == 0u32 => {
+                Self::Bie {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
                 }
             }
-            1u8 if funct == 3u8 && !rd.is_readonly() => {
-                Self::Ld_A_16 {
-                    rd,
-                    imm: imm as u16,
+            1u32 if funct_4 == 1u32 => {
+                Self::Bne {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
                 }
             }
-            1u8 if funct == 4u8 && !rd.is_readonly() => {
-                Self::Ld_A_32 {
-                    rd,
-                    imm: imm as u16,
+            1u32 if funct_4 == 2u32 => {
+                Self::Blts {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
                 }
             }
-            1u8 if funct == 5u8 && !rd.is_readonly() => {
-                Self::Ld_A_64 {
-                    rd,
-                    imm: imm as u16,
+            1u32 if funct_4 == 3u32 => {
+                Self::Bltu {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
                 }
             }
-            1u8 if funct == 6u8 && size == 8u8 && !rd.is_readonly() => {
-                Self::St_8 { rd, rs1 }
+            1u32 if funct_4 == 4u32 => {
+                Self::Bles {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            1u8 if funct == 6u8 && size == 16u8 && !rd.is_readonly() => {
-                Self::St_16 { rd, rs1 }
+            1u32 if funct_4 == 5u32 => {
+                Self::Bleu {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            1u8 if funct == 6u8 && size == 32u8 && !rd.is_readonly() => {
-                Self::St_32 { rd, rs1 }
+            1u32 if funct_4 == 6u32 => {
+                Self::Bgts {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            1u8 if funct == 6u8 && size == 64u8 && !rd.is_readonly() => {
-                Self::St_64 { rd, rs1 }
+            1u32 if funct_4 == 7u32 => {
+                Self::Bgtu {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            1u8 if funct == 7u8 && !rd.is_readonly() => Self::St_I { rd, imm },
-            1u8 if funct == 8u8 && !rd.is_readonly() => Self::Mov { rd, rs1 },
-            1u8 if funct == 9u8 && !rd.is_readonly() => Self::Psh { rd },
-            1u8 if funct == 10u8 => Self::Psh_I { imm },
-            1u8 if funct == 11u8 && !rd.is_readonly() => Self::Pop { rd },
-            2u8 if funct == 0u8 && f == 0u8 && !rd.is_readonly() => {
-                Self::Ie { rd, rs1, rs2 }
+            1u32 if funct_4 == 8u32 => {
+                Self::Bges {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 0u8 && size == 32u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Ie_f32 { rd, rs1, rs2 }
+            1u32 if funct_4 == 9u32 => {
+                Self::Bgeu {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 0u8 && size == 64u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Ie_f64 { rd, rs1, rs2 }
+            2u32 if funct_4 == 0u32 => {
+                Self::Bie_f32 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 1u8 && f == 0u8 && !rd.is_readonly() => {
-                Self::Ne { rd, rs1, rs2 }
+            2u32 if funct_4 == 1u32 => {
+                Self::Bie_f64 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 1u8 && size == 32u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Ne_f32 { rd, rs1, rs2 }
+            2u32 if funct_4 == 2u32 => {
+                Self::Bne_f32 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 1u8 && size == 64u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Ne_f64 { rd, rs1, rs2 }
+            2u32 if funct_4 == 3u32 => {
+                Self::Bne_f64 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 2u8 && f == 0u8 && !rd.is_readonly() => {
-                Self::Lt { rd, rs1, rs2 }
+            2u32 if funct_4 == 4u32 => {
+                Self::Blt_f32 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 2u8 && size == 32u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Lt_f32 { rd, rs1, rs2 }
+            2u32 if funct_4 == 5u32 => {
+                Self::Blt_f64 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 2u8 && size == 64u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Lt_f64 { rd, rs1, rs2 }
+            2u32 if funct_4 == 6u32 => {
+                Self::Ble_f32 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 3u8 && f == 0u8 && !rd.is_readonly() => {
-                Self::Le { rd, rs1, rs2 }
+            2u32 if funct_4 == 7u32 => {
+                Self::Ble_f64 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 3u8 && size == 32u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Le_f32 { rd, rs1, rs2 }
+            2u32 if funct_4 == 8u32 => {
+                Self::Bgt_f32 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 3u8 && size == 64u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Le_f64 { rd, rs1, rs2 }
+            2u32 if funct_4 == 9u32 => {
+                Self::Bgt_f64 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 4u8 && f == 0u8 && !rd.is_readonly() => {
-                Self::Gt { rd, rs1, rs2 }
+            2u32 if funct_4 == 10u32 => {
+                Self::Bge_f32 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 4u8 && size == 32u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Gt_f32 { rd, rs1, rs2 }
+            2u32 if funct_4 == 11u32 => {
+                Self::Bge_f64 {
+                    imm: (imm_l6 << 6u32) as i16 | imm_h6 as i16,
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 4u8 && size == 64u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Gt_f64 { rd, rs1, rs2 }
+            3u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Cie {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 5u8 && f == 0u8 && !rd.is_readonly() => {
-                Self::Ge { rd, rs1, rs2 }
+            3u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Cie_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 5u8 && size == 32u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Ge_f32 { rd, rs1, rs2 }
+            3u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Cie_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            2u8 if funct == 5u8 && size == 64u8 && f == 1u8 && !rd.is_readonly() => {
-                Self::Ge_f64 { rd, rs1, rs2 }
+            3u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Cne {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
             }
-            3u8 if funct == 0u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::And_i8 { rd, rs1, rs2 },
-            3u8 if funct == 0u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::And_i16 { rd, rs1, rs2 },
-            3u8 if funct == 0u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::And_i32 { rd, rs1, rs2 },
-            3u8 if funct == 0u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::And_i64 { rd, rs1, rs2 },
-            3u8 if funct == 0u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::And_u8 { rd, rs1, rs2 },
-            3u8 if funct == 0u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::And_u16 { rd, rs1, rs2 },
-            3u8 if funct == 0u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::And_u32 { rd, rs1, rs2 },
-            3u8 if funct == 0u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::And_u64 { rd, rs1, rs2 },
-            3u8 if funct == 1u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Or_i8 { rd, rs1, rs2 },
-            3u8 if funct == 1u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Or_i16 { rd, rs1, rs2 },
-            3u8 if funct == 1u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Or_i32 { rd, rs1, rs2 },
-            3u8 if funct == 1u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Or_i64 { rd, rs1, rs2 },
-            3u8 if funct == 1u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Or_u8 { rd, rs1, rs2 },
-            3u8 if funct == 1u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Or_u16 { rd, rs1, rs2 },
-            3u8 if funct == 1u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Or_u32 { rd, rs1, rs2 },
-            3u8 if funct == 1u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Or_u64 { rd, rs1, rs2 },
-            3u8 if funct == 2u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Xor_i8 { rd, rs1, rs2 },
-            3u8 if funct == 2u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Xor_i16 { rd, rs1, rs2 },
-            3u8 if funct == 2u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Xor_i32 { rd, rs1, rs2 },
-            3u8 if funct == 2u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Xor_i64 { rd, rs1, rs2 },
-            3u8 if funct == 2u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Xor_u8 { rd, rs1, rs2 },
-            3u8 if funct == 2u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Xor_u16 { rd, rs1, rs2 },
-            3u8 if funct == 2u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Xor_u32 { rd, rs1, rs2 },
-            3u8 if funct == 2u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Xor_u64 { rd, rs1, rs2 },
-            3u8 if funct == 3u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Not_i8 { rd, rs1 },
-            3u8 if funct == 3u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Not_i16 { rd, rs1 },
-            3u8 if funct == 3u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Not_i32 { rd, rs1 },
-            3u8 if funct == 3u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Not_i64 { rd, rs1 },
-            3u8 if funct == 3u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Not_u8 { rd, rs1 },
-            3u8 if funct == 3u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Not_u16 { rd, rs1 },
-            3u8 if funct == 3u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Not_u32 { rd, rs1 },
-            3u8 if funct == 3u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Not_u64 { rd, rs1 },
-            3u8 if funct == 4u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Shl_i8 { rd, rs1, rs2 },
-            3u8 if funct == 4u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Shl_i16 { rd, rs1, rs2 },
-            3u8 if funct == 4u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Shl_i32 { rd, rs1, rs2 },
-            3u8 if funct == 4u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Shl_i64 { rd, rs1, rs2 },
-            3u8 if funct == 4u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Shl_u8 { rd, rs1, rs2 },
-            3u8 if funct == 4u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Shl_u16 { rd, rs1, rs2 },
-            3u8 if funct == 4u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Shl_u32 { rd, rs1, rs2 },
-            3u8 if funct == 4u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Shl_u64 { rd, rs1, rs2 },
-            3u8 if funct == 5u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Shr_i8 { rd, rs1, rs2 },
-            3u8 if funct == 5u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Shr_i16 { rd, rs1, rs2 },
-            3u8 if funct == 5u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Shr_i32 { rd, rs1, rs2 },
-            3u8 if funct == 5u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Shr_i64 { rd, rs1, rs2 },
-            3u8 if funct == 5u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Shr_u8 { rd, rs1, rs2 },
-            3u8 if funct == 5u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Shr_u16 { rd, rs1, rs2 },
-            3u8 if funct == 5u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Shr_u32 { rd, rs1, rs2 },
-            3u8 if funct == 5u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Shr_u64 { rd, rs1, rs2 },
-            3u8 if funct == 6u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rot_L_i8 { rd, rs1, rs2 },
-            3u8 if funct == 6u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rot_L_i16 { rd, rs1, rs2 },
-            3u8 if funct == 6u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rot_L_i32 { rd, rs1, rs2 },
-            3u8 if funct == 6u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rot_L_i64 { rd, rs1, rs2 },
-            3u8 if funct == 6u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Rot_L_u8 { rd, rs1, rs2 },
-            3u8 if funct == 6u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Rot_L_u16 { rd, rs1, rs2 },
-            3u8 if funct == 6u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Rot_L_u32 { rd, rs1, rs2 },
-            3u8 if funct == 6u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Rot_L_u64 { rd, rs1, rs2 },
-            3u8 if funct == 7u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rot_R_i8 { rd, rs1, rs2 },
-            3u8 if funct == 7u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rot_R_i16 { rd, rs1, rs2 },
-            3u8 if funct == 7u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rot_R_i32 { rd, rs1, rs2 },
-            3u8 if funct == 7u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rot_R_i64 { rd, rs1, rs2 },
-            3u8 if funct == 7u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Rot_R_u8 { rd, rs1, rs2 },
-            3u8 if funct == 7u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Rot_R_u16 { rd, rs1, rs2 },
-            3u8 if funct == 7u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Rot_R_u32 { rd, rs1, rs2 },
-            3u8 if funct == 7u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::Rot_R_u64 { rd, rs1, rs2 },
-            3u8 if funct == 8u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Ones_i8 { rd, rs1 },
-            3u8 if funct == 8u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Ones_i16 { rd, rs1 },
-            3u8 if funct == 8u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Ones_i32 { rd, rs1 },
-            3u8 if funct == 8u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Ones_i64 { rd, rs1 },
-            3u8 if funct == 8u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Ones_u8 { rd, rs1 },
-            3u8 if funct == 8u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Ones_u16 { rd, rs1 },
-            3u8 if funct == 8u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Ones_u32 { rd, rs1 },
-            3u8 if funct == 8u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Ones_u64 { rd, rs1 },
-            3u8 if funct == 9u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::L_Ones_i8 { rd, rs1 },
-            3u8 if funct == 9u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::L_Ones_i16 { rd, rs1 },
-            3u8 if funct == 9u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::L_Ones_i32 { rd, rs1 },
-            3u8 if funct == 9u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::L_Ones_i64 { rd, rs1 },
-            3u8 if funct == 9u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::L_Ones_u8 { rd, rs1 },
-            3u8 if funct == 9u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::L_Ones_u16 { rd, rs1 },
-            3u8 if funct == 9u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::L_Ones_u32 { rd, rs1 },
-            3u8 if funct == 9u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::L_Ones_u64 { rd, rs1 },
-            3u8 if funct == 10u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::T_Ones_i8 { rd, rs1 },
-            3u8 if funct == 10u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::T_Ones_i16 { rd, rs1 },
-            3u8 if funct == 10u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::T_Ones_i32 { rd, rs1 },
-            3u8 if funct == 10u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::T_Ones_i64 { rd, rs1 },
-            3u8 if funct == 10u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::T_Ones_u8 { rd, rs1 },
-            3u8 if funct == 10u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::T_Ones_u16 { rd, rs1 },
-            3u8 if funct == 10u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::T_Ones_u32 { rd, rs1 },
-            3u8 if funct == 10u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::T_Ones_u64 { rd, rs1 },
-            3u8 if funct == 11u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Zeros_i8 { rd, rs1 },
-            3u8 if funct == 11u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Zeros_i16 { rd, rs1 },
-            3u8 if funct == 11u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Zeros_i32 { rd, rs1 },
-            3u8 if funct == 11u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Zeros_i64 { rd, rs1 },
-            3u8 if funct == 11u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Zeros_u8 { rd, rs1 },
-            3u8 if funct == 11u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Zeros_u16 { rd, rs1 },
-            3u8 if funct == 11u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Zeros_u32 { rd, rs1 },
-            3u8 if funct == 11u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Zeros_u64 { rd, rs1 },
-            3u8 if funct == 12u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::L_Zeros_i8 { rd, rs1 },
-            3u8 if funct == 12u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::L_Zeros_i16 { rd, rs1 },
-            3u8 if funct == 12u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::L_Zeros_i32 { rd, rs1 },
-            3u8 if funct == 12u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::L_Zeros_i64 { rd, rs1 },
-            3u8 if funct == 12u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::L_Zeros_u8 { rd, rs1 },
-            3u8 if funct == 12u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::L_Zeros_u16 { rd, rs1 },
-            3u8 if funct == 12u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::L_Zeros_u32 { rd, rs1 },
-            3u8 if funct == 12u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::L_Zeros_u64 { rd, rs1 },
-            3u8 if funct == 13u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::T_Zeros_i8 { rd, rs1 },
-            3u8 if funct == 13u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::T_Zeros_i16 { rd, rs1 },
-            3u8 if funct == 13u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::T_Zeros_i32 { rd, rs1 },
-            3u8 if funct == 13u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::T_Zeros_i64 { rd, rs1 },
-            3u8 if funct == 13u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::T_Zeros_u8 { rd, rs1 },
-            3u8 if funct == 13u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::T_Zeros_u16 { rd, rs1 },
-            3u8 if funct == 13u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::T_Zeros_u32 { rd, rs1 },
-            3u8 if funct == 13u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::T_Zeros_u64 { rd, rs1 },
-            3u8 if funct == 14u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::R_Bytes_i8 { rd, rs1 },
-            3u8 if funct == 14u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::R_Bytes_i16 { rd, rs1 },
-            3u8 if funct == 14u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::R_Bytes_i32 { rd, rs1 },
-            3u8 if funct == 14u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::R_Bytes_i64 { rd, rs1 },
-            3u8 if funct == 14u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::R_Bytes_u8 { rd, rs1 },
-            3u8 if funct == 14u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::R_Bytes_u16 { rd, rs1 },
-            3u8 if funct == 14u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::R_Bytes_u32 { rd, rs1 },
-            3u8 if funct == 14u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::R_Bytes_u64 { rd, rs1 },
-            3u8 if funct == 15u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::R_Bits_i8 { rd, rs1 },
-            3u8 if funct == 15u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::R_Bits_i16 { rd, rs1 },
-            3u8 if funct == 15u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::R_Bits_i32 { rd, rs1 },
-            3u8 if funct == 15u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::R_Bits_i64 { rd, rs1 },
-            3u8 if funct == 15u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::R_Bits_u8 { rd, rs1 },
-            3u8 if funct == 15u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::R_Bits_u16 { rd, rs1 },
-            3u8 if funct == 15u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::R_Bits_u32 { rd, rs1 },
-            3u8 if funct == 15u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::R_Bits_u64 { rd, rs1 },
-            4u8 if funct == 0u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Abs_i8 { rd, rs1 },
-            4u8 if funct == 0u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Abs_i16 { rd, rs1 },
-            4u8 if funct == 0u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Abs_i32 { rd, rs1 },
-            4u8 if funct == 0u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Abs_i64 { rd, rs1 },
-            4u8 if funct == 1u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Add_i8 { rd, rs1, rs2 },
-            4u8 if funct == 1u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Add_i16 { rd, rs1, rs2 },
-            4u8 if funct == 1u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Add_i32 { rd, rs1, rs2 },
-            4u8 if funct == 1u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Add_i64 { rd, rs1, rs2 },
-            4u8 if funct == 1u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Add_u8 { rd, rs1, rs2 },
-            4u8 if funct == 1u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Add_u16 { rd, rs1, rs2 },
-            4u8 if funct == 1u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Add_u32 { rd, rs1, rs2 },
-            4u8 if funct == 1u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Add_u64 { rd, rs1, rs2 },
-            4u8 if funct == 2u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Add_U_i8 { rd, rs1, rs2 },
-            4u8 if funct == 2u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Add_U_i16 { rd, rs1, rs2 },
-            4u8 if funct == 2u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Add_U_i32 { rd, rs1, rs2 },
-            4u8 if funct == 2u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Add_U_i64 { rd, rs1, rs2 },
-            4u8 if funct == 2u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Add_S_u8 { rd, rs1, rs2 },
-            4u8 if funct == 2u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Add_S_u16 { rd, rs1, rs2 },
-            4u8 if funct == 2u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Add_S_u32 { rd, rs1, rs2 },
-            4u8 if funct == 2u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Add_S_u64 { rd, rs1, rs2 },
-            4u8 if funct == 3u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Div_i8 { rd, rs1, rs2 },
-            4u8 if funct == 3u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Div_i16 { rd, rs1, rs2 },
-            4u8 if funct == 3u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Div_i32 { rd, rs1, rs2 },
-            4u8 if funct == 3u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Div_i64 { rd, rs1, rs2 },
-            4u8 if funct == 3u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Div_u8 { rd, rs1, rs2 },
-            4u8 if funct == 3u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Div_u16 { rd, rs1, rs2 },
-            4u8 if funct == 3u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Div_u32 { rd, rs1, rs2 },
-            4u8 if funct == 3u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Div_u64 { rd, rs1, rs2 },
-            4u8 if funct == 4u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Div_E_i8 { rd, rs1, rs2 },
-            4u8 if funct == 4u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Div_E_i16 { rd, rs1, rs2 },
-            4u8 if funct == 4u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Div_E_i32 { rd, rs1, rs2 },
-            4u8 if funct == 4u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Div_E_i64 { rd, rs1, rs2 },
-            4u8 if funct == 4u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Div_E_u8 { rd, rs1, rs2 },
-            4u8 if funct == 4u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Div_E_u16 { rd, rs1, rs2 },
-            4u8 if funct == 4u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Div_E_u32 { rd, rs1, rs2 },
-            4u8 if funct == 4u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Div_E_u64 { rd, rs1, rs2 },
-            4u8 if funct == 5u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Log_i8 { rd, rs1, rs2 },
-            4u8 if funct == 5u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Log_i16 { rd, rs1, rs2 },
-            4u8 if funct == 5u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Log_i32 { rd, rs1, rs2 },
-            4u8 if funct == 5u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Log_i64 { rd, rs1, rs2 },
-            4u8 if funct == 5u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Log_u8 { rd, rs1, rs2 },
-            4u8 if funct == 5u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Log_u16 { rd, rs1, rs2 },
-            4u8 if funct == 5u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Log_u32 { rd, rs1, rs2 },
-            4u8 if funct == 5u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Log_u64 { rd, rs1, rs2 },
-            4u8 if funct == 6u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sqrt_i8 { rd, rs1 },
-            4u8 if funct == 6u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sqrt_i16 { rd, rs1 },
-            4u8 if funct == 6u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sqrt_i32 { rd, rs1 },
-            4u8 if funct == 6u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sqrt_i64 { rd, rs1 },
-            4u8 if funct == 6u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Sqrt_u8 { rd, rs1 },
-            4u8 if funct == 6u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Sqrt_u16 { rd, rs1 },
-            4u8 if funct == 6u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Sqrt_u32 { rd, rs1 },
-            4u8 if funct == 6u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Sqrt_u64 { rd, rs1 },
-            4u8 if funct == 7u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Mul_i8 { rd, rs1, rs2 },
-            4u8 if funct == 7u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Mul_i16 { rd, rs1, rs2 },
-            4u8 if funct == 7u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Mul_i32 { rd, rs1, rs2 },
-            4u8 if funct == 7u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Mul_i64 { rd, rs1, rs2 },
-            4u8 if funct == 7u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Mul_u8 { rd, rs1, rs2 },
-            4u8 if funct == 7u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Mul_u16 { rd, rs1, rs2 },
-            4u8 if funct == 7u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Mul_u32 { rd, rs1, rs2 },
-            4u8 if funct == 7u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Mul_u64 { rd, rs1, rs2 },
-            4u8 if funct == 8u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Neg_i8 { rd, rs1 },
-            4u8 if funct == 8u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Neg_i16 { rd, rs1 },
-            4u8 if funct == 8u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Neg_i32 { rd, rs1 },
-            4u8 if funct == 8u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Neg_i64 { rd, rs1 },
-            4u8 if funct == 9u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Pow_i8 { rd, rs1, rs2 },
-            4u8 if funct == 9u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Pow_i16 { rd, rs1, rs2 },
-            4u8 if funct == 9u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Pow_i32 { rd, rs1, rs2 },
-            4u8 if funct == 9u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Pow_i64 { rd, rs1, rs2 },
-            4u8 if funct == 9u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Pow_u8 { rd, rs1, rs2 },
-            4u8 if funct == 9u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Pow_u16 { rd, rs1, rs2 },
-            4u8 if funct == 9u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Pow_u32 { rd, rs1, rs2 },
-            4u8 if funct == 9u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Pow_u64 { rd, rs1, rs2 },
-            4u8 if funct == 10u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Rem_i8 { rd, rs1, rs2 },
-            4u8 if funct == 10u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Rem_i16 { rd, rs1, rs2 },
-            4u8 if funct == 10u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Rem_i32 { rd, rs1, rs2 },
-            4u8 if funct == 10u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Rem_i64 { rd, rs1, rs2 },
-            4u8 if funct == 10u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Rem_u8 { rd, rs1, rs2 },
-            4u8 if funct == 10u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Rem_u16 { rd, rs1, rs2 },
-            4u8 if funct == 10u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Rem_u32 { rd, rs1, rs2 },
-            4u8 if funct == 10u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Rem_u64 { rd, rs1, rs2 },
-            4u8 if funct == 11u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Rem_E_i8 { rd, rs1, rs2 },
-            4u8 if funct == 11u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Rem_E_i16 { rd, rs1, rs2 },
-            4u8 if funct == 11u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Rem_E_i32 { rd, rs1, rs2 },
-            4u8 if funct == 11u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Rem_E_i64 { rd, rs1, rs2 },
-            4u8 if funct == 11u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Rem_E_u8 { rd, rs1, rs2 },
-            4u8 if funct == 11u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Rem_E_u16 { rd, rs1, rs2 },
-            4u8 if funct == 11u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Rem_E_u32 { rd, rs1, rs2 },
-            4u8 if funct == 11u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Rem_E_u64 { rd, rs1, rs2 },
-            4u8 if funct == 12u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Shl_i8 { rd, rs1, rs2 },
-            4u8 if funct == 12u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Shl_i16 { rd, rs1, rs2 },
-            4u8 if funct == 12u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Shl_i32 { rd, rs1, rs2 },
-            4u8 if funct == 12u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Shl_i64 { rd, rs1, rs2 },
-            4u8 if funct == 12u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Shl_u8 { rd, rs1, rs2 },
-            4u8 if funct == 12u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Shl_u16 { rd, rs1, rs2 },
-            4u8 if funct == 12u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Shl_u32 { rd, rs1, rs2 },
-            4u8 if funct == 12u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Shl_u64 { rd, rs1, rs2 },
-            4u8 if funct == 13u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Shr_i8 { rd, rs1, rs2 },
-            4u8 if funct == 13u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Shr_i16 { rd, rs1, rs2 },
-            4u8 if funct == 13u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Shr_i32 { rd, rs1, rs2 },
-            4u8 if funct == 13u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Shr_i64 { rd, rs1, rs2 },
-            4u8 if funct == 13u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Shr_u8 { rd, rs1, rs2 },
-            4u8 if funct == 13u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Shr_u16 { rd, rs1, rs2 },
-            4u8 if funct == 13u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Shr_u32 { rd, rs1, rs2 },
-            4u8 if funct == 13u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Shr_u64 { rd, rs1, rs2 },
-            4u8 if funct == 14u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sub_i8 { rd, rs1, rs2 },
-            4u8 if funct == 14u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sub_i16 { rd, rs1, rs2 },
-            4u8 if funct == 14u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sub_i32 { rd, rs1, rs2 },
-            4u8 if funct == 14u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sub_i64 { rd, rs1, rs2 },
-            4u8 if funct == 14u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Sub_u8 { rd, rs1, rs2 },
-            4u8 if funct == 14u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Sub_u16 { rd, rs1, rs2 },
-            4u8 if funct == 14u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Sub_u32 { rd, rs1, rs2 },
-            4u8 if funct == 14u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::C_Sub_u64 { rd, rs1, rs2 },
-            4u8 if funct == 15u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sub_U_i8 { rd, rs1, rs2 },
-            4u8 if funct == 15u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sub_U_i16 { rd, rs1, rs2 },
-            4u8 if funct == 15u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sub_U_i32 { rd, rs1, rs2 },
-            4u8 if funct == 15u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::C_Sub_U_i64 { rd, rs1, rs2 },
-            5u8 if funct == 0u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Abs_i8 { rd, rs1 },
-            5u8 if funct == 0u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Abs_i16 { rd, rs1 },
-            5u8 if funct == 0u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Abs_i32 { rd, rs1 },
-            5u8 if funct == 0u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Abs_i64 { rd, rs1 },
-            5u8 if funct == 1u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Add_i8 { rd, rs1, rs2 },
-            5u8 if funct == 1u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Add_i16 { rd, rs1, rs2 },
-            5u8 if funct == 1u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Add_i32 { rd, rs1, rs2 },
-            5u8 if funct == 1u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Add_i64 { rd, rs1, rs2 },
-            5u8 if funct == 1u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Add_u8 { rd, rs1, rs2 },
-            5u8 if funct == 1u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Add_u16 { rd, rs1, rs2 },
-            5u8 if funct == 1u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Add_u32 { rd, rs1, rs2 },
-            5u8 if funct == 1u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Add_u64 { rd, rs1, rs2 },
-            5u8 if funct == 2u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Add_U_i8 { rd, rs1, rs2 },
-            5u8 if funct == 2u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Add_U_i16 { rd, rs1, rs2 },
-            5u8 if funct == 2u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Add_U_i32 { rd, rs1, rs2 },
-            5u8 if funct == 2u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Add_U_i64 { rd, rs1, rs2 },
-            5u8 if funct == 2u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Add_S_u8 { rd, rs1, rs2 },
-            5u8 if funct == 2u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Add_S_u16 { rd, rs1, rs2 },
-            5u8 if funct == 2u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Add_S_u32 { rd, rs1, rs2 },
-            5u8 if funct == 2u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Add_S_u64 { rd, rs1, rs2 },
-            5u8 if funct == 3u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Div_i8 { rd, rs1, rs2 },
-            5u8 if funct == 3u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Div_i16 { rd, rs1, rs2 },
-            5u8 if funct == 3u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Div_i32 { rd, rs1, rs2 },
-            5u8 if funct == 3u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Div_i64 { rd, rs1, rs2 },
-            5u8 if funct == 3u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Div_u8 { rd, rs1, rs2 },
-            5u8 if funct == 3u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Div_u16 { rd, rs1, rs2 },
-            5u8 if funct == 3u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Div_u32 { rd, rs1, rs2 },
-            5u8 if funct == 3u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Div_u64 { rd, rs1, rs2 },
-            5u8 if funct == 4u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Div_E_i8 { rd, rs1, rs2 },
-            5u8 if funct == 4u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Div_E_i16 { rd, rs1, rs2 },
-            5u8 if funct == 4u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Div_E_i32 { rd, rs1, rs2 },
-            5u8 if funct == 4u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Div_E_i64 { rd, rs1, rs2 },
-            5u8 if funct == 4u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Div_E_u8 { rd, rs1, rs2 },
-            5u8 if funct == 4u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Div_E_u16 { rd, rs1, rs2 },
-            5u8 if funct == 4u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Div_E_u32 { rd, rs1, rs2 },
-            5u8 if funct == 4u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Div_E_u64 { rd, rs1, rs2 },
-            5u8 if funct == 7u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Mul_i8 { rd, rs1, rs2 },
-            5u8 if funct == 7u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Mul_i16 { rd, rs1, rs2 },
-            5u8 if funct == 7u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Mul_i32 { rd, rs1, rs2 },
-            5u8 if funct == 7u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Mul_i64 { rd, rs1, rs2 },
-            5u8 if funct == 7u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Mul_u8 { rd, rs1, rs2 },
-            5u8 if funct == 7u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Mul_u16 { rd, rs1, rs2 },
-            5u8 if funct == 7u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Mul_u32 { rd, rs1, rs2 },
-            5u8 if funct == 7u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Mul_u64 { rd, rs1, rs2 },
-            5u8 if funct == 8u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Neg_i8 { rd, rs1 },
-            5u8 if funct == 8u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Neg_i16 { rd, rs1 },
-            5u8 if funct == 8u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Neg_i32 { rd, rs1 },
-            5u8 if funct == 8u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Neg_i64 { rd, rs1 },
-            5u8 if funct == 9u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Pow_i8 { rd, rs1, rs2 },
-            5u8 if funct == 9u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Pow_i16 { rd, rs1, rs2 },
-            5u8 if funct == 9u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Pow_i32 { rd, rs1, rs2 },
-            5u8 if funct == 9u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Pow_i64 { rd, rs1, rs2 },
-            5u8 if funct == 9u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Pow_u8 { rd, rs1, rs2 },
-            5u8 if funct == 9u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Pow_u16 { rd, rs1, rs2 },
-            5u8 if funct == 9u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Pow_u32 { rd, rs1, rs2 },
-            5u8 if funct == 9u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Pow_u64 { rd, rs1, rs2 },
-            5u8 if funct == 10u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Rem_i8 { rd, rs1, rs2 },
-            5u8 if funct == 10u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Rem_i16 { rd, rs1, rs2 },
-            5u8 if funct == 10u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Rem_i32 { rd, rs1, rs2 },
-            5u8 if funct == 10u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Rem_i64 { rd, rs1, rs2 },
-            5u8 if funct == 10u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Rem_u8 { rd, rs1, rs2 },
-            5u8 if funct == 10u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Rem_u16 { rd, rs1, rs2 },
-            5u8 if funct == 10u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Rem_u32 { rd, rs1, rs2 },
-            5u8 if funct == 10u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Rem_u64 { rd, rs1, rs2 },
-            5u8 if funct == 11u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Rem_E_i8 { rd, rs1, rs2 },
-            5u8 if funct == 11u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Rem_E_i16 { rd, rs1, rs2 },
-            5u8 if funct == 11u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Rem_E_i32 { rd, rs1, rs2 },
-            5u8 if funct == 11u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Rem_E_i64 { rd, rs1, rs2 },
-            5u8 if funct == 11u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Rem_E_u8 { rd, rs1, rs2 },
-            5u8 if funct == 11u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Rem_E_u16 { rd, rs1, rs2 },
-            5u8 if funct == 11u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Rem_E_u32 { rd, rs1, rs2 },
-            5u8 if funct == 11u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Rem_E_u64 { rd, rs1, rs2 },
-            5u8 if funct == 12u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Shl_i8 { rd, rs1, rs2 },
-            5u8 if funct == 12u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Shl_i16 { rd, rs1, rs2 },
-            5u8 if funct == 12u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Shl_i32 { rd, rs1, rs2 },
-            5u8 if funct == 12u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Shl_i64 { rd, rs1, rs2 },
-            5u8 if funct == 12u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Shl_u8 { rd, rs1, rs2 },
-            5u8 if funct == 12u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Shl_u16 { rd, rs1, rs2 },
-            5u8 if funct == 12u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Shl_u32 { rd, rs1, rs2 },
-            5u8 if funct == 12u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Shl_u64 { rd, rs1, rs2 },
-            5u8 if funct == 13u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Shr_i8 { rd, rs1, rs2 },
-            5u8 if funct == 13u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Shr_i16 { rd, rs1, rs2 },
-            5u8 if funct == 13u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Shr_i32 { rd, rs1, rs2 },
-            5u8 if funct == 13u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Shr_i64 { rd, rs1, rs2 },
-            5u8 if funct == 13u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Shr_u8 { rd, rs1, rs2 },
-            5u8 if funct == 13u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Shr_u16 { rd, rs1, rs2 },
-            5u8 if funct == 13u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Shr_u32 { rd, rs1, rs2 },
-            5u8 if funct == 13u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Shr_u64 { rd, rs1, rs2 },
-            5u8 if funct == 14u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Sub_i8 { rd, rs1, rs2 },
-            5u8 if funct == 14u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Sub_i16 { rd, rs1, rs2 },
-            5u8 if funct == 14u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Sub_i32 { rd, rs1, rs2 },
-            5u8 if funct == 14u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Sub_i64 { rd, rs1, rs2 },
-            5u8 if funct == 14u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Sub_u8 { rd, rs1, rs2 },
-            5u8 if funct == 14u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Sub_u16 { rd, rs1, rs2 },
-            5u8 if funct == 14u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Sub_u32 { rd, rs1, rs2 },
-            5u8 if funct == 14u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::O_Sub_u64 { rd, rs1, rs2 },
-            5u8 if funct == 15u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Sub_U_i8 { rd, rs1, rs2 },
-            5u8 if funct == 15u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Sub_U_i16 { rd, rs1, rs2 },
-            5u8 if funct == 15u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Sub_U_i32 { rd, rs1, rs2 },
-            5u8 if funct == 15u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::O_Sub_U_i64 { rd, rs1, rs2 },
-            6u8 if funct == 0u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Abs_i8 { rd, rs1 },
-            6u8 if funct == 0u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Abs_i16 { rd, rs1 },
-            6u8 if funct == 0u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Abs_i32 { rd, rs1 },
-            6u8 if funct == 0u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Abs_i64 { rd, rs1 },
-            6u8 if funct == 1u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Add_i8 { rd, rs1, rs2 },
-            6u8 if funct == 1u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Add_i16 { rd, rs1, rs2 },
-            6u8 if funct == 1u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Add_i32 { rd, rs1, rs2 },
-            6u8 if funct == 1u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Add_i64 { rd, rs1, rs2 },
-            6u8 if funct == 1u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Add_u8 { rd, rs1, rs2 },
-            6u8 if funct == 1u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Add_u16 { rd, rs1, rs2 },
-            6u8 if funct == 1u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Add_u32 { rd, rs1, rs2 },
-            6u8 if funct == 1u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Add_u64 { rd, rs1, rs2 },
-            6u8 if funct == 2u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Add_U_i8 { rd, rs1, rs2 },
-            6u8 if funct == 2u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Add_U_i16 { rd, rs1, rs2 },
-            6u8 if funct == 2u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Add_U_i32 { rd, rs1, rs2 },
-            6u8 if funct == 2u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Add_U_i64 { rd, rs1, rs2 },
-            6u8 if funct == 2u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Add_S_u8 { rd, rs1, rs2 },
-            6u8 if funct == 2u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Add_S_u16 { rd, rs1, rs2 },
-            6u8 if funct == 2u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Add_S_u32 { rd, rs1, rs2 },
-            6u8 if funct == 2u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Add_S_u64 { rd, rs1, rs2 },
-            6u8 if funct == 3u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Div_i8 { rd, rs1, rs2 },
-            6u8 if funct == 3u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Div_i16 { rd, rs1, rs2 },
-            6u8 if funct == 3u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Div_i32 { rd, rs1, rs2 },
-            6u8 if funct == 3u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Div_i64 { rd, rs1, rs2 },
-            6u8 if funct == 3u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Div_u8 { rd, rs1, rs2 },
-            6u8 if funct == 3u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Div_u16 { rd, rs1, rs2 },
-            6u8 if funct == 3u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Div_u32 { rd, rs1, rs2 },
-            6u8 if funct == 3u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Div_u64 { rd, rs1, rs2 },
-            6u8 if funct == 7u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Mul_i8 { rd, rs1, rs2 },
-            6u8 if funct == 7u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Mul_i16 { rd, rs1, rs2 },
-            6u8 if funct == 7u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Mul_i32 { rd, rs1, rs2 },
-            6u8 if funct == 7u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Mul_i64 { rd, rs1, rs2 },
-            6u8 if funct == 7u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Mul_u8 { rd, rs1, rs2 },
-            6u8 if funct == 7u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Mul_u16 { rd, rs1, rs2 },
-            6u8 if funct == 7u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Mul_u32 { rd, rs1, rs2 },
-            6u8 if funct == 7u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Mul_u64 { rd, rs1, rs2 },
-            6u8 if funct == 8u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Neg_i8 { rd, rs1 },
-            6u8 if funct == 8u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Neg_i16 { rd, rs1 },
-            6u8 if funct == 8u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Neg_i32 { rd, rs1 },
-            6u8 if funct == 8u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Neg_i64 { rd, rs1 },
-            6u8 if funct == 9u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Pow_i8 { rd, rs1, rs2 },
-            6u8 if funct == 9u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Pow_i16 { rd, rs1, rs2 },
-            6u8 if funct == 9u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Pow_i32 { rd, rs1, rs2 },
-            6u8 if funct == 9u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Pow_i64 { rd, rs1, rs2 },
-            6u8 if funct == 9u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Pow_u8 { rd, rs1, rs2 },
-            6u8 if funct == 9u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Pow_u16 { rd, rs1, rs2 },
-            6u8 if funct == 9u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Pow_u32 { rd, rs1, rs2 },
-            6u8 if funct == 9u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Pow_u64 { rd, rs1, rs2 },
-            6u8 if funct == 14u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Sub_i8 { rd, rs1, rs2 },
-            6u8 if funct == 14u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Sub_i16 { rd, rs1, rs2 },
-            6u8 if funct == 14u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Sub_i32 { rd, rs1, rs2 },
-            6u8 if funct == 14u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Sub_i64 { rd, rs1, rs2 },
-            6u8 if funct == 14u8 && size == 8u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Sub_u8 { rd, rs1, rs2 },
-            6u8 if funct == 14u8 && size == 16u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Sub_u16 { rd, rs1, rs2 },
-            6u8 if funct == 14u8 && size == 32u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Sub_u32 { rd, rs1, rs2 },
-            6u8 if funct == 14u8 && size == 64u8 && f == 0u8 && s == 0u8
-                && !rd.is_readonly() => Self::S_Sub_u64 { rd, rs1, rs2 },
-            6u8 if funct == 15u8 && size == 8u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Sub_U_i8 { rd, rs1, rs2 },
-            6u8 if funct == 15u8 && size == 16u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Sub_U_i16 { rd, rs1, rs2 },
-            6u8 if funct == 15u8 && size == 32u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Sub_U_i32 { rd, rs1, rs2 },
-            6u8 if funct == 15u8 && size == 64u8 && f == 0u8 && s == 1u8
-                && !rd.is_readonly() => Self::S_Sub_U_i64 { rd, rs1, rs2 },
-            7u8 if funct == 0u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Abs_f32 { rd, rs1 },
-            7u8 if funct == 0u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Abs_f64 { rd, rs1 },
-            7u8 if funct == 1u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Add_f32 { rd, rs1, rs2 },
-            7u8 if funct == 1u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Add_f64 { rd, rs1, rs2 },
-            7u8 if funct == 3u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Div_f32 { rd, rs1, rs2 },
-            7u8 if funct == 3u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Div_f64 { rd, rs1, rs2 },
-            7u8 if funct == 4u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Div_E_f32 { rd, rs1, rs2 },
-            7u8 if funct == 4u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Div_E_f64 { rd, rs1, rs2 },
-            7u8 if funct == 5u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Log_f32 { rd, rs1, rs2 },
-            7u8 if funct == 5u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Log_f64 { rd, rs1, rs2 },
-            7u8 if funct == 6u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Sqrt_f32 { rd, rs1 },
-            7u8 if funct == 6u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Sqrt_f64 { rd, rs1 },
-            7u8 if funct == 7u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Mul_f32 { rd, rs1, rs2 },
-            7u8 if funct == 7u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Mul_f64 { rd, rs1, rs2 },
-            7u8 if funct == 8u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Neg_f32 { rd, rs1 },
-            7u8 if funct == 8u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Neg_f64 { rd, rs1 },
-            7u8 if funct == 9u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Pow_f32 { rd, rs1, rs2 },
-            7u8 if funct == 9u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Pow_f64 { rd, rs1, rs2 },
-            7u8 if funct == 10u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rem_f32 { rd, rs1, rs2 },
-            7u8 if funct == 10u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rem_f64 { rd, rs1, rs2 },
-            7u8 if funct == 11u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rem_E_f32 { rd, rs1, rs2 },
-            7u8 if funct == 11u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Rem_E_f64 { rd, rs1, rs2 },
-            7u8 if funct == 13u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Cbrt_f32 { rd, rs1 },
-            7u8 if funct == 13u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Cbrt_f64 { rd, rs1 },
-            7u8 if funct == 14u8 && size == 32u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Sub_f32 { rd, rs1, rs2 },
-            7u8 if funct == 14u8 && size == 64u8 && f == 1u8 && s == 1u8
-                && !rd.is_readonly() => Self::Sub_f64 { rd, rs1, rs2 },
+            3u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Cne_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Cne_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Clts {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Cltu {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Clt_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Clt_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Cles {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Cleu {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Cle_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Cle_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Cgts {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Cgtu {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Cgt_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Cgt_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Cges {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Cgeu {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Cge_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            3u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Cge_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            4u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Lra_8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            4u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Lra_16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            4u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Lra_32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            4u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Lra_64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            4u32 if funct_4 == 1u32 && sign == 1u32 => {
+                Self::Lsi {
+                    rd: Register::from_index(rd as u8),
+                    imm: imm_i16 as i16,
+                }
+            }
+            4u32 if funct_4 == 1u32 && sign == 0u32 => {
+                Self::Lui {
+                    rd: Register::from_index(rd as u8),
+                    imm: imm_u16 as u16,
+                }
+            }
+            4u32 if funct_4 == 2u32 && sign == 0u32 => {
+                Self::Lia_8 {
+                    rd: Register::from_index(rd as u8),
+                    imm: imm_u16 as u16,
+                }
+            }
+            4u32 if funct_4 == 3u32 && sign == 0u32 => {
+                Self::Lia_16 {
+                    rd: Register::from_index(rd as u8),
+                    imm: imm_u16 as u16,
+                }
+            }
+            4u32 if funct_4 == 4u32 && sign == 0u32 => {
+                Self::Lia_32 {
+                    rd: Register::from_index(rd as u8),
+                    imm: imm_u16 as u16,
+                }
+            }
+            4u32 if funct_4 == 5u32 && sign == 0u32 => {
+                Self::Lia_64 {
+                    rd: Register::from_index(rd as u8),
+                    imm: imm_u16 as u16,
+                }
+            }
+            4u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Sra_8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            4u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Sra_16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            4u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Sra_32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            4u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Sra_64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            4u32 if funct_4 == 7u32 && sign == 1u32 => {
+                Self::Ssi {
+                    rd: Register::from_index(rd as u8),
+                    imm: imm_i16 as i16,
+                }
+            }
+            4u32 if funct_4 == 7u32 && sign == 0u32 => {
+                Self::Sui {
+                    rd: Register::from_index(rd as u8),
+                    imm: imm_u16 as u16,
+                }
+            }
+            4u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Mov {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            4u32 if funct_4 == 9u32 && imm_i16 == 0u32 && sign == 0u32 => {
+                Self::Pop {
+                    rd: Register::from_index(rd as u8),
+                }
+            }
+            4u32 if funct_4 == 9u32 && imm_i16 == 0u32 && sign == 1u32 => {
+                Self::Psh {
+                    rd: Register::from_index(rd as u8),
+                }
+            }
+            4u32 if funct_4 == 10u32 => Self::Psi { imm: imm_24 as i32 },
+            4u32 if funct_4 == 11u32 => Self::Pui { imm: imm_24 as i32 },
+            5u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::And_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::And_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::And_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::And_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::And_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::And_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::And_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::And_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Or_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Or_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Or_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Or_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Or_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Or_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Or_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Or_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Xor_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Xor_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Xor_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Xor_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Xor_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Xor_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Xor_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Xor_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 3u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::Not_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 3u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::Not_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 3u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::Not_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 3u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::Not_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 3u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Not_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 3u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Not_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 3u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Not_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 3u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Not_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Shl_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Shl_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Shl_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Shl_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Shl_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Shl_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Shl_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Shl_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Shr_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Shr_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Shr_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Shr_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Shr_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Shr_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Shr_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Shr_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Rot_L_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Rot_L_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Rot_L_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Rot_L_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Rot_L_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Rot_L_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Rot_L_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Rot_L_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Rot_R_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Rot_R_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Rot_R_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Rot_R_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Rot_R_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Rot_R_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Rot_R_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Rot_R_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            5u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Ones_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Ones_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Ones_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Ones_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Ones_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Ones_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Ones_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Ones_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::L_Ones_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::L_Ones_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::L_Ones_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::L_Ones_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::L_Ones_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::L_Ones_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::L_Ones_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::L_Ones_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::T_Ones_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::T_Ones_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::T_Ones_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::T_Ones_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::T_Ones_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::T_Ones_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::T_Ones_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::T_Ones_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 11u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Zeros_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 11u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Zeros_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 11u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Zeros_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 11u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Zeros_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 11u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Zeros_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 11u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Zeros_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 11u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Zeros_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 11u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Zeros_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 12u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::L_Zeros_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 12u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::L_Zeros_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 12u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::L_Zeros_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 12u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::L_Zeros_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 12u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::L_Zeros_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 12u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::L_Zeros_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 12u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::L_Zeros_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 12u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::L_Zeros_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 13u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::T_Zeros_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 13u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::T_Zeros_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 13u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::T_Zeros_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 13u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::T_Zeros_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 13u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::T_Zeros_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 13u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::T_Zeros_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 13u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::T_Zeros_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 13u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::T_Zeros_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::R_Bytes_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::R_Bytes_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::R_Bytes_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::R_Bytes_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::R_Bytes_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::R_Bytes_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::R_Bytes_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::R_Bytes_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 15u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::R_Bits_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 15u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::R_Bits_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 15u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::R_Bits_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 15u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::R_Bits_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 15u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::R_Bits_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 15u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::R_Bits_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 15u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::R_Bits_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            5u32 if funct_4 == 15u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::R_Bits_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Abs_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Abs_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Abs_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Abs_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Add_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Add_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Add_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Add_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Add_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Add_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Add_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Add_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Add_U_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Add_U_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Add_U_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Add_U_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Add_S_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Add_S_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Add_S_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Add_S_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Div_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Div_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Div_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Div_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Div_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Div_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Div_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Div_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Div_E_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Div_E_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Div_E_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Div_E_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Div_E_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Div_E_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Div_E_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Div_E_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Log_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Log_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Log_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Log_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Log_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Log_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Log_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Log_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Sqrt_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Sqrt_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Sqrt_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Sqrt_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Sqrt_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Sqrt_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Sqrt_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::C_Sqrt_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Mul_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Mul_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Mul_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Mul_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Mul_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Mul_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Mul_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Mul_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Neg_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Neg_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Neg_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::C_Neg_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            6u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Pow_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Pow_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Pow_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Pow_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Pow_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Pow_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Pow_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Pow_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Rem_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Rem_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Rem_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Rem_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Rem_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Rem_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Rem_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Rem_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Rem_E_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Rem_E_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Rem_E_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Rem_E_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Rem_E_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Rem_E_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Rem_E_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Rem_E_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Shl_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Shl_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Shl_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Shl_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Shl_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Shl_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Shl_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Shl_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Shr_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Shr_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Shr_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Shr_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Shr_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Shr_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Shr_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Shr_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Sub_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Sub_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Sub_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Sub_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Sub_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Sub_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Sub_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::C_Sub_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Sub_U_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Sub_U_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Sub_U_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            6u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::C_Sub_U_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::O_Abs_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            7u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::O_Abs_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            7u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::O_Abs_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            7u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::O_Abs_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            7u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Add_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Add_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Add_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Add_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Add_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Add_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Add_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Add_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Add_U_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Add_U_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Add_U_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Add_U_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Add_S_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Add_S_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Add_S_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Add_S_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Div_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Div_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Div_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Div_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Div_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Div_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Div_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Div_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Div_E_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Div_E_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Div_E_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Div_E_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Div_E_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Div_E_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Div_E_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Div_E_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Mul_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Mul_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Mul_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Mul_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Mul_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Mul_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Mul_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Mul_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::O_Neg_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            7u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::O_Neg_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            7u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::O_Neg_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            7u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::O_Neg_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            7u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Pow_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Pow_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Pow_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Pow_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Pow_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Pow_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Pow_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Pow_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Rem_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Rem_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Rem_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Rem_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Rem_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Rem_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Rem_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Rem_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Rem_E_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Rem_E_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Rem_E_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Rem_E_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Rem_E_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Rem_E_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Rem_E_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Rem_E_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Shl_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Shl_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Shl_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Shl_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Shl_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Shl_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Shl_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 12u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Shl_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Shr_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Shr_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Shr_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Shr_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Shr_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Shr_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Shr_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 13u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Shr_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Sub_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Sub_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Sub_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Sub_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Sub_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Sub_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Sub_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::O_Sub_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Sub_U_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Sub_U_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Sub_U_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            7u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::O_Sub_U_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::S_Abs_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            8u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::S_Abs_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            8u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::S_Abs_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            8u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::S_Abs_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            8u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Add_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Add_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Add_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Add_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Add_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Add_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Add_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Add_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Add_U_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Add_U_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Add_U_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Add_U_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Add_S_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Add_S_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Add_S_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Add_S_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Div_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Div_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Div_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Div_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Div_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Div_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Div_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Div_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Mul_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Mul_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Mul_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Mul_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Mul_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Mul_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Mul_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Mul_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::S_Neg_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            8u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::S_Neg_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            8u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::S_Neg_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            8u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 1u32 => {
+                Self::S_Neg_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            8u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Pow_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Pow_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Pow_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Pow_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Pow_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Pow_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Pow_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Pow_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Sub_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Sub_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Sub_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Sub_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Sub_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Sub_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Sub_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::S_Sub_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Sub_U_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Sub_U_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Sub_U_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            8u32 if funct_4 == 15u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::S_Sub_U_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 1u32 && sign == 1u32 => {
+                Self::Abs_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            9u32 if funct_4 == 0u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 1u32 && sign == 1u32 => {
+                Self::Abs_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            9u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Add_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Add_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Div_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Div_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Div_E_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Div_E_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Log_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Log_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 1u32 && sign == 1u32 => {
+                Self::Sqrt_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            9u32 if funct_4 == 6u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 1u32 && sign == 1u32 => {
+                Self::Sqrt_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            9u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Mul_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Mul_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 1u32 && sign == 1u32 => {
+                Self::Neg_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            9u32 if funct_4 == 8u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 1u32 && sign == 1u32 => {
+                Self::Neg_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            9u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Pow_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 9u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Pow_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Rem_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 10u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Rem_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Rem_E_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 11u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Rem_E_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 13u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 1u32 && sign == 1u32 => {
+                Self::Cbrt_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            9u32 if funct_4 == 13u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 1u32 && sign == 1u32 => {
+                Self::Cbrt_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            9u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 2u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Sub_f32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            9u32 if funct_4 == 14u32 && funct_2 == 0u32 && size == 3u32 && float == 1u32
+                && sign == 1u32 => {
+                Self::Sub_f64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Add_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Add_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Add_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Add_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Add_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Add_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Add_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 0u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Add_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Sub_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Sub_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Sub_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Sub_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Sub_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Sub_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Sub_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 1u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Sub_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Min_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Min_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Min_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Min_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Min_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Min_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Min_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 2u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Min_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Max_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Max_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Max_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Max_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Max_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Max_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Max_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 3u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Max_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_And_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_And_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_And_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_And_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_And_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_And_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_And_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 4u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_And_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Nand_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Nand_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Nand_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Nand_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Nand_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Nand_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Nand_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 5u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Nand_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Or_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Or_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Or_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Or_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Or_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Or_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Or_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 6u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Or_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Xor_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Xor_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Xor_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Fetch_Xor_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Xor_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Xor_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Xor_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 7u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Fetch_Xor_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 8u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Cmp_Exchg_i8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 8u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Cmp_Exchg_i16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 8u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Cmp_Exchg_i32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 8u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 1u32 => {
+                Self::Cmp_Exchg_i64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 8u32 && funct_2 == 0u32 && size == 0u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Cmp_Exchg_u8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 8u32 && funct_2 == 0u32 && size == 1u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Cmp_Exchg_u16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 8u32 && funct_2 == 0u32 && size == 2u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Cmp_Exchg_u32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 8u32 && funct_2 == 0u32 && size == 3u32 && float == 0u32
+                && sign == 0u32 => {
+                Self::Cmp_Exchg_u64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                    rs2: Register::from_index(rs2 as u8),
+                }
+            }
+            10u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Atomic_Ld_8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Atomic_Ld_16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Atomic_Ld_32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 9u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Atomic_Ld_64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Atomic_St_8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Atomic_St_16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Atomic_St_32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 10u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Atomic_St_64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 11u32 && sign == 0u32 => {
+                Self::Spawn {
+                    rd: Register::from_index(rd as u8),
+                    imm: imm_u16 as u16,
+                }
+            }
+            10u32 if funct_4 == 12u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Wait {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 13u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Notify {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 0u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Swap_8 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 1u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Swap_16 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 2u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Swap_32 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
+            10u32 if funct_4 == 14u32 && rs2 == 0u32 && funct_2 == 0u32 && size == 3u32
+                && float == 0u32 && sign == 0u32 => {
+                Self::Swap_64 {
+                    rd: Register::from_index(rd as u8),
+                    rs1: Register::from_index(rs1 as u8),
+                }
+            }
             _ => Self::Invalid(instr),
         }
     }
     pub fn encode(&self) -> u32 {
         match self {
-            Self::Halt => encode_funct(0u8) | encode_op_code(0u8),
-            Self::Trap => encode_funct(1u8) | encode_op_code(0u8),
-            Self::Call { rs2 } => {
-                encode_s(0u8) | encode_rs2(*rs2) | encode_funct(2u8)
-                    | encode_op_code(0u8)
+            Self::Halt => 0u32,
+            Self::Trap => 16u32,
+            Self::Call { imm } => 32u32 | (((*imm as u32) << 8u32) & 4294967040u32),
+            Self::Ret => 64u32,
+            Self::Ecall { imm } => 80u32 | (((*imm as u32) << 8u32) & 4294967040u32),
+            Self::Jal { imm } => 96u32 | (((*imm as u32) << 8u32) & 4294967040u32),
+            Self::Bie { imm, rs1, rs2 } => {
+                1u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Call_R { rs2 } => {
-                encode_s(1u8) | encode_rs2(*rs2) | encode_funct(2u8)
-                    | encode_op_code(0u8)
+            Self::Bne { imm, rs1, rs2 } => {
+                17u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Call_I { imm } => {
-                encode_imm(*imm) | encode_funct(3u8) | encode_op_code(0u8)
+            Self::Blts { imm, rs1, rs2 } => {
+                33u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Ret => encode_funct(4u8) | encode_op_code(0u8),
-            Self::Ecall { imm } => {
-                encode_imm(*imm) | encode_funct(5u8) | encode_op_code(0u8)
+            Self::Bltu { imm, rs1, rs2 } => {
+                49u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Jal { rs2 } => {
-                encode_s(0u8) | encode_rs2(*rs2) | encode_funct(6u8)
-                    | encode_op_code(0u8)
+            Self::Bles { imm, rs1, rs2 } => {
+                65u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Jal_R { rs2 } => {
-                encode_s(1u8) | encode_rs2(*rs2) | encode_funct(6u8)
-                    | encode_op_code(0u8)
+            Self::Bleu { imm, rs1, rs2 } => {
+                81u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Jal_I { imm } => {
-                encode_imm(*imm) | encode_funct(7u8) | encode_op_code(0u8)
+            Self::Bgts { imm, rs1, rs2 } => {
+                97u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Jnz { rs1, rs2 } => {
-                encode_s(0u8) | encode_rs2(*rs2) | encode_rs1(*rs1) | encode_funct(8u8)
-                    | encode_op_code(0u8)
+            Self::Bgtu { imm, rs1, rs2 } => {
+                113u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Jnz_R { rs1, rs2 } => {
-                encode_s(1u8) | encode_rs2(*rs2) | encode_rs1(*rs1) | encode_funct(8u8)
-                    | encode_op_code(0u8)
+            Self::Bges { imm, rs1, rs2 } => {
+                129u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Jnz_I { rd, imm } => {
-                encode_imm(*imm) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(0u8)
+            Self::Bgeu { imm, rs1, rs2 } => {
+                145u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Jiz { rs1, rs2 } => {
-                encode_s(0u8) | encode_rs2(*rs2) | encode_rs1(*rs1) | encode_funct(10u8)
-                    | encode_op_code(0u8)
+            Self::Bie_f32 { imm, rs1, rs2 } => {
+                2u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Jiz_R { rs1, rs2 } => {
-                encode_s(1u8) | encode_rs2(*rs2) | encode_rs1(*rs1) | encode_funct(10u8)
-                    | encode_op_code(0u8)
+            Self::Bie_f64 { imm, rs1, rs2 } => {
+                18u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Jiz_I { rd, imm } => {
-                encode_imm(*imm) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(0u8)
+            Self::Bne_f32 { imm, rs1, rs2 } => {
+                34u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Ld_8 { rd, rs1 } => {
-                encode_size(8u8) | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(1u8)
+            Self::Bne_f64 { imm, rs1, rs2 } => {
+                50u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Ld_16 { rd, rs1 } => {
-                encode_size(16u8) | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(1u8)
+            Self::Blt_f32 { imm, rs1, rs2 } => {
+                66u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Ld_32 { rd, rs1 } => {
-                encode_size(32u8) | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(1u8)
+            Self::Blt_f64 { imm, rs1, rs2 } => {
+                82u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Ld_64 { rd, rs1 } => {
-                encode_size(64u8) | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(1u8)
+            Self::Ble_f32 { imm, rs1, rs2 } => {
+                98u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Ld_I { rd, imm } => {
-                encode_imm(*imm) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(1u8)
+            Self::Ble_f64 { imm, rs1, rs2 } => {
+                114u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Ld_A_8 { rd, imm } => {
-                encode_imm(*imm as i16) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(1u8)
+            Self::Bgt_f32 { imm, rs1, rs2 } => {
+                130u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Ld_A_16 { rd, imm } => {
-                encode_imm(*imm as i16) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(1u8)
+            Self::Bgt_f64 { imm, rs1, rs2 } => {
+                146u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Ld_A_32 { rd, imm } => {
-                encode_imm(*imm as i16) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(1u8)
+            Self::Bge_f32 { imm, rs1, rs2 } => {
+                162u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::Ld_A_64 { rd, imm } => {
-                encode_imm(*imm as i16) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(1u8)
+            Self::Bge_f64 { imm, rs1, rs2 } => {
+                178u32 | (((*imm as u32) << 2u32) & 16128u32)
+                    | (((*imm as u32) << 26u32) & 4227858432u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::St_8 { rd, rs1 } => {
-                encode_size(8u8) | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(1u8)
+            Self::Cie { rd, rs1, rs2 } => {
+                2147483651u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::St_16 { rd, rs1 } => {
-                encode_size(16u8) | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(1u8)
+            Self::Cie_f32 { rd, rs1, rs2 } => {
+                3758096387u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::St_32 { rd, rs1 } => {
-                encode_size(32u8) | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(1u8)
+            Self::Cie_f64 { rd, rs1, rs2 } => {
+                4026531843u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::St_64 { rd, rs1 } => {
-                encode_size(64u8) | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(1u8)
+            Self::Cne { rd, rs1, rs2 } => {
+                2147483667u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
-            Self::St_I { rd, imm } => {
-                encode_imm(*imm) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(1u8)
+            Self::Cne_f32 { rd, rs1, rs2 } => {
+                3758096403u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cne_f64 { rd, rs1, rs2 } => {
+                4026531859u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Clts { rd, rs1, rs2 } => {
+                2147483683u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cltu { rd, rs1, rs2 } => {
+                35u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Clt_f32 { rd, rs1, rs2 } => {
+                3758096419u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Clt_f64 { rd, rs1, rs2 } => {
+                4026531875u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cles { rd, rs1, rs2 } => {
+                2147483699u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cleu { rd, rs1, rs2 } => {
+                51u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cle_f32 { rd, rs1, rs2 } => {
+                3758096435u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cle_f64 { rd, rs1, rs2 } => {
+                4026531891u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cgts { rd, rs1, rs2 } => {
+                2147483715u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cgtu { rd, rs1, rs2 } => {
+                67u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cgt_f32 { rd, rs1, rs2 } => {
+                3758096451u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cgt_f64 { rd, rs1, rs2 } => {
+                4026531907u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cges { rd, rs1, rs2 } => {
+                2147483731u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cgeu { rd, rs1, rs2 } => {
+                83u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cge_f32 { rd, rs1, rs2 } => {
+                3758096467u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cge_f64 { rd, rs1, rs2 } => {
+                4026531923u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Lra_8 { rd, rs1 } => {
+                4u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Lra_16 { rd, rs1 } => {
+                268435460u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Lra_32 { rd, rs1 } => {
+                536870916u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Lra_64 { rd, rs1 } => {
+                805306372u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Lsi { rd, imm } => {
+                2147483668u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((*imm as u32) << 15u32) & 2147450880u32)
+            }
+            Self::Lui { rd, imm } => {
+                20u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((*imm as u32) << 15u32) & 2147450880u32)
+            }
+            Self::Lia_8 { rd, imm } => {
+                36u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((*imm as u32) << 15u32) & 2147450880u32)
+            }
+            Self::Lia_16 { rd, imm } => {
+                52u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((*imm as u32) << 15u32) & 2147450880u32)
+            }
+            Self::Lia_32 { rd, imm } => {
+                68u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((*imm as u32) << 15u32) & 2147450880u32)
+            }
+            Self::Lia_64 { rd, imm } => {
+                84u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((*imm as u32) << 15u32) & 2147450880u32)
+            }
+            Self::Sra_8 { rd, rs1 } => {
+                100u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Sra_16 { rd, rs1 } => {
+                268435556u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Sra_32 { rd, rs1 } => {
+                536871012u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Sra_64 { rd, rs1 } => {
+                805306468u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Ssi { rd, imm } => {
+                2147483764u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((*imm as u32) << 15u32) & 2147450880u32)
+            }
+            Self::Sui { rd, imm } => {
+                116u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((*imm as u32) << 15u32) & 2147450880u32)
             }
             Self::Mov { rd, rs1 } => {
-                encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(8u8)
-                    | encode_op_code(1u8)
+                132u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
-            Self::Psh { rd } => encode_rd(*rd) | encode_funct(9u8) | encode_op_code(1u8),
-            Self::Psh_I { imm } => {
-                encode_imm(*imm) | encode_funct(10u8) | encode_op_code(1u8)
+            Self::Pop { rd } => 148u32 | (((rd.index() as u32) << 8u32) & 16128u32),
+            Self::Psh { rd } => {
+                2147483796u32 | (((rd.index() as u32) << 8u32) & 16128u32)
             }
-            Self::Pop { rd } => encode_rd(*rd) | encode_funct(11u8) | encode_op_code(1u8),
-            Self::Ie { rd, rs1, rs2 } => {
-                encode_f(0u8) | encode_rs2(*rs2) | encode_rs1(*rs1) | encode_rd(*rd)
-                    | encode_funct(0u8) | encode_op_code(2u8)
-            }
-            Self::Ie_f32 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(2u8)
-            }
-            Self::Ie_f64 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(2u8)
-            }
-            Self::Ne { rd, rs1, rs2 } => {
-                encode_f(0u8) | encode_rs2(*rs2) | encode_rs1(*rs1) | encode_rd(*rd)
-                    | encode_funct(1u8) | encode_op_code(2u8)
-            }
-            Self::Ne_f32 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(1u8) | encode_op_code(2u8)
-            }
-            Self::Ne_f64 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(1u8) | encode_op_code(2u8)
-            }
-            Self::Lt { rd, rs1, rs2 } => {
-                encode_f(0u8) | encode_rs2(*rs2) | encode_rs1(*rs1) | encode_rd(*rd)
-                    | encode_funct(2u8) | encode_op_code(2u8)
-            }
-            Self::Lt_f32 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(2u8) | encode_op_code(2u8)
-            }
-            Self::Lt_f64 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(2u8) | encode_op_code(2u8)
-            }
-            Self::Le { rd, rs1, rs2 } => {
-                encode_f(0u8) | encode_rs2(*rs2) | encode_rs1(*rs1) | encode_rd(*rd)
-                    | encode_funct(3u8) | encode_op_code(2u8)
-            }
-            Self::Le_f32 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(3u8) | encode_op_code(2u8)
-            }
-            Self::Le_f64 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(3u8) | encode_op_code(2u8)
-            }
-            Self::Gt { rd, rs1, rs2 } => {
-                encode_f(0u8) | encode_rs2(*rs2) | encode_rs1(*rs1) | encode_rd(*rd)
-                    | encode_funct(4u8) | encode_op_code(2u8)
-            }
-            Self::Gt_f32 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(4u8) | encode_op_code(2u8)
-            }
-            Self::Gt_f64 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(4u8) | encode_op_code(2u8)
-            }
-            Self::Ge { rd, rs1, rs2 } => {
-                encode_f(0u8) | encode_rs2(*rs2) | encode_rs1(*rs1) | encode_rd(*rd)
-                    | encode_funct(5u8) | encode_op_code(2u8)
-            }
-            Self::Ge_f32 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(5u8) | encode_op_code(2u8)
-            }
-            Self::Ge_f64 { rd, rs1, rs2 } => {
-                encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(5u8) | encode_op_code(2u8)
-            }
+            Self::Psi { imm } => 164u32 | (((*imm as u32) << 8u32) & 4294967040u32),
+            Self::Pui { imm } => 180u32 | (((*imm as u32) << 8u32) & 4294967040u32),
             Self::And_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(3u8)
+                2147483653u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::And_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(3u8)
+                2415919109u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::And_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(3u8)
+                2684354565u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::And_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(3u8)
+                2952790021u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::And_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(3u8)
+                5u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::And_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(3u8)
+                268435461u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::And_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(3u8)
+                536870917u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::And_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(0u8)
-                    | encode_op_code(3u8)
+                805306373u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Or_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(3u8)
+                2147483669u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Or_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(3u8)
+                2415919125u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Or_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(3u8)
+                2684354581u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Or_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(3u8)
+                2952790037u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Or_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(3u8)
+                21u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Or_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(3u8)
+                268435477u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Or_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(3u8)
+                536870933u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Or_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(3u8)
+                805306389u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Xor_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(3u8)
+                2147483685u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Xor_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(3u8)
+                2415919141u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Xor_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(3u8)
+                2684354597u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Xor_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(3u8)
+                2952790053u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Xor_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(3u8)
+                37u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Xor_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(3u8)
+                268435493u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Xor_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(3u8)
+                536870949u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Xor_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(3u8)
+                805306405u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Not_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(3u8) | encode_op_code(3u8)
+                2147483701u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Not_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(3u8) | encode_op_code(3u8)
+                2415919157u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Not_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(3u8) | encode_op_code(3u8)
+                2684354613u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Not_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(3u8) | encode_op_code(3u8)
+                2952790069u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Not_u8 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(3u8) | encode_op_code(3u8)
+                53u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Not_u16 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(3u8) | encode_op_code(3u8)
+                268435509u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Not_u32 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(3u8) | encode_op_code(3u8)
+                536870965u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Not_u64 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(3u8) | encode_op_code(3u8)
+                805306421u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Shl_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(3u8)
+                2147483717u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shl_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(3u8)
+                2415919173u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shl_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(3u8)
+                2684354629u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shl_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(3u8)
+                2952790085u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shl_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(3u8)
+                69u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shl_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(3u8)
+                268435525u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shl_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(3u8)
+                536870981u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shl_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(3u8)
+                805306437u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shr_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(3u8)
+                2147483733u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shr_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(3u8)
+                2415919189u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shr_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(3u8)
+                2684354645u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shr_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(3u8)
+                2952790101u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shr_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(3u8)
+                85u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shr_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(3u8)
+                268435541u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shr_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(3u8)
+                536870997u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Shr_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(3u8)
+                805306453u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_L_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(3u8)
+                2147483749u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_L_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(3u8)
+                2415919205u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_L_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(3u8)
+                2684354661u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_L_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(3u8)
+                2952790117u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_L_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(3u8)
+                101u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_L_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(3u8)
+                268435557u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_L_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(3u8)
+                536871013u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_L_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(6u8)
-                    | encode_op_code(3u8)
+                805306469u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_R_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(3u8)
+                2147483765u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_R_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(3u8)
+                2415919221u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_R_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(3u8)
+                2684354677u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_R_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(3u8)
+                2952790133u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_R_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(3u8)
+                117u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_R_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(3u8)
+                268435573u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_R_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(3u8)
+                536871029u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rot_R_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(3u8)
+                805306485u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Ones_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
+                2147483781u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Ones_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
+                2415919237u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Ones_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
+                2684354693u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Ones_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
+                2952790149u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Ones_u8 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
+                133u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Ones_u16 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
+                268435589u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Ones_u32 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
+                536871045u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Ones_u64 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(3u8)
+                805306501u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Ones_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
+                2147483797u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Ones_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
+                2415919253u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Ones_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
+                2684354709u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Ones_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
+                2952790165u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Ones_u8 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
+                149u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Ones_u16 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
+                268435605u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Ones_u32 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
+                536871061u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Ones_u64 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(9u8) | encode_op_code(3u8)
+                805306517u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Ones_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
+                2147483813u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Ones_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
+                2415919269u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Ones_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
+                2684354725u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Ones_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
+                2952790181u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Ones_u8 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
+                165u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Ones_u16 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
+                268435621u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Ones_u32 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
+                536871077u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Ones_u64 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(10u8) | encode_op_code(3u8)
+                805306533u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Zeros_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
+                2147483829u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Zeros_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
+                2415919285u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Zeros_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
+                2684354741u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Zeros_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
+                2952790197u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Zeros_u8 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
+                181u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Zeros_u16 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
+                268435637u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Zeros_u32 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
+                536871093u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Zeros_u64 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(11u8) | encode_op_code(3u8)
+                805306549u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Zeros_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
+                2147483845u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Zeros_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
+                2415919301u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Zeros_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
+                2684354757u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Zeros_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
+                2952790213u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Zeros_u8 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
+                197u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Zeros_u16 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
+                268435653u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Zeros_u32 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
+                536871109u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::L_Zeros_u64 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(12u8) | encode_op_code(3u8)
+                805306565u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Zeros_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
+                2147483861u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Zeros_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
+                2415919317u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Zeros_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
+                2684354773u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Zeros_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
+                2952790229u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Zeros_u8 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
+                213u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Zeros_u16 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
+                268435669u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Zeros_u32 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
+                536871125u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::T_Zeros_u64 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(3u8)
+                805306581u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bytes_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
+                2147483877u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bytes_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
+                2415919333u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bytes_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
+                2684354789u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bytes_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
+                2952790245u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bytes_u8 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
+                229u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bytes_u16 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
+                268435685u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bytes_u32 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
+                536871141u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bytes_u64 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(14u8) | encode_op_code(3u8)
+                805306597u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bits_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
+                2147483893u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bits_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
+                2415919349u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bits_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
+                2684354805u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bits_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
+                2952790261u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bits_u8 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
+                245u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bits_u16 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
+                268435701u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bits_u32 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
+                536871157u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::R_Bits_u64 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(15u8) | encode_op_code(3u8)
+                805306613u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Abs_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(4u8)
+                2147483654u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Abs_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(4u8)
+                2415919110u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Abs_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(4u8)
+                2684354566u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Abs_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(4u8)
+                2952790022u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Add_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(4u8)
+                2147483670u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(4u8)
+                2415919126u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(4u8)
+                2684354582u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(4u8)
+                2952790038u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(4u8)
+                22u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(4u8)
+                268435478u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(4u8)
+                536870934u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(4u8)
+                805306390u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_U_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(4u8)
+                2147483686u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_U_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(4u8)
+                2415919142u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_U_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(4u8)
+                2684354598u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_U_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(4u8)
+                2952790054u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_S_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(4u8)
+                38u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_S_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(4u8)
+                268435494u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_S_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(4u8)
+                536870950u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Add_S_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(4u8)
+                805306406u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(4u8)
+                2147483702u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(4u8)
+                2415919158u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(4u8)
+                2684354614u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(4u8)
+                2952790070u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(4u8)
+                54u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(4u8)
+                268435510u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(4u8)
+                536870966u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(4u8)
+                805306422u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_E_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(4u8)
+                2147483718u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_E_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(4u8)
+                2415919174u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_E_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(4u8)
+                2684354630u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_E_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(4u8)
+                2952790086u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_E_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(4u8)
+                70u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_E_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(4u8)
+                268435526u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_E_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(4u8)
+                536870982u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Div_E_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(4u8)
+                805306438u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Log_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(4u8)
+                2147483734u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Log_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(4u8)
+                2415919190u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Log_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(4u8)
+                2684354646u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Log_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(4u8)
+                2952790102u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Log_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(4u8)
+                86u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Log_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(4u8)
+                268435542u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Log_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(4u8)
+                536870998u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Log_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(4u8)
+                805306454u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sqrt_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(4u8)
+                2147483750u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Sqrt_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(4u8)
+                2415919206u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Sqrt_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(4u8)
+                2684354662u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Sqrt_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(4u8)
+                2952790118u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Sqrt_u8 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(4u8)
+                102u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Sqrt_u16 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(4u8)
+                268435558u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Sqrt_u32 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(4u8)
+                536871014u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Sqrt_u64 { rd, rs1 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(4u8)
+                805306470u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Mul_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(4u8)
+                2147483766u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Mul_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(4u8)
+                2415919222u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Mul_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(4u8)
+                2684354678u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Mul_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(4u8)
+                2952790134u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Mul_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(4u8)
+                118u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Mul_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(4u8)
+                268435574u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Mul_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(4u8)
+                536871030u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Mul_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(4u8)
+                805306486u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Neg_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(4u8)
+                2147483782u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Neg_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(4u8)
+                2415919238u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Neg_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(4u8)
+                2684354694u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Neg_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(4u8)
+                2952790150u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::C_Pow_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(4u8)
+                2147483798u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Pow_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(4u8)
+                2415919254u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Pow_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(4u8)
+                2684354710u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Pow_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(4u8)
+                2952790166u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Pow_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(4u8)
+                150u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Pow_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(4u8)
+                268435606u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Pow_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(4u8)
+                536871062u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Pow_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(4u8)
+                805306518u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(4u8)
+                2147483814u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(4u8)
+                2415919270u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(4u8)
+                2684354726u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(4u8)
+                2952790182u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(4u8)
+                166u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(4u8)
+                268435622u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(4u8)
+                536871078u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(4u8)
+                805306534u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_E_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(4u8)
+                2147483830u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_E_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(4u8)
+                2415919286u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_E_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(4u8)
+                2684354742u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_E_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(4u8)
+                2952790198u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_E_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(4u8)
+                182u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_E_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(4u8)
+                268435638u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_E_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(4u8)
+                536871094u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Rem_E_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(4u8)
+                805306550u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shl_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(4u8)
+                2147483846u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shl_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(4u8)
+                2415919302u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shl_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(4u8)
+                2684354758u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shl_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(4u8)
+                2952790214u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shl_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(4u8)
+                198u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shl_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(4u8)
+                268435654u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shl_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(4u8)
+                536871110u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shl_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(4u8)
+                805306566u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shr_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(4u8)
+                2147483862u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shr_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(4u8)
+                2415919318u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shr_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(4u8)
+                2684354774u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shr_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(4u8)
+                2952790230u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shr_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(4u8)
+                214u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shr_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(4u8)
+                268435670u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shr_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(4u8)
+                536871126u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Shr_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(4u8)
+                805306582u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(4u8)
+                2147483878u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(4u8)
+                2415919334u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(4u8)
+                2684354790u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(4u8)
+                2952790246u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(4u8)
+                230u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(4u8)
+                268435686u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(4u8)
+                536871142u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(4u8)
+                805306598u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_U_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(4u8)
+                2147483894u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_U_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(4u8)
+                2415919350u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_U_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(4u8)
+                2684354806u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::C_Sub_U_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(4u8)
+                2952790262u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Abs_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(5u8)
+                2147483655u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::O_Abs_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(5u8)
+                2415919111u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::O_Abs_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(5u8)
+                2684354567u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::O_Abs_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(5u8)
+                2952790023u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::O_Add_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(5u8)
+                2147483671u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(5u8)
+                2415919127u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(5u8)
+                2684354583u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(5u8)
+                2952790039u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(5u8)
+                23u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(5u8)
+                268435479u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(5u8)
+                536870935u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(5u8)
+                805306391u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_U_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(5u8)
+                2147483687u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_U_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(5u8)
+                2415919143u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_U_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(5u8)
+                2684354599u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_U_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(5u8)
+                2952790055u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_S_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(5u8)
+                39u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_S_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(5u8)
+                268435495u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_S_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(5u8)
+                536870951u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Add_S_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(5u8)
+                805306407u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(5u8)
+                2147483703u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(5u8)
+                2415919159u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(5u8)
+                2684354615u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(5u8)
+                2952790071u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(5u8)
+                55u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(5u8)
+                268435511u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(5u8)
+                536870967u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(5u8)
+                805306423u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_E_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(5u8)
+                2147483719u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_E_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(5u8)
+                2415919175u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_E_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(5u8)
+                2684354631u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_E_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(5u8)
+                2952790087u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_E_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(5u8)
+                71u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_E_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(5u8)
+                268435527u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_E_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(5u8)
+                536870983u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Div_E_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(5u8)
+                805306439u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Mul_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(5u8)
+                2147483767u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Mul_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(5u8)
+                2415919223u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Mul_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(5u8)
+                2684354679u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Mul_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(5u8)
+                2952790135u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Mul_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(5u8)
+                119u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Mul_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(5u8)
+                268435575u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Mul_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(5u8)
+                536871031u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Mul_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(5u8)
+                805306487u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Neg_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(5u8)
+                2147483783u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::O_Neg_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(5u8)
+                2415919239u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::O_Neg_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(5u8)
+                2684354695u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::O_Neg_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(5u8)
+                2952790151u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::O_Pow_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(5u8)
+                2147483799u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Pow_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(5u8)
+                2415919255u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Pow_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(5u8)
+                2684354711u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Pow_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(5u8)
+                2952790167u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Pow_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(5u8)
+                151u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Pow_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(5u8)
+                268435607u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Pow_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(5u8)
+                536871063u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Pow_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(5u8)
+                805306519u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(5u8)
+                2147483815u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(5u8)
+                2415919271u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(5u8)
+                2684354727u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(5u8)
+                2952790183u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(5u8)
+                167u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(5u8)
+                268435623u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(5u8)
+                536871079u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(5u8)
+                805306535u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_E_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(5u8)
+                2147483831u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_E_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(5u8)
+                2415919287u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_E_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(5u8)
+                2684354743u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_E_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(5u8)
+                2952790199u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_E_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(5u8)
+                183u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_E_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(5u8)
+                268435639u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_E_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(5u8)
+                536871095u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Rem_E_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(5u8)
+                805306551u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shl_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(5u8)
+                2147483847u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shl_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(5u8)
+                2415919303u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shl_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(5u8)
+                2684354759u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shl_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(5u8)
+                2952790215u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shl_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(5u8)
+                199u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shl_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(5u8)
+                268435655u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shl_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(5u8)
+                536871111u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shl_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(12u8)
-                    | encode_op_code(5u8)
+                805306567u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shr_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(5u8)
+                2147483863u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shr_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(5u8)
+                2415919319u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shr_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(5u8)
+                2684354775u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shr_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(5u8)
+                2952790231u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shr_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(5u8)
+                215u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shr_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(5u8)
+                268435671u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shr_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(5u8)
+                536871127u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Shr_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(13u8)
-                    | encode_op_code(5u8)
+                805306583u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(5u8)
+                2147483879u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(5u8)
+                2415919335u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(5u8)
+                2684354791u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(5u8)
+                2952790247u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(5u8)
+                231u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(5u8)
+                268435687u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(5u8)
+                536871143u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(5u8)
+                805306599u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_U_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(5u8)
+                2147483895u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_U_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(5u8)
+                2415919351u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_U_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(5u8)
+                2684354807u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::O_Sub_U_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(5u8)
+                2952790263u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Abs_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(6u8)
+                2147483656u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::S_Abs_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(6u8)
+                2415919112u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::S_Abs_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(6u8)
+                2684354568u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::S_Abs_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(6u8)
+                2952790024u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::S_Add_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(6u8)
+                2147483672u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(6u8)
+                2415919128u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(6u8)
+                2684354584u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(6u8)
+                2952790040u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(6u8)
+                24u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(6u8)
+                268435480u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(6u8)
+                536870936u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(6u8)
+                805306392u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_U_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(6u8)
+                2147483688u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_U_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(6u8)
+                2415919144u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_U_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(6u8)
+                2684354600u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_U_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(6u8)
+                2952790056u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_S_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(6u8)
+                40u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_S_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(6u8)
+                268435496u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_S_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(6u8)
+                536870952u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Add_S_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(2u8)
-                    | encode_op_code(6u8)
+                805306408u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Div_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(6u8)
+                2147483704u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Div_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(6u8)
+                2415919160u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Div_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(6u8)
+                2684354616u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Div_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(6u8)
+                2952790072u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Div_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(6u8)
+                56u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Div_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(6u8)
+                268435512u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Div_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(6u8)
+                536870968u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Div_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(6u8)
+                805306424u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Mul_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(6u8)
+                2147483768u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Mul_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(6u8)
+                2415919224u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Mul_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(6u8)
+                2684354680u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Mul_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(6u8)
+                2952790136u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Mul_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(6u8)
+                120u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Mul_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(6u8)
+                268435576u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Mul_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(6u8)
+                536871032u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Mul_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(6u8)
+                805306488u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Neg_i8 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(6u8)
+                2147483784u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::S_Neg_i16 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(6u8)
+                2415919240u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::S_Neg_i32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(6u8)
+                2684354696u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::S_Neg_i64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(6u8)
+                2952790152u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::S_Pow_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(6u8)
+                2147483800u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Pow_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(6u8)
+                2415919256u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Pow_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(6u8)
+                2684354712u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Pow_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(6u8)
+                2952790168u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Pow_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(6u8)
+                152u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Pow_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(6u8)
+                268435608u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Pow_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(6u8)
+                536871064u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Pow_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(6u8)
+                805306520u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(6u8)
+                2147483880u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(6u8)
+                2415919336u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(6u8)
+                2684354792u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(6u8)
+                2952790248u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_u8 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(6u8)
+                232u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_u16 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(6u8)
+                268435688u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_u32 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(6u8)
+                536871144u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_u64 { rd, rs1, rs2 } => {
-                encode_s(0u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(6u8)
+                805306600u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_U_i8 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(8u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(6u8)
+                2147483896u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_U_i16 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(16u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(6u8)
+                2415919352u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_U_i32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(6u8)
+                2684354808u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::S_Sub_U_i64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(0u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(15u8)
-                    | encode_op_code(6u8)
+                2952790264u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Abs_f32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(7u8)
+                3758096393u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Abs_f64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(0u8) | encode_op_code(7u8)
+                4026531849u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Add_f32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(7u8)
+                3758096409u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Add_f64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(1u8)
-                    | encode_op_code(7u8)
+                4026531865u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Div_f32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(7u8)
+                3758096441u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Div_f64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(3u8)
-                    | encode_op_code(7u8)
+                4026531897u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Div_E_f32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(7u8)
+                3758096457u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Div_E_f64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(4u8)
-                    | encode_op_code(7u8)
+                4026531913u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Log_f32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(7u8)
+                3758096473u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Log_f64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(5u8)
-                    | encode_op_code(7u8)
+                4026531929u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Sqrt_f32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(7u8)
+                3758096489u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Sqrt_f64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(6u8) | encode_op_code(7u8)
+                4026531945u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Mul_f32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(7u8)
+                3758096505u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Mul_f64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(7u8)
-                    | encode_op_code(7u8)
+                4026531961u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Neg_f32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(7u8)
+                3758096521u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Neg_f64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(8u8) | encode_op_code(7u8)
+                4026531977u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Pow_f32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(7u8)
+                3758096537u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Pow_f64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(9u8)
-                    | encode_op_code(7u8)
+                4026531993u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rem_f32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(7u8)
+                3758096553u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rem_f64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(10u8)
-                    | encode_op_code(7u8)
+                4026532009u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rem_E_f32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(7u8)
+                3758096569u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Rem_E_f64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(11u8)
-                    | encode_op_code(7u8)
+                4026532025u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Cbrt_f32 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(7u8)
+                3758096601u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Cbrt_f64 { rd, rs1 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs1(*rs1)
-                    | encode_rd(*rd) | encode_funct(13u8) | encode_op_code(7u8)
+                4026532057u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Sub_f32 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(32u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(7u8)
+                3758096617u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
             }
             Self::Sub_f64 { rd, rs1, rs2 } => {
-                encode_s(1u8) | encode_f(1u8) | encode_size(64u8) | encode_rs2(*rs2)
-                    | encode_rs1(*rs1) | encode_rd(*rd) | encode_funct(14u8)
-                    | encode_op_code(7u8)
+                4026532073u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Add_i8 { rd, rs1, rs2 } => {
+                2147483658u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Add_i16 { rd, rs1, rs2 } => {
+                2415919114u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Add_i32 { rd, rs1, rs2 } => {
+                2684354570u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Add_i64 { rd, rs1, rs2 } => {
+                2952790026u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Add_u8 { rd, rs1, rs2 } => {
+                10u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Add_u16 { rd, rs1, rs2 } => {
+                268435466u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Add_u32 { rd, rs1, rs2 } => {
+                536870922u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Add_u64 { rd, rs1, rs2 } => {
+                805306378u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Sub_i8 { rd, rs1, rs2 } => {
+                2147483674u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Sub_i16 { rd, rs1, rs2 } => {
+                2415919130u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Sub_i32 { rd, rs1, rs2 } => {
+                2684354586u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Sub_i64 { rd, rs1, rs2 } => {
+                2952790042u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Sub_u8 { rd, rs1, rs2 } => {
+                26u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Sub_u16 { rd, rs1, rs2 } => {
+                268435482u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Sub_u32 { rd, rs1, rs2 } => {
+                536870938u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Sub_u64 { rd, rs1, rs2 } => {
+                805306394u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Min_i8 { rd, rs1, rs2 } => {
+                2147483690u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Min_i16 { rd, rs1, rs2 } => {
+                2415919146u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Min_i32 { rd, rs1, rs2 } => {
+                2684354602u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Min_i64 { rd, rs1, rs2 } => {
+                2952790058u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Min_u8 { rd, rs1, rs2 } => {
+                42u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Min_u16 { rd, rs1, rs2 } => {
+                268435498u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Min_u32 { rd, rs1, rs2 } => {
+                536870954u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Min_u64 { rd, rs1, rs2 } => {
+                805306410u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Max_i8 { rd, rs1, rs2 } => {
+                2147483706u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Max_i16 { rd, rs1, rs2 } => {
+                2415919162u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Max_i32 { rd, rs1, rs2 } => {
+                2684354618u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Max_i64 { rd, rs1, rs2 } => {
+                2952790074u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Max_u8 { rd, rs1, rs2 } => {
+                58u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Max_u16 { rd, rs1, rs2 } => {
+                268435514u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Max_u32 { rd, rs1, rs2 } => {
+                536870970u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Max_u64 { rd, rs1, rs2 } => {
+                805306426u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_And_i8 { rd, rs1, rs2 } => {
+                2147483722u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_And_i16 { rd, rs1, rs2 } => {
+                2415919178u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_And_i32 { rd, rs1, rs2 } => {
+                2684354634u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_And_i64 { rd, rs1, rs2 } => {
+                2952790090u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_And_u8 { rd, rs1, rs2 } => {
+                74u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_And_u16 { rd, rs1, rs2 } => {
+                268435530u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_And_u32 { rd, rs1, rs2 } => {
+                536870986u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_And_u64 { rd, rs1, rs2 } => {
+                805306442u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Nand_i8 { rd, rs1, rs2 } => {
+                2147483738u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Nand_i16 { rd, rs1, rs2 } => {
+                2415919194u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Nand_i32 { rd, rs1, rs2 } => {
+                2684354650u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Nand_i64 { rd, rs1, rs2 } => {
+                2952790106u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Nand_u8 { rd, rs1, rs2 } => {
+                90u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Nand_u16 { rd, rs1, rs2 } => {
+                268435546u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Nand_u32 { rd, rs1, rs2 } => {
+                536871002u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Nand_u64 { rd, rs1, rs2 } => {
+                805306458u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Or_i8 { rd, rs1, rs2 } => {
+                2147483754u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Or_i16 { rd, rs1, rs2 } => {
+                2415919210u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Or_i32 { rd, rs1, rs2 } => {
+                2684354666u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Or_i64 { rd, rs1, rs2 } => {
+                2952790122u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Or_u8 { rd, rs1, rs2 } => {
+                106u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Or_u16 { rd, rs1, rs2 } => {
+                268435562u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Or_u32 { rd, rs1, rs2 } => {
+                536871018u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Or_u64 { rd, rs1, rs2 } => {
+                805306474u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Xor_i8 { rd, rs1, rs2 } => {
+                2147483770u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Xor_i16 { rd, rs1, rs2 } => {
+                2415919226u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Xor_i32 { rd, rs1, rs2 } => {
+                2684354682u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Xor_i64 { rd, rs1, rs2 } => {
+                2952790138u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Xor_u8 { rd, rs1, rs2 } => {
+                122u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Xor_u16 { rd, rs1, rs2 } => {
+                268435578u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Xor_u32 { rd, rs1, rs2 } => {
+                536871034u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Fetch_Xor_u64 { rd, rs1, rs2 } => {
+                805306490u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cmp_Exchg_i8 { rd, rs1, rs2 } => {
+                2147483786u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cmp_Exchg_i16 { rd, rs1, rs2 } => {
+                2415919242u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cmp_Exchg_i32 { rd, rs1, rs2 } => {
+                2684354698u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cmp_Exchg_i64 { rd, rs1, rs2 } => {
+                2952790154u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cmp_Exchg_u8 { rd, rs1, rs2 } => {
+                138u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cmp_Exchg_u16 { rd, rs1, rs2 } => {
+                268435594u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cmp_Exchg_u32 { rd, rs1, rs2 } => {
+                536871050u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Cmp_Exchg_u64 { rd, rs1, rs2 } => {
+                805306506u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+                    | (((rs2.index() as u32) << 20u32) & 66060288u32)
+            }
+            Self::Atomic_Ld_8 { rd, rs1 } => {
+                154u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Atomic_Ld_16 { rd, rs1 } => {
+                268435610u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Atomic_Ld_32 { rd, rs1 } => {
+                536871066u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Atomic_Ld_64 { rd, rs1 } => {
+                805306522u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Atomic_St_8 { rd, rs1 } => {
+                170u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Atomic_St_16 { rd, rs1 } => {
+                268435626u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Atomic_St_32 { rd, rs1 } => {
+                536871082u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Atomic_St_64 { rd, rs1 } => {
+                805306538u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Spawn { rd, imm } => {
+                186u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((*imm as u32) << 15u32) & 2147450880u32)
+            }
+            Self::Wait { rd, rs1 } => {
+                202u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Notify { rd, rs1 } => {
+                218u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Swap_8 { rd, rs1 } => {
+                234u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Swap_16 { rd, rs1 } => {
+                268435690u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Swap_32 { rd, rs1 } => {
+                536871146u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
+            }
+            Self::Swap_64 { rd, rs1 } => {
+                805306602u32 | (((rd.index() as u32) << 8u32) & 16128u32)
+                    | (((rs1.index() as u32) << 14u32) & 1032192u32)
             }
             Self::Invalid(instr) => *instr,
         }
@@ -3723,7387 +7869,5836 @@ mod tests {
     #![allow(non_snake_case)]
     use super::*;
     #[test]
-    fn decode_halt() {
-        assert_eq!(Instruction::decode(0u32), Instruction::Halt);
+    fn Halt() {
+        let instr = Instruction::decode(0u32);
+        println!("{:032b}", 0u32);
+        assert_eq!(instr, Instruction::Halt);
+        assert_eq!(instr.encode(), 0u32);
     }
     #[test]
-    fn encode_halt() {
-        assert_eq!(Instruction::Halt.encode(), 0u32);
+    fn Trap() {
+        let instr = Instruction::decode(16u32);
+        println!("{:032b}", 16u32);
+        assert_eq!(instr, Instruction::Trap);
+        assert_eq!(instr.encode(), 16u32);
     }
     #[test]
-    fn decode_trap() {
-        assert_eq!(Instruction::decode(64u32), Instruction::Trap);
+    fn Call() {
+        let instr = Instruction::decode(2592u32);
+        println!("{:032b}", 2592u32);
+        assert_eq!(instr, Instruction::Call { imm : 10, });
+        assert_eq!(instr.encode(), 2592u32);
     }
     #[test]
-    fn encode_trap() {
-        assert_eq!(Instruction::Trap.encode(), 64u32);
+    fn Ret() {
+        let instr = Instruction::decode(64u32);
+        println!("{:032b}", 64u32);
+        assert_eq!(instr, Instruction::Ret);
+        assert_eq!(instr.encode(), 64u32);
     }
     #[test]
-    fn decode_call() {
-        assert_eq!(
-            Instruction::decode(150995072u32), Instruction::Call { rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_call() {
-        assert_eq!(
-            Instruction::Call { rs2 : Register::General_Purpose(30), } .encode(),
-            150995072u32
-        );
-    }
-    #[test]
-    fn decode_call_r() {
-        assert_eq!(
-            Instruction::decode(2298478720u32), Instruction::Call_R { rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_call_r() {
-        assert_eq!(
-            Instruction::Call_R { rs2 : Register::General_Purpose(30), } .encode(),
-            2298478720u32
-        );
-    }
-    #[test]
-    fn decode_call_i() {
-        assert_eq!(
-            Instruction::decode(4293918912u32), Instruction::Call_I { imm : - 16, }
-        );
-    }
-    #[test]
-    fn encode_call_i() {
-        assert_eq!(Instruction::Call_I { imm : - 16, } .encode(), 4293918912u32);
-    }
-    #[test]
-    fn decode_ret() {
-        assert_eq!(Instruction::decode(256u32), Instruction::Ret);
-    }
-    #[test]
-    fn encode_ret() {
-        assert_eq!(Instruction::Ret.encode(), 256u32);
-    }
-    #[test]
-    fn decode_ecall() {
-        assert_eq!(
-            Instruction::decode(4293919040u32), Instruction::Ecall { imm : - 16, }
-        );
-    }
-    #[test]
-    fn encode_ecall() {
-        assert_eq!(Instruction::Ecall { imm : - 16, } .encode(), 4293919040u32);
-    }
-    #[test]
-    fn decode_jal() {
-        assert_eq!(
-            Instruction::decode(150995328u32), Instruction::Jal { rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_jal() {
-        assert_eq!(
-            Instruction::Jal { rs2 : Register::General_Purpose(30), } .encode(),
-            150995328u32
-        );
-    }
-    #[test]
-    fn decode_jal_r() {
-        assert_eq!(
-            Instruction::decode(2298478976u32), Instruction::Jal_R { rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_jal_r() {
-        assert_eq!(
-            Instruction::Jal_R { rs2 : Register::General_Purpose(30), } .encode(),
-            2298478976u32
-        );
-    }
-    #[test]
-    fn decode_jal_i() {
-        assert_eq!(
-            Instruction::decode(4293919168u32), Instruction::Jal_I { imm : - 16, }
-        );
-    }
-    #[test]
-    fn encode_jal_i() {
-        assert_eq!(Instruction::Jal_I { imm : - 16, } .encode(), 4293919168u32);
-    }
-    #[test]
-    fn decode_jnz() {
-        assert_eq!(
-            Instruction::decode(151912960u32), Instruction::Jnz { rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_jnz() {
-        assert_eq!(
-            Instruction::Jnz { rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), } .encode(), 151912960u32
-        );
-    }
-    #[test]
-    fn decode_jnz_r() {
-        assert_eq!(
-            Instruction::decode(2299396608u32), Instruction::Jnz_R { rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_jnz_r() {
-        assert_eq!(
-            Instruction::Jnz_R { rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), } .encode(), 2299396608u32
-        );
-    }
-    #[test]
-    fn decode_jnz_i() {
-        assert_eq!(
-            Instruction::decode(4293930560u32), Instruction::Jnz_I { rd :
-            Register::General_Purpose(5), imm : - 16, }
-        );
-    }
-    #[test]
-    fn encode_jnz_i() {
-        assert_eq!(
-            Instruction::Jnz_I { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293930560u32
-        );
-    }
-    #[test]
-    fn decode_jiz() {
-        assert_eq!(
-            Instruction::decode(151913088u32), Instruction::Jiz { rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_jiz() {
-        assert_eq!(
-            Instruction::Jiz { rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), } .encode(), 151913088u32
-        );
-    }
-    #[test]
-    fn decode_jiz_r() {
-        assert_eq!(
-            Instruction::decode(2299396736u32), Instruction::Jiz_R { rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_jiz_r() {
-        assert_eq!(
-            Instruction::Jiz_R { rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), } .encode(), 2299396736u32
-        );
-    }
-    #[test]
-    fn decode_jiz_i() {
-        assert_eq!(
-            Instruction::decode(4293930688u32), Instruction::Jiz_I { rd :
-            Register::General_Purpose(5), imm : - 16, }
-        );
-    }
-    #[test]
-    fn encode_jiz_i() {
-        assert_eq!(
-            Instruction::Jiz_I { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293930688u32
-        );
-    }
-    #[test]
-    fn decode_ld_8() {
-        assert_eq!(
-            Instruction::decode(928769u32), Instruction::Ld_8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_ld_8() {
-        assert_eq!(
-            Instruction::Ld_8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 928769u32
-        );
-    }
-    #[test]
-    fn decode_ld_16() {
-        assert_eq!(
-            Instruction::decode(269364225u32), Instruction::Ld_16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_ld_16() {
-        assert_eq!(
-            Instruction::Ld_16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269364225u32
-        );
-    }
-    #[test]
-    fn decode_ld_32() {
-        assert_eq!(
-            Instruction::decode(537799681u32), Instruction::Ld_32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_ld_32() {
-        assert_eq!(
-            Instruction::Ld_32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537799681u32
-        );
-    }
-    #[test]
-    fn decode_ld_64() {
-        assert_eq!(
-            Instruction::decode(806235137u32), Instruction::Ld_64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_ld_64() {
-        assert_eq!(
-            Instruction::Ld_64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806235137u32
-        );
-    }
-    #[test]
-    fn decode_ld_i() {
-        assert_eq!(
-            Instruction::decode(4293930049u32), Instruction::Ld_I { rd :
-            Register::General_Purpose(5), imm : - 16, }
-        );
-    }
-    #[test]
-    fn encode_ld_i() {
-        assert_eq!(
-            Instruction::Ld_I { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293930049u32
-        );
-    }
-    #[test]
-    fn decode_ld_a_8() {
-        assert_eq!(
-            Instruction::decode(1059969u32), Instruction::Ld_A_8 { rd :
-            Register::General_Purpose(5), imm : 16, }
-        );
-    }
-    #[test]
-    fn encode_ld_a_8() {
-        assert_eq!(
-            Instruction::Ld_A_8 { rd : Register::General_Purpose(5), imm : 16, }
-            .encode(), 1059969u32
-        );
-    }
-    #[test]
-    fn decode_ld_a_16() {
-        assert_eq!(
-            Instruction::decode(1060033u32), Instruction::Ld_A_16 { rd :
-            Register::General_Purpose(5), imm : 16, }
-        );
-    }
-    #[test]
-    fn encode_ld_a_16() {
-        assert_eq!(
-            Instruction::Ld_A_16 { rd : Register::General_Purpose(5), imm : 16, }
-            .encode(), 1060033u32
-        );
-    }
-    #[test]
-    fn decode_ld_a_32() {
-        assert_eq!(
-            Instruction::decode(1060097u32), Instruction::Ld_A_32 { rd :
-            Register::General_Purpose(5), imm : 16, }
-        );
-    }
-    #[test]
-    fn encode_ld_a_32() {
-        assert_eq!(
-            Instruction::Ld_A_32 { rd : Register::General_Purpose(5), imm : 16, }
-            .encode(), 1060097u32
-        );
-    }
-    #[test]
-    fn decode_ld_a_64() {
-        assert_eq!(
-            Instruction::decode(1060161u32), Instruction::Ld_A_64 { rd :
-            Register::General_Purpose(5), imm : 16, }
-        );
-    }
-    #[test]
-    fn encode_ld_a_64() {
-        assert_eq!(
-            Instruction::Ld_A_64 { rd : Register::General_Purpose(5), imm : 16, }
-            .encode(), 1060161u32
-        );
-    }
-    #[test]
-    fn decode_st_8() {
-        assert_eq!(
-            Instruction::decode(929153u32), Instruction::St_8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_st_8() {
-        assert_eq!(
-            Instruction::St_8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929153u32
-        );
-    }
-    #[test]
-    fn decode_st_16() {
-        assert_eq!(
-            Instruction::decode(269364609u32), Instruction::St_16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_st_16() {
-        assert_eq!(
-            Instruction::St_16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269364609u32
-        );
-    }
-    #[test]
-    fn decode_st_32() {
-        assert_eq!(
-            Instruction::decode(537800065u32), Instruction::St_32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_st_32() {
-        assert_eq!(
-            Instruction::St_32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537800065u32
-        );
-    }
-    #[test]
-    fn decode_st_64() {
-        assert_eq!(
-            Instruction::decode(806235521u32), Instruction::St_64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_st_64() {
-        assert_eq!(
-            Instruction::St_64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806235521u32
-        );
-    }
-    #[test]
-    fn decode_st_i() {
-        assert_eq!(
-            Instruction::decode(4293930433u32), Instruction::St_I { rd :
-            Register::General_Purpose(5), imm : - 16, }
-        );
-    }
-    #[test]
-    fn encode_st_i() {
-        assert_eq!(
-            Instruction::St_I { rd : Register::General_Purpose(5), imm : - 16, }
-            .encode(), 4293930433u32
-        );
-    }
-    #[test]
-    fn decode_mov() {
-        assert_eq!(
-            Instruction::decode(929281u32), Instruction::Mov { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_mov() {
-        assert_eq!(
-            Instruction::Mov { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929281u32
-        );
-    }
-    #[test]
-    fn decode_psh() {
-        assert_eq!(
-            Instruction::decode(11841u32), Instruction::Psh { rd :
-            Register::General_Purpose(5), }
-        );
-    }
-    #[test]
-    fn encode_psh() {
-        assert_eq!(
-            Instruction::Psh { rd : Register::General_Purpose(5), } .encode(), 11841u32
-        );
-    }
-    #[test]
-    fn decode_psh_i() {
-        assert_eq!(
-            Instruction::decode(4293919361u32), Instruction::Psh_I { imm : - 16, }
-        );
-    }
-    #[test]
-    fn encode_psh_i() {
-        assert_eq!(Instruction::Psh_I { imm : - 16, } .encode(), 4293919361u32);
-    }
-    #[test]
-    fn decode_pop() {
-        assert_eq!(
-            Instruction::decode(11969u32), Instruction::Pop { rd :
-            Register::General_Purpose(5), }
-        );
-    }
-    #[test]
-    fn encode_pop() {
-        assert_eq!(
-            Instruction::Pop { rd : Register::General_Purpose(5), } .encode(), 11969u32
-        );
-    }
-    #[test]
-    fn decode_ie() {
-        assert_eq!(
-            Instruction::decode(151923714u32), Instruction::Ie { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_ie() {
-        assert_eq!(
-            Instruction::Ie { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923714u32
-        );
-    }
-    #[test]
-    fn decode_ie_f32() {
-        assert_eq!(
-            Instruction::decode(1762536450u32), Instruction::Ie_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_ie_f32() {
-        assert_eq!(
-            Instruction::Ie_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 1762536450u32
-        );
-    }
-    #[test]
-    fn decode_ie_f64() {
-        assert_eq!(
-            Instruction::decode(2030971906u32), Instruction::Ie_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_ie_f64() {
-        assert_eq!(
-            Instruction::Ie_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2030971906u32
-        );
-    }
-    #[test]
-    fn decode_ne() {
-        assert_eq!(
-            Instruction::decode(151923778u32), Instruction::Ne { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_ne() {
-        assert_eq!(
-            Instruction::Ne { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923778u32
-        );
-    }
-    #[test]
-    fn decode_ne_f32() {
-        assert_eq!(
-            Instruction::decode(1762536514u32), Instruction::Ne_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_ne_f32() {
-        assert_eq!(
-            Instruction::Ne_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 1762536514u32
-        );
-    }
-    #[test]
-    fn decode_ne_f64() {
-        assert_eq!(
-            Instruction::decode(2030971970u32), Instruction::Ne_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_ne_f64() {
-        assert_eq!(
-            Instruction::Ne_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2030971970u32
-        );
-    }
-    #[test]
-    fn decode_lt() {
-        assert_eq!(
-            Instruction::decode(151923842u32), Instruction::Lt { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_lt() {
-        assert_eq!(
-            Instruction::Lt { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923842u32
-        );
-    }
-    #[test]
-    fn decode_lt_f32() {
-        assert_eq!(
-            Instruction::decode(1762536578u32), Instruction::Lt_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_lt_f32() {
-        assert_eq!(
-            Instruction::Lt_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 1762536578u32
-        );
-    }
-    #[test]
-    fn decode_lt_f64() {
-        assert_eq!(
-            Instruction::decode(2030972034u32), Instruction::Lt_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_lt_f64() {
-        assert_eq!(
-            Instruction::Lt_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2030972034u32
-        );
-    }
-    #[test]
-    fn decode_le() {
-        assert_eq!(
-            Instruction::decode(151923906u32), Instruction::Le { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_le() {
-        assert_eq!(
-            Instruction::Le { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923906u32
-        );
-    }
-    #[test]
-    fn decode_le_f32() {
-        assert_eq!(
-            Instruction::decode(1762536642u32), Instruction::Le_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_le_f32() {
-        assert_eq!(
-            Instruction::Le_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 1762536642u32
-        );
-    }
-    #[test]
-    fn decode_le_f64() {
-        assert_eq!(
-            Instruction::decode(2030972098u32), Instruction::Le_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_le_f64() {
-        assert_eq!(
-            Instruction::Le_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2030972098u32
-        );
-    }
-    #[test]
-    fn decode_gt() {
-        assert_eq!(
-            Instruction::decode(151923970u32), Instruction::Gt { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_gt() {
-        assert_eq!(
-            Instruction::Gt { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923970u32
-        );
-    }
-    #[test]
-    fn decode_gt_f32() {
-        assert_eq!(
-            Instruction::decode(1762536706u32), Instruction::Gt_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_gt_f32() {
-        assert_eq!(
-            Instruction::Gt_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 1762536706u32
-        );
-    }
-    #[test]
-    fn decode_gt_f64() {
-        assert_eq!(
-            Instruction::decode(2030972162u32), Instruction::Gt_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_gt_f64() {
-        assert_eq!(
-            Instruction::Gt_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2030972162u32
-        );
-    }
-    #[test]
-    fn decode_ge() {
-        assert_eq!(
-            Instruction::decode(151924034u32), Instruction::Ge { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_ge() {
-        assert_eq!(
-            Instruction::Ge { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924034u32
-        );
-    }
-    #[test]
-    fn decode_ge_f32() {
-        assert_eq!(
-            Instruction::decode(1762536770u32), Instruction::Ge_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_ge_f32() {
-        assert_eq!(
-            Instruction::Ge_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 1762536770u32
-        );
-    }
-    #[test]
-    fn decode_ge_f64() {
-        assert_eq!(
-            Instruction::decode(2030972226u32), Instruction::Ge_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_ge_f64() {
-        assert_eq!(
-            Instruction::Ge_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2030972226u32
-        );
-    }
-    #[test]
-    fn decode_and_i8() {
-        assert_eq!(
-            Instruction::decode(2299407363u32), Instruction::And_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_and_i8() {
-        assert_eq!(
-            Instruction::And_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407363u32
-        );
-    }
-    #[test]
-    fn decode_and_i16() {
-        assert_eq!(
-            Instruction::decode(2567842819u32), Instruction::And_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_and_i16() {
-        assert_eq!(
-            Instruction::And_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567842819u32
-        );
-    }
-    #[test]
-    fn decode_and_i32() {
-        assert_eq!(
-            Instruction::decode(2836278275u32), Instruction::And_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_and_i32() {
-        assert_eq!(
-            Instruction::And_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278275u32
-        );
-    }
-    #[test]
-    fn decode_and_i64() {
-        assert_eq!(
-            Instruction::decode(3104713731u32), Instruction::And_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_and_i64() {
-        assert_eq!(
-            Instruction::And_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713731u32
-        );
-    }
-    #[test]
-    fn decode_and_u8() {
-        assert_eq!(
-            Instruction::decode(151923715u32), Instruction::And_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_and_u8() {
-        assert_eq!(
-            Instruction::And_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923715u32
-        );
-    }
-    #[test]
-    fn decode_and_u16() {
-        assert_eq!(
-            Instruction::decode(420359171u32), Instruction::And_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_and_u16() {
-        assert_eq!(
-            Instruction::And_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359171u32
-        );
-    }
-    #[test]
-    fn decode_and_u32() {
-        assert_eq!(
-            Instruction::decode(688794627u32), Instruction::And_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_and_u32() {
-        assert_eq!(
-            Instruction::And_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794627u32
-        );
-    }
-    #[test]
-    fn decode_and_u64() {
-        assert_eq!(
-            Instruction::decode(957230083u32), Instruction::And_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_and_u64() {
-        assert_eq!(
-            Instruction::And_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230083u32
-        );
-    }
-    #[test]
-    fn decode_or_i8() {
-        assert_eq!(
-            Instruction::decode(2299407427u32), Instruction::Or_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_or_i8() {
-        assert_eq!(
-            Instruction::Or_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407427u32
-        );
-    }
-    #[test]
-    fn decode_or_i16() {
-        assert_eq!(
-            Instruction::decode(2567842883u32), Instruction::Or_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_or_i16() {
-        assert_eq!(
-            Instruction::Or_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567842883u32
-        );
-    }
-    #[test]
-    fn decode_or_i32() {
-        assert_eq!(
-            Instruction::decode(2836278339u32), Instruction::Or_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_or_i32() {
-        assert_eq!(
-            Instruction::Or_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278339u32
-        );
-    }
-    #[test]
-    fn decode_or_i64() {
-        assert_eq!(
-            Instruction::decode(3104713795u32), Instruction::Or_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_or_i64() {
-        assert_eq!(
-            Instruction::Or_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713795u32
-        );
-    }
-    #[test]
-    fn decode_or_u8() {
-        assert_eq!(
-            Instruction::decode(151923779u32), Instruction::Or_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_or_u8() {
-        assert_eq!(
-            Instruction::Or_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923779u32
-        );
-    }
-    #[test]
-    fn decode_or_u16() {
-        assert_eq!(
-            Instruction::decode(420359235u32), Instruction::Or_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_or_u16() {
-        assert_eq!(
-            Instruction::Or_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359235u32
-        );
-    }
-    #[test]
-    fn decode_or_u32() {
-        assert_eq!(
-            Instruction::decode(688794691u32), Instruction::Or_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_or_u32() {
-        assert_eq!(
-            Instruction::Or_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794691u32
-        );
-    }
-    #[test]
-    fn decode_or_u64() {
-        assert_eq!(
-            Instruction::decode(957230147u32), Instruction::Or_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_or_u64() {
-        assert_eq!(
-            Instruction::Or_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230147u32
-        );
-    }
-    #[test]
-    fn decode_xor_i8() {
-        assert_eq!(
-            Instruction::decode(2299407491u32), Instruction::Xor_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_xor_i8() {
-        assert_eq!(
-            Instruction::Xor_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407491u32
-        );
-    }
-    #[test]
-    fn decode_xor_i16() {
-        assert_eq!(
-            Instruction::decode(2567842947u32), Instruction::Xor_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_xor_i16() {
-        assert_eq!(
-            Instruction::Xor_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567842947u32
-        );
-    }
-    #[test]
-    fn decode_xor_i32() {
-        assert_eq!(
-            Instruction::decode(2836278403u32), Instruction::Xor_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_xor_i32() {
-        assert_eq!(
-            Instruction::Xor_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278403u32
-        );
-    }
-    #[test]
-    fn decode_xor_i64() {
-        assert_eq!(
-            Instruction::decode(3104713859u32), Instruction::Xor_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_xor_i64() {
-        assert_eq!(
-            Instruction::Xor_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713859u32
-        );
-    }
-    #[test]
-    fn decode_xor_u8() {
-        assert_eq!(
-            Instruction::decode(151923843u32), Instruction::Xor_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_xor_u8() {
-        assert_eq!(
-            Instruction::Xor_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923843u32
-        );
-    }
-    #[test]
-    fn decode_xor_u16() {
-        assert_eq!(
-            Instruction::decode(420359299u32), Instruction::Xor_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_xor_u16() {
-        assert_eq!(
-            Instruction::Xor_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359299u32
-        );
-    }
-    #[test]
-    fn decode_xor_u32() {
-        assert_eq!(
-            Instruction::decode(688794755u32), Instruction::Xor_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_xor_u32() {
-        assert_eq!(
-            Instruction::Xor_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794755u32
-        );
-    }
-    #[test]
-    fn decode_xor_u64() {
-        assert_eq!(
-            Instruction::decode(957230211u32), Instruction::Xor_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_xor_u64() {
-        assert_eq!(
-            Instruction::Xor_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230211u32
-        );
-    }
-    #[test]
-    fn decode_not_i8() {
-        assert_eq!(
-            Instruction::decode(2148412611u32), Instruction::Not_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_not_i8() {
-        assert_eq!(
-            Instruction::Not_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148412611u32
-        );
-    }
-    #[test]
-    fn decode_not_i16() {
-        assert_eq!(
-            Instruction::decode(2416848067u32), Instruction::Not_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_not_i16() {
-        assert_eq!(
-            Instruction::Not_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848067u32
-        );
-    }
-    #[test]
-    fn decode_not_i32() {
-        assert_eq!(
-            Instruction::decode(2685283523u32), Instruction::Not_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_not_i32() {
-        assert_eq!(
-            Instruction::Not_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685283523u32
-        );
-    }
-    #[test]
-    fn decode_not_i64() {
-        assert_eq!(
-            Instruction::decode(2953718979u32), Instruction::Not_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_not_i64() {
-        assert_eq!(
-            Instruction::Not_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953718979u32
-        );
-    }
-    #[test]
-    fn decode_not_u8() {
-        assert_eq!(
-            Instruction::decode(928963u32), Instruction::Not_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_not_u8() {
-        assert_eq!(
-            Instruction::Not_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 928963u32
-        );
-    }
-    #[test]
-    fn decode_not_u16() {
-        assert_eq!(
-            Instruction::decode(269364419u32), Instruction::Not_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_not_u16() {
-        assert_eq!(
-            Instruction::Not_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269364419u32
-        );
-    }
-    #[test]
-    fn decode_not_u32() {
-        assert_eq!(
-            Instruction::decode(537799875u32), Instruction::Not_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_not_u32() {
-        assert_eq!(
-            Instruction::Not_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537799875u32
-        );
-    }
-    #[test]
-    fn decode_not_u64() {
-        assert_eq!(
-            Instruction::decode(806235331u32), Instruction::Not_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_not_u64() {
-        assert_eq!(
-            Instruction::Not_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806235331u32
-        );
-    }
-    #[test]
-    fn decode_shl_i8() {
-        assert_eq!(
-            Instruction::decode(2299407619u32), Instruction::Shl_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shl_i8() {
-        assert_eq!(
-            Instruction::Shl_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407619u32
-        );
-    }
-    #[test]
-    fn decode_shl_i16() {
-        assert_eq!(
-            Instruction::decode(2567843075u32), Instruction::Shl_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shl_i16() {
-        assert_eq!(
-            Instruction::Shl_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843075u32
-        );
-    }
-    #[test]
-    fn decode_shl_i32() {
-        assert_eq!(
-            Instruction::decode(2836278531u32), Instruction::Shl_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shl_i32() {
-        assert_eq!(
-            Instruction::Shl_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278531u32
-        );
-    }
-    #[test]
-    fn decode_shl_i64() {
-        assert_eq!(
-            Instruction::decode(3104713987u32), Instruction::Shl_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shl_i64() {
-        assert_eq!(
-            Instruction::Shl_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713987u32
-        );
-    }
-    #[test]
-    fn decode_shl_u8() {
-        assert_eq!(
-            Instruction::decode(151923971u32), Instruction::Shl_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shl_u8() {
-        assert_eq!(
-            Instruction::Shl_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923971u32
-        );
-    }
-    #[test]
-    fn decode_shl_u16() {
-        assert_eq!(
-            Instruction::decode(420359427u32), Instruction::Shl_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shl_u16() {
-        assert_eq!(
-            Instruction::Shl_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359427u32
-        );
-    }
-    #[test]
-    fn decode_shl_u32() {
-        assert_eq!(
-            Instruction::decode(688794883u32), Instruction::Shl_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shl_u32() {
-        assert_eq!(
-            Instruction::Shl_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794883u32
-        );
-    }
-    #[test]
-    fn decode_shl_u64() {
-        assert_eq!(
-            Instruction::decode(957230339u32), Instruction::Shl_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shl_u64() {
-        assert_eq!(
-            Instruction::Shl_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230339u32
-        );
-    }
-    #[test]
-    fn decode_shr_i8() {
-        assert_eq!(
-            Instruction::decode(2299407683u32), Instruction::Shr_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shr_i8() {
-        assert_eq!(
-            Instruction::Shr_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407683u32
-        );
-    }
-    #[test]
-    fn decode_shr_i16() {
-        assert_eq!(
-            Instruction::decode(2567843139u32), Instruction::Shr_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shr_i16() {
-        assert_eq!(
-            Instruction::Shr_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843139u32
-        );
-    }
-    #[test]
-    fn decode_shr_i32() {
-        assert_eq!(
-            Instruction::decode(2836278595u32), Instruction::Shr_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shr_i32() {
-        assert_eq!(
-            Instruction::Shr_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278595u32
-        );
-    }
-    #[test]
-    fn decode_shr_i64() {
-        assert_eq!(
-            Instruction::decode(3104714051u32), Instruction::Shr_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shr_i64() {
-        assert_eq!(
-            Instruction::Shr_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714051u32
-        );
-    }
-    #[test]
-    fn decode_shr_u8() {
-        assert_eq!(
-            Instruction::decode(151924035u32), Instruction::Shr_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shr_u8() {
-        assert_eq!(
-            Instruction::Shr_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924035u32
-        );
-    }
-    #[test]
-    fn decode_shr_u16() {
-        assert_eq!(
-            Instruction::decode(420359491u32), Instruction::Shr_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shr_u16() {
-        assert_eq!(
-            Instruction::Shr_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359491u32
-        );
-    }
-    #[test]
-    fn decode_shr_u32() {
-        assert_eq!(
-            Instruction::decode(688794947u32), Instruction::Shr_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shr_u32() {
-        assert_eq!(
-            Instruction::Shr_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794947u32
-        );
-    }
-    #[test]
-    fn decode_shr_u64() {
-        assert_eq!(
-            Instruction::decode(957230403u32), Instruction::Shr_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_shr_u64() {
-        assert_eq!(
-            Instruction::Shr_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230403u32
-        );
-    }
-    #[test]
-    fn decode_rot_l_i8() {
-        assert_eq!(
-            Instruction::decode(2299407747u32), Instruction::Rot_L_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_l_i8() {
-        assert_eq!(
-            Instruction::Rot_L_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407747u32
-        );
-    }
-    #[test]
-    fn decode_rot_l_i16() {
-        assert_eq!(
-            Instruction::decode(2567843203u32), Instruction::Rot_L_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_l_i16() {
-        assert_eq!(
-            Instruction::Rot_L_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843203u32
-        );
-    }
-    #[test]
-    fn decode_rot_l_i32() {
-        assert_eq!(
-            Instruction::decode(2836278659u32), Instruction::Rot_L_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_l_i32() {
-        assert_eq!(
-            Instruction::Rot_L_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278659u32
-        );
-    }
-    #[test]
-    fn decode_rot_l_i64() {
-        assert_eq!(
-            Instruction::decode(3104714115u32), Instruction::Rot_L_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_l_i64() {
-        assert_eq!(
-            Instruction::Rot_L_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714115u32
-        );
-    }
-    #[test]
-    fn decode_rot_l_u8() {
-        assert_eq!(
-            Instruction::decode(151924099u32), Instruction::Rot_L_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_l_u8() {
-        assert_eq!(
-            Instruction::Rot_L_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924099u32
-        );
-    }
-    #[test]
-    fn decode_rot_l_u16() {
-        assert_eq!(
-            Instruction::decode(420359555u32), Instruction::Rot_L_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_l_u16() {
-        assert_eq!(
-            Instruction::Rot_L_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359555u32
-        );
-    }
-    #[test]
-    fn decode_rot_l_u32() {
-        assert_eq!(
-            Instruction::decode(688795011u32), Instruction::Rot_L_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_l_u32() {
-        assert_eq!(
-            Instruction::Rot_L_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795011u32
-        );
-    }
-    #[test]
-    fn decode_rot_l_u64() {
-        assert_eq!(
-            Instruction::decode(957230467u32), Instruction::Rot_L_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_l_u64() {
-        assert_eq!(
-            Instruction::Rot_L_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230467u32
-        );
-    }
-    #[test]
-    fn decode_rot_r_i8() {
-        assert_eq!(
-            Instruction::decode(2299407811u32), Instruction::Rot_R_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_r_i8() {
-        assert_eq!(
-            Instruction::Rot_R_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407811u32
-        );
-    }
-    #[test]
-    fn decode_rot_r_i16() {
-        assert_eq!(
-            Instruction::decode(2567843267u32), Instruction::Rot_R_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_r_i16() {
-        assert_eq!(
-            Instruction::Rot_R_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843267u32
-        );
-    }
-    #[test]
-    fn decode_rot_r_i32() {
-        assert_eq!(
-            Instruction::decode(2836278723u32), Instruction::Rot_R_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_r_i32() {
-        assert_eq!(
-            Instruction::Rot_R_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278723u32
-        );
-    }
-    #[test]
-    fn decode_rot_r_i64() {
-        assert_eq!(
-            Instruction::decode(3104714179u32), Instruction::Rot_R_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_r_i64() {
-        assert_eq!(
-            Instruction::Rot_R_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714179u32
-        );
-    }
-    #[test]
-    fn decode_rot_r_u8() {
-        assert_eq!(
-            Instruction::decode(151924163u32), Instruction::Rot_R_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_r_u8() {
-        assert_eq!(
-            Instruction::Rot_R_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924163u32
-        );
-    }
-    #[test]
-    fn decode_rot_r_u16() {
-        assert_eq!(
-            Instruction::decode(420359619u32), Instruction::Rot_R_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_r_u16() {
-        assert_eq!(
-            Instruction::Rot_R_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359619u32
-        );
-    }
-    #[test]
-    fn decode_rot_r_u32() {
-        assert_eq!(
-            Instruction::decode(688795075u32), Instruction::Rot_R_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_r_u32() {
-        assert_eq!(
-            Instruction::Rot_R_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795075u32
-        );
-    }
-    #[test]
-    fn decode_rot_r_u64() {
-        assert_eq!(
-            Instruction::decode(957230531u32), Instruction::Rot_R_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_rot_r_u64() {
-        assert_eq!(
-            Instruction::Rot_R_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230531u32
-        );
-    }
-    #[test]
-    fn decode_c_ones_i8() {
-        assert_eq!(
-            Instruction::decode(2148412931u32), Instruction::C_Ones_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_ones_i8() {
-        assert_eq!(
-            Instruction::C_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148412931u32
-        );
-    }
-    #[test]
-    fn decode_c_ones_i16() {
-        assert_eq!(
-            Instruction::decode(2416848387u32), Instruction::C_Ones_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_ones_i16() {
-        assert_eq!(
-            Instruction::C_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848387u32
-        );
-    }
-    #[test]
-    fn decode_c_ones_i32() {
-        assert_eq!(
-            Instruction::decode(2685283843u32), Instruction::C_Ones_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_ones_i32() {
-        assert_eq!(
-            Instruction::C_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685283843u32
-        );
-    }
-    #[test]
-    fn decode_c_ones_i64() {
-        assert_eq!(
-            Instruction::decode(2953719299u32), Instruction::C_Ones_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_ones_i64() {
-        assert_eq!(
-            Instruction::C_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719299u32
-        );
-    }
-    #[test]
-    fn decode_c_ones_u8() {
-        assert_eq!(
-            Instruction::decode(929283u32), Instruction::C_Ones_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_ones_u8() {
-        assert_eq!(
-            Instruction::C_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929283u32
-        );
-    }
-    #[test]
-    fn decode_c_ones_u16() {
-        assert_eq!(
-            Instruction::decode(269364739u32), Instruction::C_Ones_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_ones_u16() {
-        assert_eq!(
-            Instruction::C_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269364739u32
-        );
-    }
-    #[test]
-    fn decode_c_ones_u32() {
-        assert_eq!(
-            Instruction::decode(537800195u32), Instruction::C_Ones_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_ones_u32() {
-        assert_eq!(
-            Instruction::C_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537800195u32
-        );
-    }
-    #[test]
-    fn decode_c_ones_u64() {
-        assert_eq!(
-            Instruction::decode(806235651u32), Instruction::C_Ones_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_ones_u64() {
-        assert_eq!(
-            Instruction::C_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806235651u32
-        );
-    }
-    #[test]
-    fn decode_l_ones_i8() {
-        assert_eq!(
-            Instruction::decode(2148412995u32), Instruction::L_Ones_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_ones_i8() {
-        assert_eq!(
-            Instruction::L_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148412995u32
-        );
-    }
-    #[test]
-    fn decode_l_ones_i16() {
-        assert_eq!(
-            Instruction::decode(2416848451u32), Instruction::L_Ones_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_ones_i16() {
-        assert_eq!(
-            Instruction::L_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848451u32
-        );
-    }
-    #[test]
-    fn decode_l_ones_i32() {
-        assert_eq!(
-            Instruction::decode(2685283907u32), Instruction::L_Ones_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_ones_i32() {
-        assert_eq!(
-            Instruction::L_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685283907u32
-        );
-    }
-    #[test]
-    fn decode_l_ones_i64() {
-        assert_eq!(
-            Instruction::decode(2953719363u32), Instruction::L_Ones_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_ones_i64() {
-        assert_eq!(
-            Instruction::L_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719363u32
-        );
-    }
-    #[test]
-    fn decode_l_ones_u8() {
-        assert_eq!(
-            Instruction::decode(929347u32), Instruction::L_Ones_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_ones_u8() {
-        assert_eq!(
-            Instruction::L_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929347u32
-        );
-    }
-    #[test]
-    fn decode_l_ones_u16() {
-        assert_eq!(
-            Instruction::decode(269364803u32), Instruction::L_Ones_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_ones_u16() {
-        assert_eq!(
-            Instruction::L_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269364803u32
-        );
-    }
-    #[test]
-    fn decode_l_ones_u32() {
-        assert_eq!(
-            Instruction::decode(537800259u32), Instruction::L_Ones_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_ones_u32() {
-        assert_eq!(
-            Instruction::L_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537800259u32
-        );
-    }
-    #[test]
-    fn decode_l_ones_u64() {
-        assert_eq!(
-            Instruction::decode(806235715u32), Instruction::L_Ones_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_ones_u64() {
-        assert_eq!(
-            Instruction::L_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806235715u32
-        );
-    }
-    #[test]
-    fn decode_t_ones_i8() {
-        assert_eq!(
-            Instruction::decode(2148413059u32), Instruction::T_Ones_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_ones_i8() {
-        assert_eq!(
-            Instruction::T_Ones_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148413059u32
-        );
-    }
-    #[test]
-    fn decode_t_ones_i16() {
-        assert_eq!(
-            Instruction::decode(2416848515u32), Instruction::T_Ones_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_ones_i16() {
-        assert_eq!(
-            Instruction::T_Ones_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848515u32
-        );
-    }
-    #[test]
-    fn decode_t_ones_i32() {
-        assert_eq!(
-            Instruction::decode(2685283971u32), Instruction::T_Ones_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_ones_i32() {
-        assert_eq!(
-            Instruction::T_Ones_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685283971u32
-        );
-    }
-    #[test]
-    fn decode_t_ones_i64() {
-        assert_eq!(
-            Instruction::decode(2953719427u32), Instruction::T_Ones_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_ones_i64() {
-        assert_eq!(
-            Instruction::T_Ones_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719427u32
-        );
-    }
-    #[test]
-    fn decode_t_ones_u8() {
-        assert_eq!(
-            Instruction::decode(929411u32), Instruction::T_Ones_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_ones_u8() {
-        assert_eq!(
-            Instruction::T_Ones_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929411u32
-        );
-    }
-    #[test]
-    fn decode_t_ones_u16() {
-        assert_eq!(
-            Instruction::decode(269364867u32), Instruction::T_Ones_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_ones_u16() {
-        assert_eq!(
-            Instruction::T_Ones_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269364867u32
-        );
-    }
-    #[test]
-    fn decode_t_ones_u32() {
-        assert_eq!(
-            Instruction::decode(537800323u32), Instruction::T_Ones_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_ones_u32() {
-        assert_eq!(
-            Instruction::T_Ones_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537800323u32
-        );
-    }
-    #[test]
-    fn decode_t_ones_u64() {
-        assert_eq!(
-            Instruction::decode(806235779u32), Instruction::T_Ones_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_ones_u64() {
-        assert_eq!(
-            Instruction::T_Ones_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806235779u32
-        );
-    }
-    #[test]
-    fn decode_c_zeros_i8() {
-        assert_eq!(
-            Instruction::decode(2148413123u32), Instruction::C_Zeros_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_zeros_i8() {
-        assert_eq!(
-            Instruction::C_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148413123u32
-        );
-    }
-    #[test]
-    fn decode_c_zeros_i16() {
-        assert_eq!(
-            Instruction::decode(2416848579u32), Instruction::C_Zeros_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_zeros_i16() {
-        assert_eq!(
-            Instruction::C_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848579u32
-        );
-    }
-    #[test]
-    fn decode_c_zeros_i32() {
-        assert_eq!(
-            Instruction::decode(2685284035u32), Instruction::C_Zeros_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_zeros_i32() {
-        assert_eq!(
-            Instruction::C_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685284035u32
-        );
-    }
-    #[test]
-    fn decode_c_zeros_i64() {
-        assert_eq!(
-            Instruction::decode(2953719491u32), Instruction::C_Zeros_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_zeros_i64() {
-        assert_eq!(
-            Instruction::C_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719491u32
-        );
-    }
-    #[test]
-    fn decode_c_zeros_u8() {
-        assert_eq!(
-            Instruction::decode(929475u32), Instruction::C_Zeros_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_zeros_u8() {
-        assert_eq!(
-            Instruction::C_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929475u32
-        );
-    }
-    #[test]
-    fn decode_c_zeros_u16() {
-        assert_eq!(
-            Instruction::decode(269364931u32), Instruction::C_Zeros_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_zeros_u16() {
-        assert_eq!(
-            Instruction::C_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269364931u32
-        );
-    }
-    #[test]
-    fn decode_c_zeros_u32() {
-        assert_eq!(
-            Instruction::decode(537800387u32), Instruction::C_Zeros_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_zeros_u32() {
-        assert_eq!(
-            Instruction::C_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537800387u32
-        );
-    }
-    #[test]
-    fn decode_c_zeros_u64() {
-        assert_eq!(
-            Instruction::decode(806235843u32), Instruction::C_Zeros_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_zeros_u64() {
-        assert_eq!(
-            Instruction::C_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806235843u32
-        );
-    }
-    #[test]
-    fn decode_l_zeros_i8() {
-        assert_eq!(
-            Instruction::decode(2148413187u32), Instruction::L_Zeros_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_zeros_i8() {
-        assert_eq!(
-            Instruction::L_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148413187u32
-        );
-    }
-    #[test]
-    fn decode_l_zeros_i16() {
-        assert_eq!(
-            Instruction::decode(2416848643u32), Instruction::L_Zeros_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_zeros_i16() {
-        assert_eq!(
-            Instruction::L_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848643u32
-        );
-    }
-    #[test]
-    fn decode_l_zeros_i32() {
-        assert_eq!(
-            Instruction::decode(2685284099u32), Instruction::L_Zeros_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_zeros_i32() {
-        assert_eq!(
-            Instruction::L_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685284099u32
-        );
-    }
-    #[test]
-    fn decode_l_zeros_i64() {
-        assert_eq!(
-            Instruction::decode(2953719555u32), Instruction::L_Zeros_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_zeros_i64() {
-        assert_eq!(
-            Instruction::L_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719555u32
-        );
-    }
-    #[test]
-    fn decode_l_zeros_u8() {
-        assert_eq!(
-            Instruction::decode(929539u32), Instruction::L_Zeros_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_zeros_u8() {
-        assert_eq!(
-            Instruction::L_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929539u32
-        );
-    }
-    #[test]
-    fn decode_l_zeros_u16() {
-        assert_eq!(
-            Instruction::decode(269364995u32), Instruction::L_Zeros_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_zeros_u16() {
-        assert_eq!(
-            Instruction::L_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269364995u32
-        );
-    }
-    #[test]
-    fn decode_l_zeros_u32() {
-        assert_eq!(
-            Instruction::decode(537800451u32), Instruction::L_Zeros_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_zeros_u32() {
-        assert_eq!(
-            Instruction::L_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537800451u32
-        );
-    }
-    #[test]
-    fn decode_l_zeros_u64() {
-        assert_eq!(
-            Instruction::decode(806235907u32), Instruction::L_Zeros_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_l_zeros_u64() {
-        assert_eq!(
-            Instruction::L_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806235907u32
-        );
-    }
-    #[test]
-    fn decode_t_zeros_i8() {
-        assert_eq!(
-            Instruction::decode(2148413251u32), Instruction::T_Zeros_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_zeros_i8() {
-        assert_eq!(
-            Instruction::T_Zeros_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148413251u32
-        );
-    }
-    #[test]
-    fn decode_t_zeros_i16() {
-        assert_eq!(
-            Instruction::decode(2416848707u32), Instruction::T_Zeros_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_zeros_i16() {
-        assert_eq!(
-            Instruction::T_Zeros_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848707u32
-        );
-    }
-    #[test]
-    fn decode_t_zeros_i32() {
-        assert_eq!(
-            Instruction::decode(2685284163u32), Instruction::T_Zeros_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_zeros_i32() {
-        assert_eq!(
-            Instruction::T_Zeros_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685284163u32
-        );
-    }
-    #[test]
-    fn decode_t_zeros_i64() {
-        assert_eq!(
-            Instruction::decode(2953719619u32), Instruction::T_Zeros_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_zeros_i64() {
-        assert_eq!(
-            Instruction::T_Zeros_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719619u32
-        );
-    }
-    #[test]
-    fn decode_t_zeros_u8() {
-        assert_eq!(
-            Instruction::decode(929603u32), Instruction::T_Zeros_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_zeros_u8() {
-        assert_eq!(
-            Instruction::T_Zeros_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929603u32
-        );
-    }
-    #[test]
-    fn decode_t_zeros_u16() {
-        assert_eq!(
-            Instruction::decode(269365059u32), Instruction::T_Zeros_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_zeros_u16() {
-        assert_eq!(
-            Instruction::T_Zeros_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269365059u32
-        );
-    }
-    #[test]
-    fn decode_t_zeros_u32() {
-        assert_eq!(
-            Instruction::decode(537800515u32), Instruction::T_Zeros_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_zeros_u32() {
-        assert_eq!(
-            Instruction::T_Zeros_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537800515u32
-        );
-    }
-    #[test]
-    fn decode_t_zeros_u64() {
-        assert_eq!(
-            Instruction::decode(806235971u32), Instruction::T_Zeros_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_t_zeros_u64() {
-        assert_eq!(
-            Instruction::T_Zeros_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806235971u32
-        );
-    }
-    #[test]
-    fn decode_r_bytes_i8() {
-        assert_eq!(
-            Instruction::decode(2148413315u32), Instruction::R_Bytes_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bytes_i8() {
-        assert_eq!(
-            Instruction::R_Bytes_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148413315u32
-        );
-    }
-    #[test]
-    fn decode_r_bytes_i16() {
-        assert_eq!(
-            Instruction::decode(2416848771u32), Instruction::R_Bytes_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bytes_i16() {
-        assert_eq!(
-            Instruction::R_Bytes_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848771u32
-        );
-    }
-    #[test]
-    fn decode_r_bytes_i32() {
-        assert_eq!(
-            Instruction::decode(2685284227u32), Instruction::R_Bytes_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bytes_i32() {
-        assert_eq!(
-            Instruction::R_Bytes_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685284227u32
-        );
-    }
-    #[test]
-    fn decode_r_bytes_i64() {
-        assert_eq!(
-            Instruction::decode(2953719683u32), Instruction::R_Bytes_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bytes_i64() {
-        assert_eq!(
-            Instruction::R_Bytes_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719683u32
-        );
-    }
-    #[test]
-    fn decode_r_bytes_u8() {
-        assert_eq!(
-            Instruction::decode(929667u32), Instruction::R_Bytes_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bytes_u8() {
-        assert_eq!(
-            Instruction::R_Bytes_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929667u32
-        );
-    }
-    #[test]
-    fn decode_r_bytes_u16() {
-        assert_eq!(
-            Instruction::decode(269365123u32), Instruction::R_Bytes_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bytes_u16() {
-        assert_eq!(
-            Instruction::R_Bytes_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269365123u32
-        );
-    }
-    #[test]
-    fn decode_r_bytes_u32() {
-        assert_eq!(
-            Instruction::decode(537800579u32), Instruction::R_Bytes_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bytes_u32() {
-        assert_eq!(
-            Instruction::R_Bytes_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537800579u32
-        );
-    }
-    #[test]
-    fn decode_r_bytes_u64() {
-        assert_eq!(
-            Instruction::decode(806236035u32), Instruction::R_Bytes_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bytes_u64() {
-        assert_eq!(
-            Instruction::R_Bytes_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806236035u32
-        );
-    }
-    #[test]
-    fn decode_r_bits_i8() {
-        assert_eq!(
-            Instruction::decode(2148413379u32), Instruction::R_Bits_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bits_i8() {
-        assert_eq!(
-            Instruction::R_Bits_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148413379u32
-        );
-    }
-    #[test]
-    fn decode_r_bits_i16() {
-        assert_eq!(
-            Instruction::decode(2416848835u32), Instruction::R_Bits_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bits_i16() {
-        assert_eq!(
-            Instruction::R_Bits_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848835u32
-        );
-    }
-    #[test]
-    fn decode_r_bits_i32() {
-        assert_eq!(
-            Instruction::decode(2685284291u32), Instruction::R_Bits_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bits_i32() {
-        assert_eq!(
-            Instruction::R_Bits_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685284291u32
-        );
-    }
-    #[test]
-    fn decode_r_bits_i64() {
-        assert_eq!(
-            Instruction::decode(2953719747u32), Instruction::R_Bits_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bits_i64() {
-        assert_eq!(
-            Instruction::R_Bits_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719747u32
-        );
-    }
-    #[test]
-    fn decode_r_bits_u8() {
-        assert_eq!(
-            Instruction::decode(929731u32), Instruction::R_Bits_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bits_u8() {
-        assert_eq!(
-            Instruction::R_Bits_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929731u32
-        );
-    }
-    #[test]
-    fn decode_r_bits_u16() {
-        assert_eq!(
-            Instruction::decode(269365187u32), Instruction::R_Bits_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bits_u16() {
-        assert_eq!(
-            Instruction::R_Bits_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269365187u32
-        );
-    }
-    #[test]
-    fn decode_r_bits_u32() {
-        assert_eq!(
-            Instruction::decode(537800643u32), Instruction::R_Bits_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bits_u32() {
-        assert_eq!(
-            Instruction::R_Bits_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537800643u32
-        );
-    }
-    #[test]
-    fn decode_r_bits_u64() {
-        assert_eq!(
-            Instruction::decode(806236099u32), Instruction::R_Bits_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_r_bits_u64() {
-        assert_eq!(
-            Instruction::R_Bits_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806236099u32
-        );
-    }
-    #[test]
-    fn decode_c_abs_i8() {
-        assert_eq!(
-            Instruction::decode(2148412420u32), Instruction::C_Abs_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_abs_i8() {
-        assert_eq!(
-            Instruction::C_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148412420u32
-        );
-    }
-    #[test]
-    fn decode_c_abs_i16() {
-        assert_eq!(
-            Instruction::decode(2416847876u32), Instruction::C_Abs_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_abs_i16() {
-        assert_eq!(
-            Instruction::C_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416847876u32
-        );
-    }
-    #[test]
-    fn decode_c_abs_i32() {
-        assert_eq!(
-            Instruction::decode(2685283332u32), Instruction::C_Abs_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_abs_i32() {
-        assert_eq!(
-            Instruction::C_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685283332u32
-        );
-    }
-    #[test]
-    fn decode_c_abs_i64() {
-        assert_eq!(
-            Instruction::decode(2953718788u32), Instruction::C_Abs_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
-        );
-    }
-    #[test]
-    fn encode_c_abs_i64() {
-        assert_eq!(
-            Instruction::C_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953718788u32
-        );
-    }
-    #[test]
-    fn decode_c_add_i8() {
-        assert_eq!(
-            Instruction::decode(2299407428u32), Instruction::C_Add_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_c_add_i8() {
-        assert_eq!(
-            Instruction::C_Add_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407428u32
-        );
-    }
-    #[test]
-    fn decode_c_add_i16() {
-        assert_eq!(
-            Instruction::decode(2567842884u32), Instruction::C_Add_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_c_add_i16() {
-        assert_eq!(
-            Instruction::C_Add_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567842884u32
-        );
-    }
-    #[test]
-    fn decode_c_add_i32() {
-        assert_eq!(
-            Instruction::decode(2836278340u32), Instruction::C_Add_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_c_add_i32() {
-        assert_eq!(
-            Instruction::C_Add_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278340u32
-        );
-    }
-    #[test]
-    fn decode_c_add_i64() {
-        assert_eq!(
-            Instruction::decode(3104713796u32), Instruction::C_Add_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_c_add_i64() {
-        assert_eq!(
-            Instruction::C_Add_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713796u32
-        );
-    }
-    #[test]
-    fn decode_c_add_u8() {
-        assert_eq!(
-            Instruction::decode(151923780u32), Instruction::C_Add_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_c_add_u8() {
-        assert_eq!(
-            Instruction::C_Add_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923780u32
-        );
-    }
-    #[test]
-    fn decode_c_add_u16() {
-        assert_eq!(
-            Instruction::decode(420359236u32), Instruction::C_Add_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
-    }
-    #[test]
-    fn encode_c_add_u16() {
-        assert_eq!(
-            Instruction::C_Add_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359236u32
-        );
-    }
-    #[test]
-    fn decode_c_add_u32() {
-        assert_eq!(
-            Instruction::decode(688794692u32), Instruction::C_Add_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
+    fn Ecall() {
+        let instr = Instruction::decode(2640u32);
+        println!("{:032b}", 2640u32);
+        assert_eq!(instr, Instruction::Ecall { imm : 10, });
+        assert_eq!(instr.encode(), 2640u32);
     }
     #[test]
-    fn encode_c_add_u32() {
-        assert_eq!(
-            Instruction::C_Add_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794692u32
-        );
+    fn Jal() {
+        let instr = Instruction::decode(2656u32);
+        println!("{:032b}", 2656u32);
+        assert_eq!(instr, Instruction::Jal { imm : 10, });
+        assert_eq!(instr.encode(), 2656u32);
     }
     #[test]
-    fn decode_c_add_u64() {
+    fn Bie() {
+        let instr = Instruction::decode(681738241u32);
+        println!("{:032b}", 681738241u32);
         assert_eq!(
-            Instruction::decode(957230148u32), Instruction::C_Add_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Bie { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738241u32);
     }
     #[test]
-    fn encode_c_add_u64() {
+    fn Bne() {
+        let instr = Instruction::decode(681738257u32);
+        println!("{:032b}", 681738257u32);
         assert_eq!(
-            Instruction::C_Add_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230148u32
+            instr, Instruction::Bne { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738257u32);
     }
     #[test]
-    fn decode_c_add_u_i8() {
+    fn Blts() {
+        let instr = Instruction::decode(681738273u32);
+        println!("{:032b}", 681738273u32);
         assert_eq!(
-            Instruction::decode(2299407492u32), Instruction::C_Add_U_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Blts { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738273u32);
     }
     #[test]
-    fn encode_c_add_u_i8() {
+    fn Bltu() {
+        let instr = Instruction::decode(681738289u32);
+        println!("{:032b}", 681738289u32);
         assert_eq!(
-            Instruction::C_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407492u32
+            instr, Instruction::Bltu { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738289u32);
     }
     #[test]
-    fn decode_c_add_u_i16() {
+    fn Bles() {
+        let instr = Instruction::decode(681738305u32);
+        println!("{:032b}", 681738305u32);
         assert_eq!(
-            Instruction::decode(2567842948u32), Instruction::C_Add_U_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Bles { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738305u32);
     }
     #[test]
-    fn encode_c_add_u_i16() {
+    fn Bleu() {
+        let instr = Instruction::decode(681738321u32);
+        println!("{:032b}", 681738321u32);
         assert_eq!(
-            Instruction::C_Add_U_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567842948u32
+            instr, Instruction::Bleu { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738321u32);
     }
     #[test]
-    fn decode_c_add_u_i32() {
+    fn Bgts() {
+        let instr = Instruction::decode(681738337u32);
+        println!("{:032b}", 681738337u32);
         assert_eq!(
-            Instruction::decode(2836278404u32), Instruction::C_Add_U_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Bgts { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738337u32);
     }
     #[test]
-    fn encode_c_add_u_i32() {
+    fn Bgtu() {
+        let instr = Instruction::decode(681738353u32);
+        println!("{:032b}", 681738353u32);
         assert_eq!(
-            Instruction::C_Add_U_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278404u32
+            instr, Instruction::Bgtu { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738353u32);
     }
     #[test]
-    fn decode_c_add_u_i64() {
+    fn Bges() {
+        let instr = Instruction::decode(681738369u32);
+        println!("{:032b}", 681738369u32);
         assert_eq!(
-            Instruction::decode(3104713860u32), Instruction::C_Add_U_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Bges { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738369u32);
     }
     #[test]
-    fn encode_c_add_u_i64() {
+    fn Bgeu() {
+        let instr = Instruction::decode(681738385u32);
+        println!("{:032b}", 681738385u32);
         assert_eq!(
-            Instruction::C_Add_U_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713860u32
+            instr, Instruction::Bgeu { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738385u32);
     }
     #[test]
-    fn decode_c_add_s_u8() {
+    fn Bie_f32() {
+        let instr = Instruction::decode(681738242u32);
+        println!("{:032b}", 681738242u32);
         assert_eq!(
-            Instruction::decode(151923844u32), Instruction::C_Add_S_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Bie_f32 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738242u32);
     }
     #[test]
-    fn encode_c_add_s_u8() {
+    fn Bie_f64() {
+        let instr = Instruction::decode(681738258u32);
+        println!("{:032b}", 681738258u32);
         assert_eq!(
-            Instruction::C_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923844u32
+            instr, Instruction::Bie_f64 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738258u32);
     }
     #[test]
-    fn decode_c_add_s_u16() {
+    fn Bne_f32() {
+        let instr = Instruction::decode(681738274u32);
+        println!("{:032b}", 681738274u32);
         assert_eq!(
-            Instruction::decode(420359300u32), Instruction::C_Add_S_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Bne_f32 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738274u32);
     }
     #[test]
-    fn encode_c_add_s_u16() {
+    fn Bne_f64() {
+        let instr = Instruction::decode(681738290u32);
+        println!("{:032b}", 681738290u32);
         assert_eq!(
-            Instruction::C_Add_S_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359300u32
+            instr, Instruction::Bne_f64 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738290u32);
     }
     #[test]
-    fn decode_c_add_s_u32() {
+    fn Blt_f32() {
+        let instr = Instruction::decode(681738306u32);
+        println!("{:032b}", 681738306u32);
         assert_eq!(
-            Instruction::decode(688794756u32), Instruction::C_Add_S_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Blt_f32 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738306u32);
     }
     #[test]
-    fn encode_c_add_s_u32() {
+    fn Blt_f64() {
+        let instr = Instruction::decode(681738322u32);
+        println!("{:032b}", 681738322u32);
         assert_eq!(
-            Instruction::C_Add_S_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794756u32
+            instr, Instruction::Blt_f64 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738322u32);
     }
     #[test]
-    fn decode_c_add_s_u64() {
+    fn Ble_f32() {
+        let instr = Instruction::decode(681738338u32);
+        println!("{:032b}", 681738338u32);
         assert_eq!(
-            Instruction::decode(957230212u32), Instruction::C_Add_S_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Ble_f32 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738338u32);
     }
     #[test]
-    fn encode_c_add_s_u64() {
+    fn Ble_f64() {
+        let instr = Instruction::decode(681738354u32);
+        println!("{:032b}", 681738354u32);
         assert_eq!(
-            Instruction::C_Add_S_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230212u32
+            instr, Instruction::Ble_f64 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738354u32);
     }
     #[test]
-    fn decode_c_div_i8() {
+    fn Bgt_f32() {
+        let instr = Instruction::decode(681738370u32);
+        println!("{:032b}", 681738370u32);
         assert_eq!(
-            Instruction::decode(2299407556u32), Instruction::C_Div_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Bgt_f32 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738370u32);
     }
     #[test]
-    fn encode_c_div_i8() {
+    fn Bgt_f64() {
+        let instr = Instruction::decode(681738386u32);
+        println!("{:032b}", 681738386u32);
         assert_eq!(
-            Instruction::C_Div_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407556u32
+            instr, Instruction::Bgt_f64 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738386u32);
     }
     #[test]
-    fn decode_c_div_i16() {
+    fn Bge_f32() {
+        let instr = Instruction::decode(681738402u32);
+        println!("{:032b}", 681738402u32);
         assert_eq!(
-            Instruction::decode(2567843012u32), Instruction::C_Div_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Bge_f32 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738402u32);
     }
     #[test]
-    fn encode_c_div_i16() {
+    fn Bge_f64() {
+        let instr = Instruction::decode(681738418u32);
+        println!("{:032b}", 681738418u32);
         assert_eq!(
-            Instruction::C_Div_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843012u32
+            instr, Instruction::Bge_f64 { imm : 10, rs1 : Register::from_index(10), rs2 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 681738418u32);
     }
     #[test]
-    fn decode_c_div_i32() {
+    fn Cie() {
+        let instr = Instruction::decode(2158135811u32);
+        println!("{:032b}", 2158135811u32);
         assert_eq!(
-            Instruction::decode(2836278468u32), Instruction::C_Div_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cie { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135811u32);
     }
     #[test]
-    fn encode_c_div_i32() {
+    fn Cie_f32() {
+        let instr = Instruction::decode(3768748547u32);
+        println!("{:032b}", 3768748547u32);
         assert_eq!(
-            Instruction::C_Div_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278468u32
+            instr, Instruction::Cie_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748547u32);
     }
     #[test]
-    fn decode_c_div_i64() {
+    fn Cie_f64() {
+        let instr = Instruction::decode(4037184003u32);
+        println!("{:032b}", 4037184003u32);
         assert_eq!(
-            Instruction::decode(3104713924u32), Instruction::C_Div_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cie_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184003u32);
     }
     #[test]
-    fn encode_c_div_i64() {
+    fn Cne() {
+        let instr = Instruction::decode(2158135827u32);
+        println!("{:032b}", 2158135827u32);
         assert_eq!(
-            Instruction::C_Div_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713924u32
+            instr, Instruction::Cne { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135827u32);
     }
     #[test]
-    fn decode_c_div_u8() {
+    fn Cne_f32() {
+        let instr = Instruction::decode(3768748563u32);
+        println!("{:032b}", 3768748563u32);
         assert_eq!(
-            Instruction::decode(151923908u32), Instruction::C_Div_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cne_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748563u32);
     }
     #[test]
-    fn encode_c_div_u8() {
+    fn Cne_f64() {
+        let instr = Instruction::decode(4037184019u32);
+        println!("{:032b}", 4037184019u32);
         assert_eq!(
-            Instruction::C_Div_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923908u32
+            instr, Instruction::Cne_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184019u32);
     }
     #[test]
-    fn decode_c_div_u16() {
+    fn Clts() {
+        let instr = Instruction::decode(2158135843u32);
+        println!("{:032b}", 2158135843u32);
         assert_eq!(
-            Instruction::decode(420359364u32), Instruction::C_Div_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Clts { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135843u32);
     }
     #[test]
-    fn encode_c_div_u16() {
+    fn Cltu() {
+        let instr = Instruction::decode(10652195u32);
+        println!("{:032b}", 10652195u32);
         assert_eq!(
-            Instruction::C_Div_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359364u32
+            instr, Instruction::Cltu { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652195u32);
     }
     #[test]
-    fn decode_c_div_u32() {
+    fn Clt_f32() {
+        let instr = Instruction::decode(3768748579u32);
+        println!("{:032b}", 3768748579u32);
         assert_eq!(
-            Instruction::decode(688794820u32), Instruction::C_Div_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Clt_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748579u32);
     }
     #[test]
-    fn encode_c_div_u32() {
+    fn Clt_f64() {
+        let instr = Instruction::decode(4037184035u32);
+        println!("{:032b}", 4037184035u32);
         assert_eq!(
-            Instruction::C_Div_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794820u32
+            instr, Instruction::Clt_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184035u32);
     }
     #[test]
-    fn decode_c_div_u64() {
+    fn Cles() {
+        let instr = Instruction::decode(2158135859u32);
+        println!("{:032b}", 2158135859u32);
         assert_eq!(
-            Instruction::decode(957230276u32), Instruction::C_Div_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cles { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135859u32);
     }
     #[test]
-    fn encode_c_div_u64() {
+    fn Cleu() {
+        let instr = Instruction::decode(10652211u32);
+        println!("{:032b}", 10652211u32);
         assert_eq!(
-            Instruction::C_Div_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230276u32
+            instr, Instruction::Cleu { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652211u32);
     }
     #[test]
-    fn decode_c_div_e_i8() {
+    fn Cle_f32() {
+        let instr = Instruction::decode(3768748595u32);
+        println!("{:032b}", 3768748595u32);
         assert_eq!(
-            Instruction::decode(2299407620u32), Instruction::C_Div_E_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cle_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748595u32);
     }
     #[test]
-    fn encode_c_div_e_i8() {
+    fn Cle_f64() {
+        let instr = Instruction::decode(4037184051u32);
+        println!("{:032b}", 4037184051u32);
         assert_eq!(
-            Instruction::C_Div_E_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407620u32
+            instr, Instruction::Cle_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184051u32);
     }
     #[test]
-    fn decode_c_div_e_i16() {
+    fn Cgts() {
+        let instr = Instruction::decode(2158135875u32);
+        println!("{:032b}", 2158135875u32);
         assert_eq!(
-            Instruction::decode(2567843076u32), Instruction::C_Div_E_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cgts { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135875u32);
     }
     #[test]
-    fn encode_c_div_e_i16() {
+    fn Cgtu() {
+        let instr = Instruction::decode(10652227u32);
+        println!("{:032b}", 10652227u32);
         assert_eq!(
-            Instruction::C_Div_E_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843076u32
+            instr, Instruction::Cgtu { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652227u32);
     }
     #[test]
-    fn decode_c_div_e_i32() {
+    fn Cgt_f32() {
+        let instr = Instruction::decode(3768748611u32);
+        println!("{:032b}", 3768748611u32);
         assert_eq!(
-            Instruction::decode(2836278532u32), Instruction::C_Div_E_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cgt_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748611u32);
     }
     #[test]
-    fn encode_c_div_e_i32() {
+    fn Cgt_f64() {
+        let instr = Instruction::decode(4037184067u32);
+        println!("{:032b}", 4037184067u32);
         assert_eq!(
-            Instruction::C_Div_E_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278532u32
+            instr, Instruction::Cgt_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184067u32);
     }
     #[test]
-    fn decode_c_div_e_i64() {
+    fn Cges() {
+        let instr = Instruction::decode(2158135891u32);
+        println!("{:032b}", 2158135891u32);
         assert_eq!(
-            Instruction::decode(3104713988u32), Instruction::C_Div_E_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cges { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135891u32);
     }
     #[test]
-    fn encode_c_div_e_i64() {
+    fn Cgeu() {
+        let instr = Instruction::decode(10652243u32);
+        println!("{:032b}", 10652243u32);
         assert_eq!(
-            Instruction::C_Div_E_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713988u32
+            instr, Instruction::Cgeu { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652243u32);
     }
     #[test]
-    fn decode_c_div_e_u8() {
+    fn Cge_f32() {
+        let instr = Instruction::decode(3768748627u32);
+        println!("{:032b}", 3768748627u32);
         assert_eq!(
-            Instruction::decode(151923972u32), Instruction::C_Div_E_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cge_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748627u32);
     }
     #[test]
-    fn encode_c_div_e_u8() {
+    fn Cge_f64() {
+        let instr = Instruction::decode(4037184083u32);
+        println!("{:032b}", 4037184083u32);
         assert_eq!(
-            Instruction::C_Div_E_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923972u32
+            instr, Instruction::Cge_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184083u32);
     }
     #[test]
-    fn decode_c_div_e_u16() {
+    fn Lra_8() {
+        let instr = Instruction::decode(166404u32);
+        println!("{:032b}", 166404u32);
         assert_eq!(
-            Instruction::decode(420359428u32), Instruction::C_Div_E_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Lra_8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166404u32);
     }
     #[test]
-    fn encode_c_div_e_u16() {
+    fn Lra_16() {
+        let instr = Instruction::decode(268601860u32);
+        println!("{:032b}", 268601860u32);
         assert_eq!(
-            Instruction::C_Div_E_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359428u32
+            instr, Instruction::Lra_16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268601860u32);
     }
     #[test]
-    fn decode_c_div_e_u32() {
+    fn Lra_32() {
+        let instr = Instruction::decode(537037316u32);
+        println!("{:032b}", 537037316u32);
         assert_eq!(
-            Instruction::decode(688794884u32), Instruction::C_Div_E_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Lra_32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037316u32);
     }
     #[test]
-    fn encode_c_div_e_u32() {
+    fn Lra_64() {
+        let instr = Instruction::decode(805472772u32);
+        println!("{:032b}", 805472772u32);
         assert_eq!(
-            Instruction::C_Div_E_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794884u32
+            instr, Instruction::Lra_64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472772u32);
     }
     #[test]
-    fn decode_c_div_e_u64() {
-        assert_eq!(
-            Instruction::decode(957230340u32), Instruction::C_Div_E_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
+    fn Lsi() {
+        let instr = Instruction::decode(2147813908u32);
+        println!("{:032b}", 2147813908u32);
+        assert_eq!(instr, Instruction::Lsi { rd : Register::from_index(10), imm : 10, });
+        assert_eq!(instr.encode(), 2147813908u32);
     }
     #[test]
-    fn encode_c_div_e_u64() {
-        assert_eq!(
-            Instruction::C_Div_E_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230340u32
-        );
+    fn Lui() {
+        let instr = Instruction::decode(330260u32);
+        println!("{:032b}", 330260u32);
+        assert_eq!(instr, Instruction::Lui { rd : Register::from_index(10), imm : 10, });
+        assert_eq!(instr.encode(), 330260u32);
     }
     #[test]
-    fn decode_c_log_i8() {
+    fn Lia_8() {
+        let instr = Instruction::decode(330276u32);
+        println!("{:032b}", 330276u32);
         assert_eq!(
-            Instruction::decode(2299407684u32), Instruction::C_Log_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Lia_8 { rd : Register::from_index(10), imm : 10, }
         );
+        assert_eq!(instr.encode(), 330276u32);
     }
     #[test]
-    fn encode_c_log_i8() {
+    fn Lia_16() {
+        let instr = Instruction::decode(330292u32);
+        println!("{:032b}", 330292u32);
         assert_eq!(
-            Instruction::C_Log_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407684u32
+            instr, Instruction::Lia_16 { rd : Register::from_index(10), imm : 10, }
         );
+        assert_eq!(instr.encode(), 330292u32);
     }
     #[test]
-    fn decode_c_log_i16() {
+    fn Lia_32() {
+        let instr = Instruction::decode(330308u32);
+        println!("{:032b}", 330308u32);
         assert_eq!(
-            Instruction::decode(2567843140u32), Instruction::C_Log_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Lia_32 { rd : Register::from_index(10), imm : 10, }
         );
+        assert_eq!(instr.encode(), 330308u32);
     }
     #[test]
-    fn encode_c_log_i16() {
+    fn Lia_64() {
+        let instr = Instruction::decode(330324u32);
+        println!("{:032b}", 330324u32);
         assert_eq!(
-            Instruction::C_Log_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843140u32
+            instr, Instruction::Lia_64 { rd : Register::from_index(10), imm : 10, }
         );
+        assert_eq!(instr.encode(), 330324u32);
     }
     #[test]
-    fn decode_c_log_i32() {
+    fn Sra_8() {
+        let instr = Instruction::decode(166500u32);
+        println!("{:032b}", 166500u32);
         assert_eq!(
-            Instruction::decode(2836278596u32), Instruction::C_Log_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Sra_8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166500u32);
     }
     #[test]
-    fn encode_c_log_i32() {
+    fn Sra_16() {
+        let instr = Instruction::decode(268601956u32);
+        println!("{:032b}", 268601956u32);
         assert_eq!(
-            Instruction::C_Log_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278596u32
+            instr, Instruction::Sra_16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268601956u32);
     }
     #[test]
-    fn decode_c_log_i64() {
+    fn Sra_32() {
+        let instr = Instruction::decode(537037412u32);
+        println!("{:032b}", 537037412u32);
         assert_eq!(
-            Instruction::decode(3104714052u32), Instruction::C_Log_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Sra_32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037412u32);
     }
     #[test]
-    fn encode_c_log_i64() {
+    fn Sra_64() {
+        let instr = Instruction::decode(805472868u32);
+        println!("{:032b}", 805472868u32);
         assert_eq!(
-            Instruction::C_Log_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714052u32
+            instr, Instruction::Sra_64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472868u32);
     }
     #[test]
-    fn decode_c_log_u8() {
-        assert_eq!(
-            Instruction::decode(151924036u32), Instruction::C_Log_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
+    fn Ssi() {
+        let instr = Instruction::decode(2147814004u32);
+        println!("{:032b}", 2147814004u32);
+        assert_eq!(instr, Instruction::Ssi { rd : Register::from_index(10), imm : 10, });
+        assert_eq!(instr.encode(), 2147814004u32);
     }
     #[test]
-    fn encode_c_log_u8() {
-        assert_eq!(
-            Instruction::C_Log_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924036u32
-        );
+    fn Sui() {
+        let instr = Instruction::decode(330356u32);
+        println!("{:032b}", 330356u32);
+        assert_eq!(instr, Instruction::Sui { rd : Register::from_index(10), imm : 10, });
+        assert_eq!(instr.encode(), 330356u32);
     }
     #[test]
-    fn decode_c_log_u16() {
+    fn Mov() {
+        let instr = Instruction::decode(166532u32);
+        println!("{:032b}", 166532u32);
         assert_eq!(
-            Instruction::decode(420359492u32), Instruction::C_Log_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Mov { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166532u32);
     }
     #[test]
-    fn encode_c_log_u16() {
-        assert_eq!(
-            Instruction::C_Log_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359492u32
-        );
+    fn Pop() {
+        let instr = Instruction::decode(2708u32);
+        println!("{:032b}", 2708u32);
+        assert_eq!(instr, Instruction::Pop { rd : Register::from_index(10), });
+        assert_eq!(instr.encode(), 2708u32);
     }
     #[test]
-    fn decode_c_log_u32() {
-        assert_eq!(
-            Instruction::decode(688794948u32), Instruction::C_Log_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
+    fn Psh() {
+        let instr = Instruction::decode(2147486356u32);
+        println!("{:032b}", 2147486356u32);
+        assert_eq!(instr, Instruction::Psh { rd : Register::from_index(10), });
+        assert_eq!(instr.encode(), 2147486356u32);
     }
     #[test]
-    fn encode_c_log_u32() {
-        assert_eq!(
-            Instruction::C_Log_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794948u32
-        );
+    fn Psi() {
+        let instr = Instruction::decode(2724u32);
+        println!("{:032b}", 2724u32);
+        assert_eq!(instr, Instruction::Psi { imm : 10, });
+        assert_eq!(instr.encode(), 2724u32);
     }
     #[test]
-    fn decode_c_log_u64() {
-        assert_eq!(
-            Instruction::decode(957230404u32), Instruction::C_Log_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
-        );
+    fn Pui() {
+        let instr = Instruction::decode(2740u32);
+        println!("{:032b}", 2740u32);
+        assert_eq!(instr, Instruction::Pui { imm : 10, });
+        assert_eq!(instr.encode(), 2740u32);
     }
     #[test]
-    fn encode_c_log_u64() {
+    fn And_i8() {
+        let instr = Instruction::decode(2158135813u32);
+        println!("{:032b}", 2158135813u32);
         assert_eq!(
-            Instruction::C_Log_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230404u32
+            instr, Instruction::And_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135813u32);
     }
     #[test]
-    fn decode_c_sqrt_i8() {
+    fn And_i16() {
+        let instr = Instruction::decode(2426571269u32);
+        println!("{:032b}", 2426571269u32);
         assert_eq!(
-            Instruction::decode(2148412804u32), Instruction::C_Sqrt_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::And_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571269u32);
     }
     #[test]
-    fn encode_c_sqrt_i8() {
+    fn And_i32() {
+        let instr = Instruction::decode(2695006725u32);
+        println!("{:032b}", 2695006725u32);
         assert_eq!(
-            Instruction::C_Sqrt_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148412804u32
+            instr, Instruction::And_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006725u32);
     }
     #[test]
-    fn decode_c_sqrt_i16() {
+    fn And_i64() {
+        let instr = Instruction::decode(2963442181u32);
+        println!("{:032b}", 2963442181u32);
         assert_eq!(
-            Instruction::decode(2416848260u32), Instruction::C_Sqrt_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::And_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442181u32);
     }
     #[test]
-    fn encode_c_sqrt_i16() {
+    fn And_u8() {
+        let instr = Instruction::decode(10652165u32);
+        println!("{:032b}", 10652165u32);
         assert_eq!(
-            Instruction::C_Sqrt_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848260u32
+            instr, Instruction::And_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652165u32);
     }
     #[test]
-    fn decode_c_sqrt_i32() {
+    fn And_u16() {
+        let instr = Instruction::decode(279087621u32);
+        println!("{:032b}", 279087621u32);
         assert_eq!(
-            Instruction::decode(2685283716u32), Instruction::C_Sqrt_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::And_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087621u32);
     }
     #[test]
-    fn encode_c_sqrt_i32() {
+    fn And_u32() {
+        let instr = Instruction::decode(547523077u32);
+        println!("{:032b}", 547523077u32);
         assert_eq!(
-            Instruction::C_Sqrt_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685283716u32
+            instr, Instruction::And_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523077u32);
     }
     #[test]
-    fn decode_c_sqrt_i64() {
+    fn And_u64() {
+        let instr = Instruction::decode(815958533u32);
+        println!("{:032b}", 815958533u32);
         assert_eq!(
-            Instruction::decode(2953719172u32), Instruction::C_Sqrt_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::And_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958533u32);
     }
     #[test]
-    fn encode_c_sqrt_i64() {
+    fn Or_i8() {
+        let instr = Instruction::decode(2158135829u32);
+        println!("{:032b}", 2158135829u32);
         assert_eq!(
-            Instruction::C_Sqrt_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719172u32
+            instr, Instruction::Or_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135829u32);
     }
     #[test]
-    fn decode_c_sqrt_u8() {
+    fn Or_i16() {
+        let instr = Instruction::decode(2426571285u32);
+        println!("{:032b}", 2426571285u32);
         assert_eq!(
-            Instruction::decode(929156u32), Instruction::C_Sqrt_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Or_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571285u32);
     }
     #[test]
-    fn encode_c_sqrt_u8() {
+    fn Or_i32() {
+        let instr = Instruction::decode(2695006741u32);
+        println!("{:032b}", 2695006741u32);
         assert_eq!(
-            Instruction::C_Sqrt_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 929156u32
+            instr, Instruction::Or_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006741u32);
     }
     #[test]
-    fn decode_c_sqrt_u16() {
+    fn Or_i64() {
+        let instr = Instruction::decode(2963442197u32);
+        println!("{:032b}", 2963442197u32);
         assert_eq!(
-            Instruction::decode(269364612u32), Instruction::C_Sqrt_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Or_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442197u32);
     }
     #[test]
-    fn encode_c_sqrt_u16() {
+    fn Or_u8() {
+        let instr = Instruction::decode(10652181u32);
+        println!("{:032b}", 10652181u32);
         assert_eq!(
-            Instruction::C_Sqrt_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 269364612u32
+            instr, Instruction::Or_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652181u32);
     }
     #[test]
-    fn decode_c_sqrt_u32() {
+    fn Or_u16() {
+        let instr = Instruction::decode(279087637u32);
+        println!("{:032b}", 279087637u32);
         assert_eq!(
-            Instruction::decode(537800068u32), Instruction::C_Sqrt_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Or_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087637u32);
     }
     #[test]
-    fn encode_c_sqrt_u32() {
+    fn Or_u32() {
+        let instr = Instruction::decode(547523093u32);
+        println!("{:032b}", 547523093u32);
         assert_eq!(
-            Instruction::C_Sqrt_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 537800068u32
+            instr, Instruction::Or_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523093u32);
     }
     #[test]
-    fn decode_c_sqrt_u64() {
+    fn Or_u64() {
+        let instr = Instruction::decode(815958549u32);
+        println!("{:032b}", 815958549u32);
         assert_eq!(
-            Instruction::decode(806235524u32), Instruction::C_Sqrt_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Or_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958549u32);
     }
     #[test]
-    fn encode_c_sqrt_u64() {
+    fn Xor_i8() {
+        let instr = Instruction::decode(2158135845u32);
+        println!("{:032b}", 2158135845u32);
         assert_eq!(
-            Instruction::C_Sqrt_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 806235524u32
+            instr, Instruction::Xor_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135845u32);
     }
     #[test]
-    fn decode_c_mul_i8() {
+    fn Xor_i16() {
+        let instr = Instruction::decode(2426571301u32);
+        println!("{:032b}", 2426571301u32);
         assert_eq!(
-            Instruction::decode(2299407812u32), Instruction::C_Mul_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Xor_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571301u32);
     }
     #[test]
-    fn encode_c_mul_i8() {
+    fn Xor_i32() {
+        let instr = Instruction::decode(2695006757u32);
+        println!("{:032b}", 2695006757u32);
         assert_eq!(
-            Instruction::C_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407812u32
+            instr, Instruction::Xor_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006757u32);
     }
     #[test]
-    fn decode_c_mul_i16() {
+    fn Xor_i64() {
+        let instr = Instruction::decode(2963442213u32);
+        println!("{:032b}", 2963442213u32);
         assert_eq!(
-            Instruction::decode(2567843268u32), Instruction::C_Mul_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Xor_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442213u32);
     }
     #[test]
-    fn encode_c_mul_i16() {
+    fn Xor_u8() {
+        let instr = Instruction::decode(10652197u32);
+        println!("{:032b}", 10652197u32);
         assert_eq!(
-            Instruction::C_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843268u32
+            instr, Instruction::Xor_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652197u32);
     }
     #[test]
-    fn decode_c_mul_i32() {
+    fn Xor_u16() {
+        let instr = Instruction::decode(279087653u32);
+        println!("{:032b}", 279087653u32);
         assert_eq!(
-            Instruction::decode(2836278724u32), Instruction::C_Mul_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Xor_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087653u32);
     }
     #[test]
-    fn encode_c_mul_i32() {
+    fn Xor_u32() {
+        let instr = Instruction::decode(547523109u32);
+        println!("{:032b}", 547523109u32);
         assert_eq!(
-            Instruction::C_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278724u32
+            instr, Instruction::Xor_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523109u32);
     }
     #[test]
-    fn decode_c_mul_i64() {
+    fn Xor_u64() {
+        let instr = Instruction::decode(815958565u32);
+        println!("{:032b}", 815958565u32);
         assert_eq!(
-            Instruction::decode(3104714180u32), Instruction::C_Mul_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Xor_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958565u32);
     }
     #[test]
-    fn encode_c_mul_i64() {
+    fn Not_i8() {
+        let instr = Instruction::decode(2147650101u32);
+        println!("{:032b}", 2147650101u32);
         assert_eq!(
-            Instruction::C_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714180u32
+            instr, Instruction::Not_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650101u32);
     }
     #[test]
-    fn decode_c_mul_u8() {
+    fn Not_i16() {
+        let instr = Instruction::decode(2416085557u32);
+        println!("{:032b}", 2416085557u32);
         assert_eq!(
-            Instruction::decode(151924164u32), Instruction::C_Mul_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Not_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085557u32);
     }
     #[test]
-    fn encode_c_mul_u8() {
+    fn Not_i32() {
+        let instr = Instruction::decode(2684521013u32);
+        println!("{:032b}", 2684521013u32);
         assert_eq!(
-            Instruction::C_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924164u32
+            instr, Instruction::Not_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521013u32);
     }
     #[test]
-    fn decode_c_mul_u16() {
+    fn Not_i64() {
+        let instr = Instruction::decode(2952956469u32);
+        println!("{:032b}", 2952956469u32);
         assert_eq!(
-            Instruction::decode(420359620u32), Instruction::C_Mul_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Not_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956469u32);
     }
     #[test]
-    fn encode_c_mul_u16() {
+    fn Not_u8() {
+        let instr = Instruction::decode(166453u32);
+        println!("{:032b}", 166453u32);
         assert_eq!(
-            Instruction::C_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359620u32
+            instr, Instruction::Not_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166453u32);
     }
     #[test]
-    fn decode_c_mul_u32() {
+    fn Not_u16() {
+        let instr = Instruction::decode(268601909u32);
+        println!("{:032b}", 268601909u32);
         assert_eq!(
-            Instruction::decode(688795076u32), Instruction::C_Mul_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Not_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268601909u32);
     }
     #[test]
-    fn encode_c_mul_u32() {
+    fn Not_u32() {
+        let instr = Instruction::decode(537037365u32);
+        println!("{:032b}", 537037365u32);
         assert_eq!(
-            Instruction::C_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795076u32
+            instr, Instruction::Not_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037365u32);
     }
     #[test]
-    fn decode_c_mul_u64() {
+    fn Not_u64() {
+        let instr = Instruction::decode(805472821u32);
+        println!("{:032b}", 805472821u32);
         assert_eq!(
-            Instruction::decode(957230532u32), Instruction::C_Mul_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Not_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472821u32);
     }
     #[test]
-    fn encode_c_mul_u64() {
+    fn Shl_i8() {
+        let instr = Instruction::decode(2158135877u32);
+        println!("{:032b}", 2158135877u32);
         assert_eq!(
-            Instruction::C_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230532u32
+            instr, Instruction::Shl_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135877u32);
     }
     #[test]
-    fn decode_c_neg_i8() {
+    fn Shl_i16() {
+        let instr = Instruction::decode(2426571333u32);
+        println!("{:032b}", 2426571333u32);
         assert_eq!(
-            Instruction::decode(2148412932u32), Instruction::C_Neg_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Shl_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571333u32);
     }
     #[test]
-    fn encode_c_neg_i8() {
+    fn Shl_i32() {
+        let instr = Instruction::decode(2695006789u32);
+        println!("{:032b}", 2695006789u32);
         assert_eq!(
-            Instruction::C_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148412932u32
+            instr, Instruction::Shl_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006789u32);
     }
     #[test]
-    fn decode_c_neg_i16() {
+    fn Shl_i64() {
+        let instr = Instruction::decode(2963442245u32);
+        println!("{:032b}", 2963442245u32);
         assert_eq!(
-            Instruction::decode(2416848388u32), Instruction::C_Neg_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Shl_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442245u32);
     }
     #[test]
-    fn encode_c_neg_i16() {
+    fn Shl_u8() {
+        let instr = Instruction::decode(10652229u32);
+        println!("{:032b}", 10652229u32);
         assert_eq!(
-            Instruction::C_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848388u32
+            instr, Instruction::Shl_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652229u32);
     }
     #[test]
-    fn decode_c_neg_i32() {
+    fn Shl_u16() {
+        let instr = Instruction::decode(279087685u32);
+        println!("{:032b}", 279087685u32);
         assert_eq!(
-            Instruction::decode(2685283844u32), Instruction::C_Neg_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Shl_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087685u32);
     }
     #[test]
-    fn encode_c_neg_i32() {
+    fn Shl_u32() {
+        let instr = Instruction::decode(547523141u32);
+        println!("{:032b}", 547523141u32);
         assert_eq!(
-            Instruction::C_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685283844u32
+            instr, Instruction::Shl_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523141u32);
     }
     #[test]
-    fn decode_c_neg_i64() {
+    fn Shl_u64() {
+        let instr = Instruction::decode(815958597u32);
+        println!("{:032b}", 815958597u32);
         assert_eq!(
-            Instruction::decode(2953719300u32), Instruction::C_Neg_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Shl_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958597u32);
     }
     #[test]
-    fn encode_c_neg_i64() {
+    fn Shr_i8() {
+        let instr = Instruction::decode(2158135893u32);
+        println!("{:032b}", 2158135893u32);
         assert_eq!(
-            Instruction::C_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719300u32
+            instr, Instruction::Shr_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135893u32);
     }
     #[test]
-    fn decode_c_pow_i8() {
+    fn Shr_i16() {
+        let instr = Instruction::decode(2426571349u32);
+        println!("{:032b}", 2426571349u32);
         assert_eq!(
-            Instruction::decode(2299407940u32), Instruction::C_Pow_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Shr_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571349u32);
     }
     #[test]
-    fn encode_c_pow_i8() {
+    fn Shr_i32() {
+        let instr = Instruction::decode(2695006805u32);
+        println!("{:032b}", 2695006805u32);
         assert_eq!(
-            Instruction::C_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407940u32
+            instr, Instruction::Shr_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006805u32);
     }
     #[test]
-    fn decode_c_pow_i16() {
+    fn Shr_i64() {
+        let instr = Instruction::decode(2963442261u32);
+        println!("{:032b}", 2963442261u32);
         assert_eq!(
-            Instruction::decode(2567843396u32), Instruction::C_Pow_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Shr_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442261u32);
     }
     #[test]
-    fn encode_c_pow_i16() {
+    fn Shr_u8() {
+        let instr = Instruction::decode(10652245u32);
+        println!("{:032b}", 10652245u32);
         assert_eq!(
-            Instruction::C_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843396u32
+            instr, Instruction::Shr_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652245u32);
     }
     #[test]
-    fn decode_c_pow_i32() {
+    fn Shr_u16() {
+        let instr = Instruction::decode(279087701u32);
+        println!("{:032b}", 279087701u32);
         assert_eq!(
-            Instruction::decode(2836278852u32), Instruction::C_Pow_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Shr_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087701u32);
     }
     #[test]
-    fn encode_c_pow_i32() {
+    fn Shr_u32() {
+        let instr = Instruction::decode(547523157u32);
+        println!("{:032b}", 547523157u32);
         assert_eq!(
-            Instruction::C_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278852u32
+            instr, Instruction::Shr_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523157u32);
     }
     #[test]
-    fn decode_c_pow_i64() {
+    fn Shr_u64() {
+        let instr = Instruction::decode(815958613u32);
+        println!("{:032b}", 815958613u32);
         assert_eq!(
-            Instruction::decode(3104714308u32), Instruction::C_Pow_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Shr_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958613u32);
     }
     #[test]
-    fn encode_c_pow_i64() {
+    fn Rot_L_i8() {
+        let instr = Instruction::decode(2158135909u32);
+        println!("{:032b}", 2158135909u32);
         assert_eq!(
-            Instruction::C_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714308u32
+            instr, Instruction::Rot_L_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135909u32);
     }
     #[test]
-    fn decode_c_pow_u8() {
+    fn Rot_L_i16() {
+        let instr = Instruction::decode(2426571365u32);
+        println!("{:032b}", 2426571365u32);
         assert_eq!(
-            Instruction::decode(151924292u32), Instruction::C_Pow_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Rot_L_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571365u32);
     }
     #[test]
-    fn encode_c_pow_u8() {
+    fn Rot_L_i32() {
+        let instr = Instruction::decode(2695006821u32);
+        println!("{:032b}", 2695006821u32);
         assert_eq!(
-            Instruction::C_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924292u32
+            instr, Instruction::Rot_L_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006821u32);
     }
     #[test]
-    fn decode_c_pow_u16() {
+    fn Rot_L_i64() {
+        let instr = Instruction::decode(2963442277u32);
+        println!("{:032b}", 2963442277u32);
         assert_eq!(
-            Instruction::decode(420359748u32), Instruction::C_Pow_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Rot_L_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442277u32);
     }
     #[test]
-    fn encode_c_pow_u16() {
+    fn Rot_L_u8() {
+        let instr = Instruction::decode(10652261u32);
+        println!("{:032b}", 10652261u32);
         assert_eq!(
-            Instruction::C_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359748u32
+            instr, Instruction::Rot_L_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652261u32);
     }
     #[test]
-    fn decode_c_pow_u32() {
+    fn Rot_L_u16() {
+        let instr = Instruction::decode(279087717u32);
+        println!("{:032b}", 279087717u32);
         assert_eq!(
-            Instruction::decode(688795204u32), Instruction::C_Pow_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Rot_L_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087717u32);
     }
     #[test]
-    fn encode_c_pow_u32() {
+    fn Rot_L_u32() {
+        let instr = Instruction::decode(547523173u32);
+        println!("{:032b}", 547523173u32);
         assert_eq!(
-            Instruction::C_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795204u32
+            instr, Instruction::Rot_L_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523173u32);
     }
     #[test]
-    fn decode_c_pow_u64() {
+    fn Rot_L_u64() {
+        let instr = Instruction::decode(815958629u32);
+        println!("{:032b}", 815958629u32);
         assert_eq!(
-            Instruction::decode(957230660u32), Instruction::C_Pow_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Rot_L_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958629u32);
     }
     #[test]
-    fn encode_c_pow_u64() {
+    fn Rot_R_i8() {
+        let instr = Instruction::decode(2158135925u32);
+        println!("{:032b}", 2158135925u32);
         assert_eq!(
-            Instruction::C_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230660u32
+            instr, Instruction::Rot_R_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135925u32);
     }
     #[test]
-    fn decode_c_rem_i8() {
+    fn Rot_R_i16() {
+        let instr = Instruction::decode(2426571381u32);
+        println!("{:032b}", 2426571381u32);
         assert_eq!(
-            Instruction::decode(2299408004u32), Instruction::C_Rem_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Rot_R_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571381u32);
     }
     #[test]
-    fn encode_c_rem_i8() {
+    fn Rot_R_i32() {
+        let instr = Instruction::decode(2695006837u32);
+        println!("{:032b}", 2695006837u32);
         assert_eq!(
-            Instruction::C_Rem_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408004u32
+            instr, Instruction::Rot_R_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006837u32);
     }
     #[test]
-    fn decode_c_rem_i16() {
+    fn Rot_R_i64() {
+        let instr = Instruction::decode(2963442293u32);
+        println!("{:032b}", 2963442293u32);
         assert_eq!(
-            Instruction::decode(2567843460u32), Instruction::C_Rem_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Rot_R_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442293u32);
     }
     #[test]
-    fn encode_c_rem_i16() {
+    fn Rot_R_u8() {
+        let instr = Instruction::decode(10652277u32);
+        println!("{:032b}", 10652277u32);
         assert_eq!(
-            Instruction::C_Rem_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843460u32
+            instr, Instruction::Rot_R_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652277u32);
     }
     #[test]
-    fn decode_c_rem_i32() {
+    fn Rot_R_u16() {
+        let instr = Instruction::decode(279087733u32);
+        println!("{:032b}", 279087733u32);
         assert_eq!(
-            Instruction::decode(2836278916u32), Instruction::C_Rem_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Rot_R_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087733u32);
     }
     #[test]
-    fn encode_c_rem_i32() {
+    fn Rot_R_u32() {
+        let instr = Instruction::decode(547523189u32);
+        println!("{:032b}", 547523189u32);
         assert_eq!(
-            Instruction::C_Rem_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278916u32
+            instr, Instruction::Rot_R_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523189u32);
     }
     #[test]
-    fn decode_c_rem_i64() {
+    fn Rot_R_u64() {
+        let instr = Instruction::decode(815958645u32);
+        println!("{:032b}", 815958645u32);
         assert_eq!(
-            Instruction::decode(3104714372u32), Instruction::C_Rem_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Rot_R_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958645u32);
     }
     #[test]
-    fn encode_c_rem_i64() {
+    fn C_Ones_i8() {
+        let instr = Instruction::decode(2147650181u32);
+        println!("{:032b}", 2147650181u32);
         assert_eq!(
-            Instruction::C_Rem_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714372u32
+            instr, Instruction::C_Ones_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650181u32);
     }
     #[test]
-    fn decode_c_rem_u8() {
+    fn C_Ones_i16() {
+        let instr = Instruction::decode(2416085637u32);
+        println!("{:032b}", 2416085637u32);
         assert_eq!(
-            Instruction::decode(151924356u32), Instruction::C_Rem_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Ones_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085637u32);
     }
     #[test]
-    fn encode_c_rem_u8() {
+    fn C_Ones_i32() {
+        let instr = Instruction::decode(2684521093u32);
+        println!("{:032b}", 2684521093u32);
         assert_eq!(
-            Instruction::C_Rem_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924356u32
+            instr, Instruction::C_Ones_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521093u32);
     }
     #[test]
-    fn decode_c_rem_u16() {
+    fn C_Ones_i64() {
+        let instr = Instruction::decode(2952956549u32);
+        println!("{:032b}", 2952956549u32);
         assert_eq!(
-            Instruction::decode(420359812u32), Instruction::C_Rem_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Ones_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956549u32);
     }
     #[test]
-    fn encode_c_rem_u16() {
+    fn C_Ones_u8() {
+        let instr = Instruction::decode(166533u32);
+        println!("{:032b}", 166533u32);
         assert_eq!(
-            Instruction::C_Rem_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359812u32
+            instr, Instruction::C_Ones_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166533u32);
     }
     #[test]
-    fn decode_c_rem_u32() {
+    fn C_Ones_u16() {
+        let instr = Instruction::decode(268601989u32);
+        println!("{:032b}", 268601989u32);
         assert_eq!(
-            Instruction::decode(688795268u32), Instruction::C_Rem_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Ones_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268601989u32);
     }
     #[test]
-    fn encode_c_rem_u32() {
+    fn C_Ones_u32() {
+        let instr = Instruction::decode(537037445u32);
+        println!("{:032b}", 537037445u32);
         assert_eq!(
-            Instruction::C_Rem_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795268u32
+            instr, Instruction::C_Ones_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037445u32);
     }
     #[test]
-    fn decode_c_rem_u64() {
+    fn C_Ones_u64() {
+        let instr = Instruction::decode(805472901u32);
+        println!("{:032b}", 805472901u32);
         assert_eq!(
-            Instruction::decode(957230724u32), Instruction::C_Rem_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Ones_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472901u32);
     }
     #[test]
-    fn encode_c_rem_u64() {
+    fn L_Ones_i8() {
+        let instr = Instruction::decode(2147650197u32);
+        println!("{:032b}", 2147650197u32);
         assert_eq!(
-            Instruction::C_Rem_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230724u32
+            instr, Instruction::L_Ones_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650197u32);
     }
     #[test]
-    fn decode_c_rem_e_i8() {
+    fn L_Ones_i16() {
+        let instr = Instruction::decode(2416085653u32);
+        println!("{:032b}", 2416085653u32);
         assert_eq!(
-            Instruction::decode(2299408068u32), Instruction::C_Rem_E_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::L_Ones_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085653u32);
     }
     #[test]
-    fn encode_c_rem_e_i8() {
+    fn L_Ones_i32() {
+        let instr = Instruction::decode(2684521109u32);
+        println!("{:032b}", 2684521109u32);
         assert_eq!(
-            Instruction::C_Rem_E_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408068u32
+            instr, Instruction::L_Ones_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521109u32);
     }
     #[test]
-    fn decode_c_rem_e_i16() {
+    fn L_Ones_i64() {
+        let instr = Instruction::decode(2952956565u32);
+        println!("{:032b}", 2952956565u32);
         assert_eq!(
-            Instruction::decode(2567843524u32), Instruction::C_Rem_E_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::L_Ones_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956565u32);
     }
     #[test]
-    fn encode_c_rem_e_i16() {
+    fn L_Ones_u8() {
+        let instr = Instruction::decode(166549u32);
+        println!("{:032b}", 166549u32);
         assert_eq!(
-            Instruction::C_Rem_E_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843524u32
+            instr, Instruction::L_Ones_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166549u32);
     }
     #[test]
-    fn decode_c_rem_e_i32() {
+    fn L_Ones_u16() {
+        let instr = Instruction::decode(268602005u32);
+        println!("{:032b}", 268602005u32);
         assert_eq!(
-            Instruction::decode(2836278980u32), Instruction::C_Rem_E_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::L_Ones_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268602005u32);
     }
     #[test]
-    fn encode_c_rem_e_i32() {
+    fn L_Ones_u32() {
+        let instr = Instruction::decode(537037461u32);
+        println!("{:032b}", 537037461u32);
         assert_eq!(
-            Instruction::C_Rem_E_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278980u32
+            instr, Instruction::L_Ones_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037461u32);
     }
     #[test]
-    fn decode_c_rem_e_i64() {
+    fn L_Ones_u64() {
+        let instr = Instruction::decode(805472917u32);
+        println!("{:032b}", 805472917u32);
         assert_eq!(
-            Instruction::decode(3104714436u32), Instruction::C_Rem_E_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::L_Ones_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472917u32);
     }
     #[test]
-    fn encode_c_rem_e_i64() {
+    fn T_Ones_i8() {
+        let instr = Instruction::decode(2147650213u32);
+        println!("{:032b}", 2147650213u32);
         assert_eq!(
-            Instruction::C_Rem_E_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714436u32
+            instr, Instruction::T_Ones_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650213u32);
     }
     #[test]
-    fn decode_c_rem_e_u8() {
+    fn T_Ones_i16() {
+        let instr = Instruction::decode(2416085669u32);
+        println!("{:032b}", 2416085669u32);
         assert_eq!(
-            Instruction::decode(151924420u32), Instruction::C_Rem_E_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::T_Ones_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085669u32);
     }
     #[test]
-    fn encode_c_rem_e_u8() {
+    fn T_Ones_i32() {
+        let instr = Instruction::decode(2684521125u32);
+        println!("{:032b}", 2684521125u32);
         assert_eq!(
-            Instruction::C_Rem_E_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924420u32
+            instr, Instruction::T_Ones_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521125u32);
     }
     #[test]
-    fn decode_c_rem_e_u16() {
+    fn T_Ones_i64() {
+        let instr = Instruction::decode(2952956581u32);
+        println!("{:032b}", 2952956581u32);
         assert_eq!(
-            Instruction::decode(420359876u32), Instruction::C_Rem_E_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::T_Ones_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956581u32);
     }
     #[test]
-    fn encode_c_rem_e_u16() {
+    fn T_Ones_u8() {
+        let instr = Instruction::decode(166565u32);
+        println!("{:032b}", 166565u32);
         assert_eq!(
-            Instruction::C_Rem_E_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359876u32
+            instr, Instruction::T_Ones_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166565u32);
     }
     #[test]
-    fn decode_c_rem_e_u32() {
+    fn T_Ones_u16() {
+        let instr = Instruction::decode(268602021u32);
+        println!("{:032b}", 268602021u32);
         assert_eq!(
-            Instruction::decode(688795332u32), Instruction::C_Rem_E_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::T_Ones_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268602021u32);
     }
     #[test]
-    fn encode_c_rem_e_u32() {
+    fn T_Ones_u32() {
+        let instr = Instruction::decode(537037477u32);
+        println!("{:032b}", 537037477u32);
         assert_eq!(
-            Instruction::C_Rem_E_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795332u32
+            instr, Instruction::T_Ones_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037477u32);
     }
     #[test]
-    fn decode_c_rem_e_u64() {
+    fn T_Ones_u64() {
+        let instr = Instruction::decode(805472933u32);
+        println!("{:032b}", 805472933u32);
         assert_eq!(
-            Instruction::decode(957230788u32), Instruction::C_Rem_E_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::T_Ones_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472933u32);
     }
     #[test]
-    fn encode_c_rem_e_u64() {
+    fn C_Zeros_i8() {
+        let instr = Instruction::decode(2147650229u32);
+        println!("{:032b}", 2147650229u32);
         assert_eq!(
-            Instruction::C_Rem_E_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230788u32
+            instr, Instruction::C_Zeros_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650229u32);
     }
     #[test]
-    fn decode_c_shl_i8() {
+    fn C_Zeros_i16() {
+        let instr = Instruction::decode(2416085685u32);
+        println!("{:032b}", 2416085685u32);
         assert_eq!(
-            Instruction::decode(2299408132u32), Instruction::C_Shl_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Zeros_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085685u32);
     }
     #[test]
-    fn encode_c_shl_i8() {
+    fn C_Zeros_i32() {
+        let instr = Instruction::decode(2684521141u32);
+        println!("{:032b}", 2684521141u32);
         assert_eq!(
-            Instruction::C_Shl_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408132u32
+            instr, Instruction::C_Zeros_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521141u32);
     }
     #[test]
-    fn decode_c_shl_i16() {
+    fn C_Zeros_i64() {
+        let instr = Instruction::decode(2952956597u32);
+        println!("{:032b}", 2952956597u32);
         assert_eq!(
-            Instruction::decode(2567843588u32), Instruction::C_Shl_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Zeros_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956597u32);
     }
     #[test]
-    fn encode_c_shl_i16() {
+    fn C_Zeros_u8() {
+        let instr = Instruction::decode(166581u32);
+        println!("{:032b}", 166581u32);
         assert_eq!(
-            Instruction::C_Shl_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843588u32
+            instr, Instruction::C_Zeros_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166581u32);
     }
     #[test]
-    fn decode_c_shl_i32() {
+    fn C_Zeros_u16() {
+        let instr = Instruction::decode(268602037u32);
+        println!("{:032b}", 268602037u32);
         assert_eq!(
-            Instruction::decode(2836279044u32), Instruction::C_Shl_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Zeros_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268602037u32);
     }
     #[test]
-    fn encode_c_shl_i32() {
+    fn C_Zeros_u32() {
+        let instr = Instruction::decode(537037493u32);
+        println!("{:032b}", 537037493u32);
         assert_eq!(
-            Instruction::C_Shl_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836279044u32
+            instr, Instruction::C_Zeros_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037493u32);
     }
     #[test]
-    fn decode_c_shl_i64() {
+    fn C_Zeros_u64() {
+        let instr = Instruction::decode(805472949u32);
+        println!("{:032b}", 805472949u32);
         assert_eq!(
-            Instruction::decode(3104714500u32), Instruction::C_Shl_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Zeros_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472949u32);
     }
     #[test]
-    fn encode_c_shl_i64() {
+    fn L_Zeros_i8() {
+        let instr = Instruction::decode(2147650245u32);
+        println!("{:032b}", 2147650245u32);
         assert_eq!(
-            Instruction::C_Shl_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714500u32
+            instr, Instruction::L_Zeros_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650245u32);
     }
     #[test]
-    fn decode_c_shl_u8() {
+    fn L_Zeros_i16() {
+        let instr = Instruction::decode(2416085701u32);
+        println!("{:032b}", 2416085701u32);
         assert_eq!(
-            Instruction::decode(151924484u32), Instruction::C_Shl_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::L_Zeros_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085701u32);
     }
     #[test]
-    fn encode_c_shl_u8() {
+    fn L_Zeros_i32() {
+        let instr = Instruction::decode(2684521157u32);
+        println!("{:032b}", 2684521157u32);
         assert_eq!(
-            Instruction::C_Shl_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924484u32
+            instr, Instruction::L_Zeros_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521157u32);
     }
     #[test]
-    fn decode_c_shl_u16() {
+    fn L_Zeros_i64() {
+        let instr = Instruction::decode(2952956613u32);
+        println!("{:032b}", 2952956613u32);
         assert_eq!(
-            Instruction::decode(420359940u32), Instruction::C_Shl_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::L_Zeros_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956613u32);
     }
     #[test]
-    fn encode_c_shl_u16() {
+    fn L_Zeros_u8() {
+        let instr = Instruction::decode(166597u32);
+        println!("{:032b}", 166597u32);
         assert_eq!(
-            Instruction::C_Shl_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359940u32
+            instr, Instruction::L_Zeros_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166597u32);
     }
     #[test]
-    fn decode_c_shl_u32() {
+    fn L_Zeros_u16() {
+        let instr = Instruction::decode(268602053u32);
+        println!("{:032b}", 268602053u32);
         assert_eq!(
-            Instruction::decode(688795396u32), Instruction::C_Shl_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::L_Zeros_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268602053u32);
     }
     #[test]
-    fn encode_c_shl_u32() {
+    fn L_Zeros_u32() {
+        let instr = Instruction::decode(537037509u32);
+        println!("{:032b}", 537037509u32);
         assert_eq!(
-            Instruction::C_Shl_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795396u32
+            instr, Instruction::L_Zeros_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037509u32);
     }
     #[test]
-    fn decode_c_shl_u64() {
+    fn L_Zeros_u64() {
+        let instr = Instruction::decode(805472965u32);
+        println!("{:032b}", 805472965u32);
         assert_eq!(
-            Instruction::decode(957230852u32), Instruction::C_Shl_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::L_Zeros_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472965u32);
     }
     #[test]
-    fn encode_c_shl_u64() {
+    fn T_Zeros_i8() {
+        let instr = Instruction::decode(2147650261u32);
+        println!("{:032b}", 2147650261u32);
         assert_eq!(
-            Instruction::C_Shl_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230852u32
+            instr, Instruction::T_Zeros_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650261u32);
     }
     #[test]
-    fn decode_c_shr_i8() {
+    fn T_Zeros_i16() {
+        let instr = Instruction::decode(2416085717u32);
+        println!("{:032b}", 2416085717u32);
         assert_eq!(
-            Instruction::decode(2299408196u32), Instruction::C_Shr_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::T_Zeros_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085717u32);
     }
     #[test]
-    fn encode_c_shr_i8() {
+    fn T_Zeros_i32() {
+        let instr = Instruction::decode(2684521173u32);
+        println!("{:032b}", 2684521173u32);
         assert_eq!(
-            Instruction::C_Shr_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408196u32
+            instr, Instruction::T_Zeros_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521173u32);
     }
     #[test]
-    fn decode_c_shr_i16() {
+    fn T_Zeros_i64() {
+        let instr = Instruction::decode(2952956629u32);
+        println!("{:032b}", 2952956629u32);
         assert_eq!(
-            Instruction::decode(2567843652u32), Instruction::C_Shr_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::T_Zeros_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956629u32);
     }
     #[test]
-    fn encode_c_shr_i16() {
+    fn T_Zeros_u8() {
+        let instr = Instruction::decode(166613u32);
+        println!("{:032b}", 166613u32);
         assert_eq!(
-            Instruction::C_Shr_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843652u32
+            instr, Instruction::T_Zeros_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166613u32);
     }
     #[test]
-    fn decode_c_shr_i32() {
+    fn T_Zeros_u16() {
+        let instr = Instruction::decode(268602069u32);
+        println!("{:032b}", 268602069u32);
         assert_eq!(
-            Instruction::decode(2836279108u32), Instruction::C_Shr_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::T_Zeros_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268602069u32);
     }
     #[test]
-    fn encode_c_shr_i32() {
+    fn T_Zeros_u32() {
+        let instr = Instruction::decode(537037525u32);
+        println!("{:032b}", 537037525u32);
         assert_eq!(
-            Instruction::C_Shr_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836279108u32
+            instr, Instruction::T_Zeros_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037525u32);
     }
     #[test]
-    fn decode_c_shr_i64() {
+    fn T_Zeros_u64() {
+        let instr = Instruction::decode(805472981u32);
+        println!("{:032b}", 805472981u32);
         assert_eq!(
-            Instruction::decode(3104714564u32), Instruction::C_Shr_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::T_Zeros_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472981u32);
     }
     #[test]
-    fn encode_c_shr_i64() {
+    fn R_Bytes_i8() {
+        let instr = Instruction::decode(2147650277u32);
+        println!("{:032b}", 2147650277u32);
         assert_eq!(
-            Instruction::C_Shr_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714564u32
+            instr, Instruction::R_Bytes_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650277u32);
     }
     #[test]
-    fn decode_c_shr_u8() {
+    fn R_Bytes_i16() {
+        let instr = Instruction::decode(2416085733u32);
+        println!("{:032b}", 2416085733u32);
         assert_eq!(
-            Instruction::decode(151924548u32), Instruction::C_Shr_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::R_Bytes_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085733u32);
     }
     #[test]
-    fn encode_c_shr_u8() {
+    fn R_Bytes_i32() {
+        let instr = Instruction::decode(2684521189u32);
+        println!("{:032b}", 2684521189u32);
         assert_eq!(
-            Instruction::C_Shr_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924548u32
+            instr, Instruction::R_Bytes_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521189u32);
     }
     #[test]
-    fn decode_c_shr_u16() {
+    fn R_Bytes_i64() {
+        let instr = Instruction::decode(2952956645u32);
+        println!("{:032b}", 2952956645u32);
         assert_eq!(
-            Instruction::decode(420360004u32), Instruction::C_Shr_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::R_Bytes_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956645u32);
     }
     #[test]
-    fn encode_c_shr_u16() {
+    fn R_Bytes_u8() {
+        let instr = Instruction::decode(166629u32);
+        println!("{:032b}", 166629u32);
         assert_eq!(
-            Instruction::C_Shr_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420360004u32
+            instr, Instruction::R_Bytes_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166629u32);
     }
     #[test]
-    fn decode_c_shr_u32() {
+    fn R_Bytes_u16() {
+        let instr = Instruction::decode(268602085u32);
+        println!("{:032b}", 268602085u32);
         assert_eq!(
-            Instruction::decode(688795460u32), Instruction::C_Shr_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::R_Bytes_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268602085u32);
     }
     #[test]
-    fn encode_c_shr_u32() {
+    fn R_Bytes_u32() {
+        let instr = Instruction::decode(537037541u32);
+        println!("{:032b}", 537037541u32);
         assert_eq!(
-            Instruction::C_Shr_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795460u32
+            instr, Instruction::R_Bytes_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037541u32);
     }
     #[test]
-    fn decode_c_shr_u64() {
+    fn R_Bytes_u64() {
+        let instr = Instruction::decode(805472997u32);
+        println!("{:032b}", 805472997u32);
         assert_eq!(
-            Instruction::decode(957230916u32), Instruction::C_Shr_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::R_Bytes_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472997u32);
     }
     #[test]
-    fn encode_c_shr_u64() {
+    fn R_Bits_i8() {
+        let instr = Instruction::decode(2147650293u32);
+        println!("{:032b}", 2147650293u32);
         assert_eq!(
-            Instruction::C_Shr_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230916u32
+            instr, Instruction::R_Bits_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650293u32);
     }
     #[test]
-    fn decode_c_sub_i8() {
+    fn R_Bits_i16() {
+        let instr = Instruction::decode(2416085749u32);
+        println!("{:032b}", 2416085749u32);
         assert_eq!(
-            Instruction::decode(2299408260u32), Instruction::C_Sub_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::R_Bits_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085749u32);
     }
     #[test]
-    fn encode_c_sub_i8() {
+    fn R_Bits_i32() {
+        let instr = Instruction::decode(2684521205u32);
+        println!("{:032b}", 2684521205u32);
         assert_eq!(
-            Instruction::C_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408260u32
+            instr, Instruction::R_Bits_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521205u32);
     }
     #[test]
-    fn decode_c_sub_i16() {
+    fn R_Bits_i64() {
+        let instr = Instruction::decode(2952956661u32);
+        println!("{:032b}", 2952956661u32);
         assert_eq!(
-            Instruction::decode(2567843716u32), Instruction::C_Sub_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::R_Bits_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956661u32);
     }
     #[test]
-    fn encode_c_sub_i16() {
+    fn R_Bits_u8() {
+        let instr = Instruction::decode(166645u32);
+        println!("{:032b}", 166645u32);
         assert_eq!(
-            Instruction::C_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843716u32
+            instr, Instruction::R_Bits_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166645u32);
     }
     #[test]
-    fn decode_c_sub_i32() {
+    fn R_Bits_u16() {
+        let instr = Instruction::decode(268602101u32);
+        println!("{:032b}", 268602101u32);
         assert_eq!(
-            Instruction::decode(2836279172u32), Instruction::C_Sub_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::R_Bits_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268602101u32);
     }
     #[test]
-    fn encode_c_sub_i32() {
+    fn R_Bits_u32() {
+        let instr = Instruction::decode(537037557u32);
+        println!("{:032b}", 537037557u32);
         assert_eq!(
-            Instruction::C_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836279172u32
+            instr, Instruction::R_Bits_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037557u32);
     }
     #[test]
-    fn decode_c_sub_i64() {
+    fn R_Bits_u64() {
+        let instr = Instruction::decode(805473013u32);
+        println!("{:032b}", 805473013u32);
         assert_eq!(
-            Instruction::decode(3104714628u32), Instruction::C_Sub_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::R_Bits_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805473013u32);
     }
     #[test]
-    fn encode_c_sub_i64() {
+    fn C_Abs_i8() {
+        let instr = Instruction::decode(2147650054u32);
+        println!("{:032b}", 2147650054u32);
         assert_eq!(
-            Instruction::C_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714628u32
+            instr, Instruction::C_Abs_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650054u32);
     }
     #[test]
-    fn decode_c_sub_u8() {
+    fn C_Abs_i16() {
+        let instr = Instruction::decode(2416085510u32);
+        println!("{:032b}", 2416085510u32);
         assert_eq!(
-            Instruction::decode(151924612u32), Instruction::C_Sub_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Abs_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085510u32);
     }
     #[test]
-    fn encode_c_sub_u8() {
+    fn C_Abs_i32() {
+        let instr = Instruction::decode(2684520966u32);
+        println!("{:032b}", 2684520966u32);
         assert_eq!(
-            Instruction::C_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924612u32
+            instr, Instruction::C_Abs_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684520966u32);
     }
     #[test]
-    fn decode_c_sub_u16() {
+    fn C_Abs_i64() {
+        let instr = Instruction::decode(2952956422u32);
+        println!("{:032b}", 2952956422u32);
         assert_eq!(
-            Instruction::decode(420360068u32), Instruction::C_Sub_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Abs_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956422u32);
     }
     #[test]
-    fn encode_c_sub_u16() {
+    fn C_Add_i8() {
+        let instr = Instruction::decode(2158135830u32);
+        println!("{:032b}", 2158135830u32);
         assert_eq!(
-            Instruction::C_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420360068u32
+            instr, Instruction::C_Add_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135830u32);
     }
     #[test]
-    fn decode_c_sub_u32() {
+    fn C_Add_i16() {
+        let instr = Instruction::decode(2426571286u32);
+        println!("{:032b}", 2426571286u32);
         assert_eq!(
-            Instruction::decode(688795524u32), Instruction::C_Sub_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Add_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571286u32);
     }
     #[test]
-    fn encode_c_sub_u32() {
+    fn C_Add_i32() {
+        let instr = Instruction::decode(2695006742u32);
+        println!("{:032b}", 2695006742u32);
         assert_eq!(
-            Instruction::C_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795524u32
+            instr, Instruction::C_Add_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006742u32);
     }
     #[test]
-    fn decode_c_sub_u64() {
+    fn C_Add_i64() {
+        let instr = Instruction::decode(2963442198u32);
+        println!("{:032b}", 2963442198u32);
         assert_eq!(
-            Instruction::decode(957230980u32), Instruction::C_Sub_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Add_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442198u32);
     }
     #[test]
-    fn encode_c_sub_u64() {
+    fn C_Add_u8() {
+        let instr = Instruction::decode(10652182u32);
+        println!("{:032b}", 10652182u32);
         assert_eq!(
-            Instruction::C_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230980u32
+            instr, Instruction::C_Add_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652182u32);
     }
     #[test]
-    fn decode_c_sub_u_i8() {
+    fn C_Add_u16() {
+        let instr = Instruction::decode(279087638u32);
+        println!("{:032b}", 279087638u32);
         assert_eq!(
-            Instruction::decode(2299408324u32), Instruction::C_Sub_U_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Add_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087638u32);
     }
     #[test]
-    fn encode_c_sub_u_i8() {
+    fn C_Add_u32() {
+        let instr = Instruction::decode(547523094u32);
+        println!("{:032b}", 547523094u32);
         assert_eq!(
-            Instruction::C_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408324u32
+            instr, Instruction::C_Add_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523094u32);
     }
     #[test]
-    fn decode_c_sub_u_i16() {
+    fn C_Add_u64() {
+        let instr = Instruction::decode(815958550u32);
+        println!("{:032b}", 815958550u32);
         assert_eq!(
-            Instruction::decode(2567843780u32), Instruction::C_Sub_U_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Add_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958550u32);
     }
     #[test]
-    fn encode_c_sub_u_i16() {
+    fn C_Add_U_i8() {
+        let instr = Instruction::decode(2158135846u32);
+        println!("{:032b}", 2158135846u32);
         assert_eq!(
-            Instruction::C_Sub_U_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843780u32
+            instr, Instruction::C_Add_U_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135846u32);
     }
     #[test]
-    fn decode_c_sub_u_i32() {
+    fn C_Add_U_i16() {
+        let instr = Instruction::decode(2426571302u32);
+        println!("{:032b}", 2426571302u32);
         assert_eq!(
-            Instruction::decode(2836279236u32), Instruction::C_Sub_U_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Add_U_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571302u32);
     }
     #[test]
-    fn encode_c_sub_u_i32() {
+    fn C_Add_U_i32() {
+        let instr = Instruction::decode(2695006758u32);
+        println!("{:032b}", 2695006758u32);
         assert_eq!(
-            Instruction::C_Sub_U_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836279236u32
+            instr, Instruction::C_Add_U_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006758u32);
     }
     #[test]
-    fn decode_c_sub_u_i64() {
+    fn C_Add_U_i64() {
+        let instr = Instruction::decode(2963442214u32);
+        println!("{:032b}", 2963442214u32);
         assert_eq!(
-            Instruction::decode(3104714692u32), Instruction::C_Sub_U_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Add_U_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442214u32);
     }
     #[test]
-    fn encode_c_sub_u_i64() {
+    fn C_Add_S_u8() {
+        let instr = Instruction::decode(10652198u32);
+        println!("{:032b}", 10652198u32);
         assert_eq!(
-            Instruction::C_Sub_U_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714692u32
+            instr, Instruction::C_Add_S_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652198u32);
     }
     #[test]
-    fn decode_o_abs_i8() {
+    fn C_Add_S_u16() {
+        let instr = Instruction::decode(279087654u32);
+        println!("{:032b}", 279087654u32);
         assert_eq!(
-            Instruction::decode(2148412421u32), Instruction::O_Abs_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::C_Add_S_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087654u32);
     }
     #[test]
-    fn encode_o_abs_i8() {
+    fn C_Add_S_u32() {
+        let instr = Instruction::decode(547523110u32);
+        println!("{:032b}", 547523110u32);
         assert_eq!(
-            Instruction::O_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148412421u32
+            instr, Instruction::C_Add_S_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523110u32);
     }
     #[test]
-    fn decode_o_abs_i16() {
+    fn C_Add_S_u64() {
+        let instr = Instruction::decode(815958566u32);
+        println!("{:032b}", 815958566u32);
         assert_eq!(
-            Instruction::decode(2416847877u32), Instruction::O_Abs_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::C_Add_S_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958566u32);
     }
     #[test]
-    fn encode_o_abs_i16() {
+    fn C_Div_i8() {
+        let instr = Instruction::decode(2158135862u32);
+        println!("{:032b}", 2158135862u32);
         assert_eq!(
-            Instruction::O_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416847877u32
+            instr, Instruction::C_Div_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135862u32);
     }
     #[test]
-    fn decode_o_abs_i32() {
+    fn C_Div_i16() {
+        let instr = Instruction::decode(2426571318u32);
+        println!("{:032b}", 2426571318u32);
         assert_eq!(
-            Instruction::decode(2685283333u32), Instruction::O_Abs_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::C_Div_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571318u32);
     }
     #[test]
-    fn encode_o_abs_i32() {
+    fn C_Div_i32() {
+        let instr = Instruction::decode(2695006774u32);
+        println!("{:032b}", 2695006774u32);
         assert_eq!(
-            Instruction::O_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685283333u32
+            instr, Instruction::C_Div_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006774u32);
     }
     #[test]
-    fn decode_o_abs_i64() {
+    fn C_Div_i64() {
+        let instr = Instruction::decode(2963442230u32);
+        println!("{:032b}", 2963442230u32);
         assert_eq!(
-            Instruction::decode(2953718789u32), Instruction::O_Abs_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::C_Div_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442230u32);
     }
     #[test]
-    fn encode_o_abs_i64() {
+    fn C_Div_u8() {
+        let instr = Instruction::decode(10652214u32);
+        println!("{:032b}", 10652214u32);
         assert_eq!(
-            Instruction::O_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953718789u32
+            instr, Instruction::C_Div_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652214u32);
     }
     #[test]
-    fn decode_o_add_i8() {
+    fn C_Div_u16() {
+        let instr = Instruction::decode(279087670u32);
+        println!("{:032b}", 279087670u32);
         assert_eq!(
-            Instruction::decode(2299407429u32), Instruction::O_Add_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Div_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087670u32);
     }
     #[test]
-    fn encode_o_add_i8() {
+    fn C_Div_u32() {
+        let instr = Instruction::decode(547523126u32);
+        println!("{:032b}", 547523126u32);
         assert_eq!(
-            Instruction::O_Add_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407429u32
+            instr, Instruction::C_Div_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523126u32);
     }
     #[test]
-    fn decode_o_add_i16() {
+    fn C_Div_u64() {
+        let instr = Instruction::decode(815958582u32);
+        println!("{:032b}", 815958582u32);
         assert_eq!(
-            Instruction::decode(2567842885u32), Instruction::O_Add_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Div_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958582u32);
     }
     #[test]
-    fn encode_o_add_i16() {
+    fn C_Div_E_i8() {
+        let instr = Instruction::decode(2158135878u32);
+        println!("{:032b}", 2158135878u32);
         assert_eq!(
-            Instruction::O_Add_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567842885u32
+            instr, Instruction::C_Div_E_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135878u32);
     }
     #[test]
-    fn decode_o_add_i32() {
+    fn C_Div_E_i16() {
+        let instr = Instruction::decode(2426571334u32);
+        println!("{:032b}", 2426571334u32);
         assert_eq!(
-            Instruction::decode(2836278341u32), Instruction::O_Add_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Div_E_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571334u32);
     }
     #[test]
-    fn encode_o_add_i32() {
+    fn C_Div_E_i32() {
+        let instr = Instruction::decode(2695006790u32);
+        println!("{:032b}", 2695006790u32);
         assert_eq!(
-            Instruction::O_Add_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278341u32
+            instr, Instruction::C_Div_E_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006790u32);
     }
     #[test]
-    fn decode_o_add_i64() {
+    fn C_Div_E_i64() {
+        let instr = Instruction::decode(2963442246u32);
+        println!("{:032b}", 2963442246u32);
         assert_eq!(
-            Instruction::decode(3104713797u32), Instruction::O_Add_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Div_E_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442246u32);
     }
     #[test]
-    fn encode_o_add_i64() {
+    fn C_Div_E_u8() {
+        let instr = Instruction::decode(10652230u32);
+        println!("{:032b}", 10652230u32);
         assert_eq!(
-            Instruction::O_Add_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713797u32
+            instr, Instruction::C_Div_E_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652230u32);
     }
     #[test]
-    fn decode_o_add_u8() {
+    fn C_Div_E_u16() {
+        let instr = Instruction::decode(279087686u32);
+        println!("{:032b}", 279087686u32);
         assert_eq!(
-            Instruction::decode(151923781u32), Instruction::O_Add_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Div_E_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087686u32);
     }
     #[test]
-    fn encode_o_add_u8() {
+    fn C_Div_E_u32() {
+        let instr = Instruction::decode(547523142u32);
+        println!("{:032b}", 547523142u32);
         assert_eq!(
-            Instruction::O_Add_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923781u32
+            instr, Instruction::C_Div_E_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523142u32);
     }
     #[test]
-    fn decode_o_add_u16() {
+    fn C_Div_E_u64() {
+        let instr = Instruction::decode(815958598u32);
+        println!("{:032b}", 815958598u32);
         assert_eq!(
-            Instruction::decode(420359237u32), Instruction::O_Add_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Div_E_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958598u32);
     }
     #[test]
-    fn encode_o_add_u16() {
+    fn C_Log_i8() {
+        let instr = Instruction::decode(2158135894u32);
+        println!("{:032b}", 2158135894u32);
         assert_eq!(
-            Instruction::O_Add_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359237u32
+            instr, Instruction::C_Log_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135894u32);
     }
     #[test]
-    fn decode_o_add_u32() {
+    fn C_Log_i16() {
+        let instr = Instruction::decode(2426571350u32);
+        println!("{:032b}", 2426571350u32);
         assert_eq!(
-            Instruction::decode(688794693u32), Instruction::O_Add_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Log_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571350u32);
     }
     #[test]
-    fn encode_o_add_u32() {
+    fn C_Log_i32() {
+        let instr = Instruction::decode(2695006806u32);
+        println!("{:032b}", 2695006806u32);
         assert_eq!(
-            Instruction::O_Add_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794693u32
+            instr, Instruction::C_Log_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006806u32);
     }
     #[test]
-    fn decode_o_add_u64() {
+    fn C_Log_i64() {
+        let instr = Instruction::decode(2963442262u32);
+        println!("{:032b}", 2963442262u32);
         assert_eq!(
-            Instruction::decode(957230149u32), Instruction::O_Add_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Log_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442262u32);
     }
     #[test]
-    fn encode_o_add_u64() {
+    fn C_Log_u8() {
+        let instr = Instruction::decode(10652246u32);
+        println!("{:032b}", 10652246u32);
         assert_eq!(
-            Instruction::O_Add_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230149u32
+            instr, Instruction::C_Log_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652246u32);
     }
     #[test]
-    fn decode_o_add_u_i8() {
+    fn C_Log_u16() {
+        let instr = Instruction::decode(279087702u32);
+        println!("{:032b}", 279087702u32);
         assert_eq!(
-            Instruction::decode(2299407493u32), Instruction::O_Add_U_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Log_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087702u32);
     }
     #[test]
-    fn encode_o_add_u_i8() {
+    fn C_Log_u32() {
+        let instr = Instruction::decode(547523158u32);
+        println!("{:032b}", 547523158u32);
         assert_eq!(
-            Instruction::O_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407493u32
+            instr, Instruction::C_Log_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523158u32);
     }
     #[test]
-    fn decode_o_add_u_i16() {
+    fn C_Log_u64() {
+        let instr = Instruction::decode(815958614u32);
+        println!("{:032b}", 815958614u32);
         assert_eq!(
-            Instruction::decode(2567842949u32), Instruction::O_Add_U_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Log_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958614u32);
     }
     #[test]
-    fn encode_o_add_u_i16() {
+    fn C_Sqrt_i8() {
+        let instr = Instruction::decode(2147650150u32);
+        println!("{:032b}", 2147650150u32);
         assert_eq!(
-            Instruction::O_Add_U_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567842949u32
+            instr, Instruction::C_Sqrt_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650150u32);
     }
     #[test]
-    fn decode_o_add_u_i32() {
+    fn C_Sqrt_i16() {
+        let instr = Instruction::decode(2416085606u32);
+        println!("{:032b}", 2416085606u32);
         assert_eq!(
-            Instruction::decode(2836278405u32), Instruction::O_Add_U_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Sqrt_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085606u32);
     }
     #[test]
-    fn encode_o_add_u_i32() {
+    fn C_Sqrt_i32() {
+        let instr = Instruction::decode(2684521062u32);
+        println!("{:032b}", 2684521062u32);
         assert_eq!(
-            Instruction::O_Add_U_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278405u32
+            instr, Instruction::C_Sqrt_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521062u32);
     }
     #[test]
-    fn decode_o_add_u_i64() {
+    fn C_Sqrt_i64() {
+        let instr = Instruction::decode(2952956518u32);
+        println!("{:032b}", 2952956518u32);
         assert_eq!(
-            Instruction::decode(3104713861u32), Instruction::O_Add_U_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Sqrt_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956518u32);
     }
     #[test]
-    fn encode_o_add_u_i64() {
+    fn C_Sqrt_u8() {
+        let instr = Instruction::decode(166502u32);
+        println!("{:032b}", 166502u32);
         assert_eq!(
-            Instruction::O_Add_U_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713861u32
+            instr, Instruction::C_Sqrt_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166502u32);
     }
     #[test]
-    fn decode_o_add_s_u8() {
+    fn C_Sqrt_u16() {
+        let instr = Instruction::decode(268601958u32);
+        println!("{:032b}", 268601958u32);
         assert_eq!(
-            Instruction::decode(151923845u32), Instruction::O_Add_S_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Sqrt_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268601958u32);
     }
     #[test]
-    fn encode_o_add_s_u8() {
+    fn C_Sqrt_u32() {
+        let instr = Instruction::decode(537037414u32);
+        println!("{:032b}", 537037414u32);
         assert_eq!(
-            Instruction::O_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923845u32
+            instr, Instruction::C_Sqrt_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037414u32);
     }
     #[test]
-    fn decode_o_add_s_u16() {
+    fn C_Sqrt_u64() {
+        let instr = Instruction::decode(805472870u32);
+        println!("{:032b}", 805472870u32);
         assert_eq!(
-            Instruction::decode(420359301u32), Instruction::O_Add_S_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Sqrt_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472870u32);
     }
     #[test]
-    fn encode_o_add_s_u16() {
+    fn C_Mul_i8() {
+        let instr = Instruction::decode(2158135926u32);
+        println!("{:032b}", 2158135926u32);
         assert_eq!(
-            Instruction::O_Add_S_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359301u32
+            instr, Instruction::C_Mul_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135926u32);
     }
     #[test]
-    fn decode_o_add_s_u32() {
+    fn C_Mul_i16() {
+        let instr = Instruction::decode(2426571382u32);
+        println!("{:032b}", 2426571382u32);
         assert_eq!(
-            Instruction::decode(688794757u32), Instruction::O_Add_S_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Mul_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571382u32);
     }
     #[test]
-    fn encode_o_add_s_u32() {
+    fn C_Mul_i32() {
+        let instr = Instruction::decode(2695006838u32);
+        println!("{:032b}", 2695006838u32);
         assert_eq!(
-            Instruction::O_Add_S_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794757u32
+            instr, Instruction::C_Mul_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006838u32);
     }
     #[test]
-    fn decode_o_add_s_u64() {
+    fn C_Mul_i64() {
+        let instr = Instruction::decode(2963442294u32);
+        println!("{:032b}", 2963442294u32);
         assert_eq!(
-            Instruction::decode(957230213u32), Instruction::O_Add_S_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Mul_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442294u32);
     }
     #[test]
-    fn encode_o_add_s_u64() {
+    fn C_Mul_u8() {
+        let instr = Instruction::decode(10652278u32);
+        println!("{:032b}", 10652278u32);
         assert_eq!(
-            Instruction::O_Add_S_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230213u32
+            instr, Instruction::C_Mul_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652278u32);
     }
     #[test]
-    fn decode_o_div_i8() {
+    fn C_Mul_u16() {
+        let instr = Instruction::decode(279087734u32);
+        println!("{:032b}", 279087734u32);
         assert_eq!(
-            Instruction::decode(2299407557u32), Instruction::O_Div_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Mul_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087734u32);
     }
     #[test]
-    fn encode_o_div_i8() {
+    fn C_Mul_u32() {
+        let instr = Instruction::decode(547523190u32);
+        println!("{:032b}", 547523190u32);
         assert_eq!(
-            Instruction::O_Div_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407557u32
+            instr, Instruction::C_Mul_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523190u32);
     }
     #[test]
-    fn decode_o_div_i16() {
+    fn C_Mul_u64() {
+        let instr = Instruction::decode(815958646u32);
+        println!("{:032b}", 815958646u32);
         assert_eq!(
-            Instruction::decode(2567843013u32), Instruction::O_Div_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Mul_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958646u32);
     }
     #[test]
-    fn encode_o_div_i16() {
+    fn C_Neg_i8() {
+        let instr = Instruction::decode(2147650182u32);
+        println!("{:032b}", 2147650182u32);
         assert_eq!(
-            Instruction::O_Div_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843013u32
+            instr, Instruction::C_Neg_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650182u32);
     }
     #[test]
-    fn decode_o_div_i32() {
+    fn C_Neg_i16() {
+        let instr = Instruction::decode(2416085638u32);
+        println!("{:032b}", 2416085638u32);
         assert_eq!(
-            Instruction::decode(2836278469u32), Instruction::O_Div_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Neg_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085638u32);
     }
     #[test]
-    fn encode_o_div_i32() {
+    fn C_Neg_i32() {
+        let instr = Instruction::decode(2684521094u32);
+        println!("{:032b}", 2684521094u32);
         assert_eq!(
-            Instruction::O_Div_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278469u32
+            instr, Instruction::C_Neg_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521094u32);
     }
     #[test]
-    fn decode_o_div_i64() {
+    fn C_Neg_i64() {
+        let instr = Instruction::decode(2952956550u32);
+        println!("{:032b}", 2952956550u32);
         assert_eq!(
-            Instruction::decode(3104713925u32), Instruction::O_Div_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Neg_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956550u32);
     }
     #[test]
-    fn encode_o_div_i64() {
+    fn C_Pow_i8() {
+        let instr = Instruction::decode(2158135958u32);
+        println!("{:032b}", 2158135958u32);
         assert_eq!(
-            Instruction::O_Div_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713925u32
+            instr, Instruction::C_Pow_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135958u32);
     }
     #[test]
-    fn decode_o_div_u8() {
+    fn C_Pow_i16() {
+        let instr = Instruction::decode(2426571414u32);
+        println!("{:032b}", 2426571414u32);
         assert_eq!(
-            Instruction::decode(151923909u32), Instruction::O_Div_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Pow_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571414u32);
     }
     #[test]
-    fn encode_o_div_u8() {
+    fn C_Pow_i32() {
+        let instr = Instruction::decode(2695006870u32);
+        println!("{:032b}", 2695006870u32);
         assert_eq!(
-            Instruction::O_Div_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923909u32
+            instr, Instruction::C_Pow_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006870u32);
     }
     #[test]
-    fn decode_o_div_u16() {
+    fn C_Pow_i64() {
+        let instr = Instruction::decode(2963442326u32);
+        println!("{:032b}", 2963442326u32);
         assert_eq!(
-            Instruction::decode(420359365u32), Instruction::O_Div_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Pow_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442326u32);
     }
     #[test]
-    fn encode_o_div_u16() {
+    fn C_Pow_u8() {
+        let instr = Instruction::decode(10652310u32);
+        println!("{:032b}", 10652310u32);
         assert_eq!(
-            Instruction::O_Div_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359365u32
+            instr, Instruction::C_Pow_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652310u32);
     }
     #[test]
-    fn decode_o_div_u32() {
+    fn C_Pow_u16() {
+        let instr = Instruction::decode(279087766u32);
+        println!("{:032b}", 279087766u32);
         assert_eq!(
-            Instruction::decode(688794821u32), Instruction::O_Div_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Pow_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087766u32);
     }
     #[test]
-    fn encode_o_div_u32() {
+    fn C_Pow_u32() {
+        let instr = Instruction::decode(547523222u32);
+        println!("{:032b}", 547523222u32);
         assert_eq!(
-            Instruction::O_Div_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794821u32
+            instr, Instruction::C_Pow_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523222u32);
     }
     #[test]
-    fn decode_o_div_u64() {
+    fn C_Pow_u64() {
+        let instr = Instruction::decode(815958678u32);
+        println!("{:032b}", 815958678u32);
         assert_eq!(
-            Instruction::decode(957230277u32), Instruction::O_Div_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Pow_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958678u32);
     }
     #[test]
-    fn encode_o_div_u64() {
+    fn C_Rem_i8() {
+        let instr = Instruction::decode(2158135974u32);
+        println!("{:032b}", 2158135974u32);
         assert_eq!(
-            Instruction::O_Div_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230277u32
+            instr, Instruction::C_Rem_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135974u32);
     }
     #[test]
-    fn decode_o_div_e_i8() {
+    fn C_Rem_i16() {
+        let instr = Instruction::decode(2426571430u32);
+        println!("{:032b}", 2426571430u32);
         assert_eq!(
-            Instruction::decode(2299407621u32), Instruction::O_Div_E_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Rem_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571430u32);
     }
     #[test]
-    fn encode_o_div_e_i8() {
+    fn C_Rem_i32() {
+        let instr = Instruction::decode(2695006886u32);
+        println!("{:032b}", 2695006886u32);
         assert_eq!(
-            Instruction::O_Div_E_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407621u32
+            instr, Instruction::C_Rem_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006886u32);
     }
     #[test]
-    fn decode_o_div_e_i16() {
+    fn C_Rem_i64() {
+        let instr = Instruction::decode(2963442342u32);
+        println!("{:032b}", 2963442342u32);
         assert_eq!(
-            Instruction::decode(2567843077u32), Instruction::O_Div_E_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Rem_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442342u32);
     }
     #[test]
-    fn encode_o_div_e_i16() {
+    fn C_Rem_u8() {
+        let instr = Instruction::decode(10652326u32);
+        println!("{:032b}", 10652326u32);
         assert_eq!(
-            Instruction::O_Div_E_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843077u32
+            instr, Instruction::C_Rem_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652326u32);
     }
     #[test]
-    fn decode_o_div_e_i32() {
+    fn C_Rem_u16() {
+        let instr = Instruction::decode(279087782u32);
+        println!("{:032b}", 279087782u32);
         assert_eq!(
-            Instruction::decode(2836278533u32), Instruction::O_Div_E_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Rem_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087782u32);
     }
     #[test]
-    fn encode_o_div_e_i32() {
+    fn C_Rem_u32() {
+        let instr = Instruction::decode(547523238u32);
+        println!("{:032b}", 547523238u32);
         assert_eq!(
-            Instruction::O_Div_E_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278533u32
+            instr, Instruction::C_Rem_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523238u32);
     }
     #[test]
-    fn decode_o_div_e_i64() {
+    fn C_Rem_u64() {
+        let instr = Instruction::decode(815958694u32);
+        println!("{:032b}", 815958694u32);
         assert_eq!(
-            Instruction::decode(3104713989u32), Instruction::O_Div_E_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Rem_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958694u32);
     }
     #[test]
-    fn encode_o_div_e_i64() {
+    fn C_Rem_E_i8() {
+        let instr = Instruction::decode(2158135990u32);
+        println!("{:032b}", 2158135990u32);
         assert_eq!(
-            Instruction::O_Div_E_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713989u32
+            instr, Instruction::C_Rem_E_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135990u32);
     }
     #[test]
-    fn decode_o_div_e_u8() {
+    fn C_Rem_E_i16() {
+        let instr = Instruction::decode(2426571446u32);
+        println!("{:032b}", 2426571446u32);
         assert_eq!(
-            Instruction::decode(151923973u32), Instruction::O_Div_E_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Rem_E_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571446u32);
     }
     #[test]
-    fn encode_o_div_e_u8() {
+    fn C_Rem_E_i32() {
+        let instr = Instruction::decode(2695006902u32);
+        println!("{:032b}", 2695006902u32);
         assert_eq!(
-            Instruction::O_Div_E_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923973u32
+            instr, Instruction::C_Rem_E_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006902u32);
     }
     #[test]
-    fn decode_o_div_e_u16() {
+    fn C_Rem_E_i64() {
+        let instr = Instruction::decode(2963442358u32);
+        println!("{:032b}", 2963442358u32);
         assert_eq!(
-            Instruction::decode(420359429u32), Instruction::O_Div_E_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Rem_E_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442358u32);
     }
     #[test]
-    fn encode_o_div_e_u16() {
+    fn C_Rem_E_u8() {
+        let instr = Instruction::decode(10652342u32);
+        println!("{:032b}", 10652342u32);
         assert_eq!(
-            Instruction::O_Div_E_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359429u32
+            instr, Instruction::C_Rem_E_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652342u32);
     }
     #[test]
-    fn decode_o_div_e_u32() {
+    fn C_Rem_E_u16() {
+        let instr = Instruction::decode(279087798u32);
+        println!("{:032b}", 279087798u32);
         assert_eq!(
-            Instruction::decode(688794885u32), Instruction::O_Div_E_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Rem_E_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087798u32);
     }
     #[test]
-    fn encode_o_div_e_u32() {
+    fn C_Rem_E_u32() {
+        let instr = Instruction::decode(547523254u32);
+        println!("{:032b}", 547523254u32);
         assert_eq!(
-            Instruction::O_Div_E_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794885u32
+            instr, Instruction::C_Rem_E_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523254u32);
     }
     #[test]
-    fn decode_o_div_e_u64() {
+    fn C_Rem_E_u64() {
+        let instr = Instruction::decode(815958710u32);
+        println!("{:032b}", 815958710u32);
         assert_eq!(
-            Instruction::decode(957230341u32), Instruction::O_Div_E_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Rem_E_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958710u32);
     }
     #[test]
-    fn encode_o_div_e_u64() {
+    fn C_Shl_i8() {
+        let instr = Instruction::decode(2158136006u32);
+        println!("{:032b}", 2158136006u32);
         assert_eq!(
-            Instruction::O_Div_E_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230341u32
+            instr, Instruction::C_Shl_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158136006u32);
     }
     #[test]
-    fn decode_o_mul_i8() {
+    fn C_Shl_i16() {
+        let instr = Instruction::decode(2426571462u32);
+        println!("{:032b}", 2426571462u32);
         assert_eq!(
-            Instruction::decode(2299407813u32), Instruction::O_Mul_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Shl_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571462u32);
     }
     #[test]
-    fn encode_o_mul_i8() {
+    fn C_Shl_i32() {
+        let instr = Instruction::decode(2695006918u32);
+        println!("{:032b}", 2695006918u32);
         assert_eq!(
-            Instruction::O_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407813u32
+            instr, Instruction::C_Shl_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006918u32);
     }
     #[test]
-    fn decode_o_mul_i16() {
+    fn C_Shl_i64() {
+        let instr = Instruction::decode(2963442374u32);
+        println!("{:032b}", 2963442374u32);
         assert_eq!(
-            Instruction::decode(2567843269u32), Instruction::O_Mul_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Shl_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442374u32);
     }
     #[test]
-    fn encode_o_mul_i16() {
+    fn C_Shl_u8() {
+        let instr = Instruction::decode(10652358u32);
+        println!("{:032b}", 10652358u32);
         assert_eq!(
-            Instruction::O_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843269u32
+            instr, Instruction::C_Shl_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652358u32);
     }
     #[test]
-    fn decode_o_mul_i32() {
+    fn C_Shl_u16() {
+        let instr = Instruction::decode(279087814u32);
+        println!("{:032b}", 279087814u32);
         assert_eq!(
-            Instruction::decode(2836278725u32), Instruction::O_Mul_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Shl_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087814u32);
     }
     #[test]
-    fn encode_o_mul_i32() {
+    fn C_Shl_u32() {
+        let instr = Instruction::decode(547523270u32);
+        println!("{:032b}", 547523270u32);
         assert_eq!(
-            Instruction::O_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278725u32
+            instr, Instruction::C_Shl_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523270u32);
     }
     #[test]
-    fn decode_o_mul_i64() {
+    fn C_Shl_u64() {
+        let instr = Instruction::decode(815958726u32);
+        println!("{:032b}", 815958726u32);
         assert_eq!(
-            Instruction::decode(3104714181u32), Instruction::O_Mul_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Shl_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958726u32);
     }
     #[test]
-    fn encode_o_mul_i64() {
+    fn C_Shr_i8() {
+        let instr = Instruction::decode(2158136022u32);
+        println!("{:032b}", 2158136022u32);
         assert_eq!(
-            Instruction::O_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714181u32
+            instr, Instruction::C_Shr_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158136022u32);
     }
     #[test]
-    fn decode_o_mul_u8() {
+    fn C_Shr_i16() {
+        let instr = Instruction::decode(2426571478u32);
+        println!("{:032b}", 2426571478u32);
         assert_eq!(
-            Instruction::decode(151924165u32), Instruction::O_Mul_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Shr_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571478u32);
     }
     #[test]
-    fn encode_o_mul_u8() {
+    fn C_Shr_i32() {
+        let instr = Instruction::decode(2695006934u32);
+        println!("{:032b}", 2695006934u32);
         assert_eq!(
-            Instruction::O_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924165u32
+            instr, Instruction::C_Shr_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006934u32);
     }
     #[test]
-    fn decode_o_mul_u16() {
+    fn C_Shr_i64() {
+        let instr = Instruction::decode(2963442390u32);
+        println!("{:032b}", 2963442390u32);
         assert_eq!(
-            Instruction::decode(420359621u32), Instruction::O_Mul_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Shr_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442390u32);
     }
     #[test]
-    fn encode_o_mul_u16() {
+    fn C_Shr_u8() {
+        let instr = Instruction::decode(10652374u32);
+        println!("{:032b}", 10652374u32);
         assert_eq!(
-            Instruction::O_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359621u32
+            instr, Instruction::C_Shr_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652374u32);
     }
     #[test]
-    fn decode_o_mul_u32() {
+    fn C_Shr_u16() {
+        let instr = Instruction::decode(279087830u32);
+        println!("{:032b}", 279087830u32);
         assert_eq!(
-            Instruction::decode(688795077u32), Instruction::O_Mul_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Shr_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087830u32);
     }
     #[test]
-    fn encode_o_mul_u32() {
+    fn C_Shr_u32() {
+        let instr = Instruction::decode(547523286u32);
+        println!("{:032b}", 547523286u32);
         assert_eq!(
-            Instruction::O_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795077u32
+            instr, Instruction::C_Shr_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523286u32);
     }
     #[test]
-    fn decode_o_mul_u64() {
+    fn C_Shr_u64() {
+        let instr = Instruction::decode(815958742u32);
+        println!("{:032b}", 815958742u32);
         assert_eq!(
-            Instruction::decode(957230533u32), Instruction::O_Mul_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Shr_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958742u32);
     }
     #[test]
-    fn encode_o_mul_u64() {
+    fn C_Sub_i8() {
+        let instr = Instruction::decode(2158136038u32);
+        println!("{:032b}", 2158136038u32);
         assert_eq!(
-            Instruction::O_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230533u32
+            instr, Instruction::C_Sub_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158136038u32);
     }
     #[test]
-    fn decode_o_neg_i8() {
+    fn C_Sub_i16() {
+        let instr = Instruction::decode(2426571494u32);
+        println!("{:032b}", 2426571494u32);
         assert_eq!(
-            Instruction::decode(2148412933u32), Instruction::O_Neg_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::C_Sub_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571494u32);
     }
     #[test]
-    fn encode_o_neg_i8() {
+    fn C_Sub_i32() {
+        let instr = Instruction::decode(2695006950u32);
+        println!("{:032b}", 2695006950u32);
         assert_eq!(
-            Instruction::O_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148412933u32
+            instr, Instruction::C_Sub_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006950u32);
     }
     #[test]
-    fn decode_o_neg_i16() {
+    fn C_Sub_i64() {
+        let instr = Instruction::decode(2963442406u32);
+        println!("{:032b}", 2963442406u32);
         assert_eq!(
-            Instruction::decode(2416848389u32), Instruction::O_Neg_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::C_Sub_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442406u32);
     }
     #[test]
-    fn encode_o_neg_i16() {
+    fn C_Sub_u8() {
+        let instr = Instruction::decode(10652390u32);
+        println!("{:032b}", 10652390u32);
         assert_eq!(
-            Instruction::O_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848389u32
+            instr, Instruction::C_Sub_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652390u32);
     }
     #[test]
-    fn decode_o_neg_i32() {
+    fn C_Sub_u16() {
+        let instr = Instruction::decode(279087846u32);
+        println!("{:032b}", 279087846u32);
         assert_eq!(
-            Instruction::decode(2685283845u32), Instruction::O_Neg_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::C_Sub_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087846u32);
     }
     #[test]
-    fn encode_o_neg_i32() {
+    fn C_Sub_u32() {
+        let instr = Instruction::decode(547523302u32);
+        println!("{:032b}", 547523302u32);
         assert_eq!(
-            Instruction::O_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685283845u32
+            instr, Instruction::C_Sub_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523302u32);
     }
     #[test]
-    fn decode_o_neg_i64() {
+    fn C_Sub_u64() {
+        let instr = Instruction::decode(815958758u32);
+        println!("{:032b}", 815958758u32);
         assert_eq!(
-            Instruction::decode(2953719301u32), Instruction::O_Neg_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::C_Sub_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958758u32);
     }
     #[test]
-    fn encode_o_neg_i64() {
+    fn C_Sub_U_i8() {
+        let instr = Instruction::decode(2158136054u32);
+        println!("{:032b}", 2158136054u32);
         assert_eq!(
-            Instruction::O_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719301u32
+            instr, Instruction::C_Sub_U_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158136054u32);
     }
     #[test]
-    fn decode_o_pow_i8() {
+    fn C_Sub_U_i16() {
+        let instr = Instruction::decode(2426571510u32);
+        println!("{:032b}", 2426571510u32);
         assert_eq!(
-            Instruction::decode(2299407941u32), Instruction::O_Pow_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Sub_U_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571510u32);
     }
     #[test]
-    fn encode_o_pow_i8() {
+    fn C_Sub_U_i32() {
+        let instr = Instruction::decode(2695006966u32);
+        println!("{:032b}", 2695006966u32);
         assert_eq!(
-            Instruction::O_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407941u32
+            instr, Instruction::C_Sub_U_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006966u32);
     }
     #[test]
-    fn decode_o_pow_i16() {
+    fn C_Sub_U_i64() {
+        let instr = Instruction::decode(2963442422u32);
+        println!("{:032b}", 2963442422u32);
         assert_eq!(
-            Instruction::decode(2567843397u32), Instruction::O_Pow_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::C_Sub_U_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442422u32);
     }
     #[test]
-    fn encode_o_pow_i16() {
+    fn O_Abs_i8() {
+        let instr = Instruction::decode(2147650055u32);
+        println!("{:032b}", 2147650055u32);
         assert_eq!(
-            Instruction::O_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843397u32
+            instr, Instruction::O_Abs_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650055u32);
     }
     #[test]
-    fn decode_o_pow_i32() {
+    fn O_Abs_i16() {
+        let instr = Instruction::decode(2416085511u32);
+        println!("{:032b}", 2416085511u32);
         assert_eq!(
-            Instruction::decode(2836278853u32), Instruction::O_Pow_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Abs_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085511u32);
     }
     #[test]
-    fn encode_o_pow_i32() {
+    fn O_Abs_i32() {
+        let instr = Instruction::decode(2684520967u32);
+        println!("{:032b}", 2684520967u32);
         assert_eq!(
-            Instruction::O_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278853u32
+            instr, Instruction::O_Abs_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684520967u32);
     }
     #[test]
-    fn decode_o_pow_i64() {
+    fn O_Abs_i64() {
+        let instr = Instruction::decode(2952956423u32);
+        println!("{:032b}", 2952956423u32);
         assert_eq!(
-            Instruction::decode(3104714309u32), Instruction::O_Pow_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Abs_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956423u32);
     }
     #[test]
-    fn encode_o_pow_i64() {
+    fn O_Add_i8() {
+        let instr = Instruction::decode(2158135831u32);
+        println!("{:032b}", 2158135831u32);
         assert_eq!(
-            Instruction::O_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714309u32
+            instr, Instruction::O_Add_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135831u32);
     }
     #[test]
-    fn decode_o_pow_u8() {
+    fn O_Add_i16() {
+        let instr = Instruction::decode(2426571287u32);
+        println!("{:032b}", 2426571287u32);
         assert_eq!(
-            Instruction::decode(151924293u32), Instruction::O_Pow_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Add_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571287u32);
     }
     #[test]
-    fn encode_o_pow_u8() {
+    fn O_Add_i32() {
+        let instr = Instruction::decode(2695006743u32);
+        println!("{:032b}", 2695006743u32);
         assert_eq!(
-            Instruction::O_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924293u32
+            instr, Instruction::O_Add_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006743u32);
     }
     #[test]
-    fn decode_o_pow_u16() {
+    fn O_Add_i64() {
+        let instr = Instruction::decode(2963442199u32);
+        println!("{:032b}", 2963442199u32);
         assert_eq!(
-            Instruction::decode(420359749u32), Instruction::O_Pow_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Add_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442199u32);
     }
     #[test]
-    fn encode_o_pow_u16() {
+    fn O_Add_u8() {
+        let instr = Instruction::decode(10652183u32);
+        println!("{:032b}", 10652183u32);
         assert_eq!(
-            Instruction::O_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359749u32
+            instr, Instruction::O_Add_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652183u32);
     }
     #[test]
-    fn decode_o_pow_u32() {
+    fn O_Add_u16() {
+        let instr = Instruction::decode(279087639u32);
+        println!("{:032b}", 279087639u32);
         assert_eq!(
-            Instruction::decode(688795205u32), Instruction::O_Pow_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Add_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087639u32);
     }
     #[test]
-    fn encode_o_pow_u32() {
+    fn O_Add_u32() {
+        let instr = Instruction::decode(547523095u32);
+        println!("{:032b}", 547523095u32);
         assert_eq!(
-            Instruction::O_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795205u32
+            instr, Instruction::O_Add_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523095u32);
     }
     #[test]
-    fn decode_o_pow_u64() {
+    fn O_Add_u64() {
+        let instr = Instruction::decode(815958551u32);
+        println!("{:032b}", 815958551u32);
         assert_eq!(
-            Instruction::decode(957230661u32), Instruction::O_Pow_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Add_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958551u32);
     }
     #[test]
-    fn encode_o_pow_u64() {
+    fn O_Add_U_i8() {
+        let instr = Instruction::decode(2158135847u32);
+        println!("{:032b}", 2158135847u32);
         assert_eq!(
-            Instruction::O_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230661u32
+            instr, Instruction::O_Add_U_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135847u32);
     }
     #[test]
-    fn decode_o_rem_i8() {
+    fn O_Add_U_i16() {
+        let instr = Instruction::decode(2426571303u32);
+        println!("{:032b}", 2426571303u32);
         assert_eq!(
-            Instruction::decode(2299408005u32), Instruction::O_Rem_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Add_U_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571303u32);
     }
     #[test]
-    fn encode_o_rem_i8() {
+    fn O_Add_U_i32() {
+        let instr = Instruction::decode(2695006759u32);
+        println!("{:032b}", 2695006759u32);
         assert_eq!(
-            Instruction::O_Rem_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408005u32
+            instr, Instruction::O_Add_U_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006759u32);
     }
     #[test]
-    fn decode_o_rem_i16() {
+    fn O_Add_U_i64() {
+        let instr = Instruction::decode(2963442215u32);
+        println!("{:032b}", 2963442215u32);
         assert_eq!(
-            Instruction::decode(2567843461u32), Instruction::O_Rem_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Add_U_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442215u32);
     }
     #[test]
-    fn encode_o_rem_i16() {
+    fn O_Add_S_u8() {
+        let instr = Instruction::decode(10652199u32);
+        println!("{:032b}", 10652199u32);
         assert_eq!(
-            Instruction::O_Rem_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843461u32
+            instr, Instruction::O_Add_S_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652199u32);
     }
     #[test]
-    fn decode_o_rem_i32() {
+    fn O_Add_S_u16() {
+        let instr = Instruction::decode(279087655u32);
+        println!("{:032b}", 279087655u32);
         assert_eq!(
-            Instruction::decode(2836278917u32), Instruction::O_Rem_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Add_S_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087655u32);
     }
     #[test]
-    fn encode_o_rem_i32() {
+    fn O_Add_S_u32() {
+        let instr = Instruction::decode(547523111u32);
+        println!("{:032b}", 547523111u32);
         assert_eq!(
-            Instruction::O_Rem_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278917u32
+            instr, Instruction::O_Add_S_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523111u32);
     }
     #[test]
-    fn decode_o_rem_i64() {
+    fn O_Add_S_u64() {
+        let instr = Instruction::decode(815958567u32);
+        println!("{:032b}", 815958567u32);
         assert_eq!(
-            Instruction::decode(3104714373u32), Instruction::O_Rem_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Add_S_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958567u32);
     }
     #[test]
-    fn encode_o_rem_i64() {
+    fn O_Div_i8() {
+        let instr = Instruction::decode(2158135863u32);
+        println!("{:032b}", 2158135863u32);
         assert_eq!(
-            Instruction::O_Rem_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714373u32
+            instr, Instruction::O_Div_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135863u32);
     }
     #[test]
-    fn decode_o_rem_u8() {
+    fn O_Div_i16() {
+        let instr = Instruction::decode(2426571319u32);
+        println!("{:032b}", 2426571319u32);
         assert_eq!(
-            Instruction::decode(151924357u32), Instruction::O_Rem_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Div_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571319u32);
     }
     #[test]
-    fn encode_o_rem_u8() {
+    fn O_Div_i32() {
+        let instr = Instruction::decode(2695006775u32);
+        println!("{:032b}", 2695006775u32);
         assert_eq!(
-            Instruction::O_Rem_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924357u32
+            instr, Instruction::O_Div_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006775u32);
     }
     #[test]
-    fn decode_o_rem_u16() {
+    fn O_Div_i64() {
+        let instr = Instruction::decode(2963442231u32);
+        println!("{:032b}", 2963442231u32);
         assert_eq!(
-            Instruction::decode(420359813u32), Instruction::O_Rem_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Div_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442231u32);
     }
     #[test]
-    fn encode_o_rem_u16() {
+    fn O_Div_u8() {
+        let instr = Instruction::decode(10652215u32);
+        println!("{:032b}", 10652215u32);
         assert_eq!(
-            Instruction::O_Rem_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359813u32
+            instr, Instruction::O_Div_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652215u32);
     }
     #[test]
-    fn decode_o_rem_u32() {
+    fn O_Div_u16() {
+        let instr = Instruction::decode(279087671u32);
+        println!("{:032b}", 279087671u32);
         assert_eq!(
-            Instruction::decode(688795269u32), Instruction::O_Rem_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Div_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087671u32);
     }
     #[test]
-    fn encode_o_rem_u32() {
+    fn O_Div_u32() {
+        let instr = Instruction::decode(547523127u32);
+        println!("{:032b}", 547523127u32);
         assert_eq!(
-            Instruction::O_Rem_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795269u32
+            instr, Instruction::O_Div_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523127u32);
     }
     #[test]
-    fn decode_o_rem_u64() {
+    fn O_Div_u64() {
+        let instr = Instruction::decode(815958583u32);
+        println!("{:032b}", 815958583u32);
         assert_eq!(
-            Instruction::decode(957230725u32), Instruction::O_Rem_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Div_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958583u32);
     }
     #[test]
-    fn encode_o_rem_u64() {
+    fn O_Div_E_i8() {
+        let instr = Instruction::decode(2158135879u32);
+        println!("{:032b}", 2158135879u32);
         assert_eq!(
-            Instruction::O_Rem_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230725u32
+            instr, Instruction::O_Div_E_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135879u32);
     }
     #[test]
-    fn decode_o_rem_e_i8() {
+    fn O_Div_E_i16() {
+        let instr = Instruction::decode(2426571335u32);
+        println!("{:032b}", 2426571335u32);
         assert_eq!(
-            Instruction::decode(2299408069u32), Instruction::O_Rem_E_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Div_E_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571335u32);
     }
     #[test]
-    fn encode_o_rem_e_i8() {
+    fn O_Div_E_i32() {
+        let instr = Instruction::decode(2695006791u32);
+        println!("{:032b}", 2695006791u32);
         assert_eq!(
-            Instruction::O_Rem_E_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408069u32
+            instr, Instruction::O_Div_E_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006791u32);
     }
     #[test]
-    fn decode_o_rem_e_i16() {
+    fn O_Div_E_i64() {
+        let instr = Instruction::decode(2963442247u32);
+        println!("{:032b}", 2963442247u32);
         assert_eq!(
-            Instruction::decode(2567843525u32), Instruction::O_Rem_E_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Div_E_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442247u32);
     }
     #[test]
-    fn encode_o_rem_e_i16() {
+    fn O_Div_E_u8() {
+        let instr = Instruction::decode(10652231u32);
+        println!("{:032b}", 10652231u32);
         assert_eq!(
-            Instruction::O_Rem_E_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843525u32
+            instr, Instruction::O_Div_E_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652231u32);
     }
     #[test]
-    fn decode_o_rem_e_i32() {
+    fn O_Div_E_u16() {
+        let instr = Instruction::decode(279087687u32);
+        println!("{:032b}", 279087687u32);
         assert_eq!(
-            Instruction::decode(2836278981u32), Instruction::O_Rem_E_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Div_E_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087687u32);
     }
     #[test]
-    fn encode_o_rem_e_i32() {
+    fn O_Div_E_u32() {
+        let instr = Instruction::decode(547523143u32);
+        println!("{:032b}", 547523143u32);
         assert_eq!(
-            Instruction::O_Rem_E_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278981u32
+            instr, Instruction::O_Div_E_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523143u32);
     }
     #[test]
-    fn decode_o_rem_e_i64() {
+    fn O_Div_E_u64() {
+        let instr = Instruction::decode(815958599u32);
+        println!("{:032b}", 815958599u32);
         assert_eq!(
-            Instruction::decode(3104714437u32), Instruction::O_Rem_E_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Div_E_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958599u32);
     }
     #[test]
-    fn encode_o_rem_e_i64() {
+    fn O_Mul_i8() {
+        let instr = Instruction::decode(2158135927u32);
+        println!("{:032b}", 2158135927u32);
         assert_eq!(
-            Instruction::O_Rem_E_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714437u32
+            instr, Instruction::O_Mul_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135927u32);
     }
     #[test]
-    fn decode_o_rem_e_u8() {
+    fn O_Mul_i16() {
+        let instr = Instruction::decode(2426571383u32);
+        println!("{:032b}", 2426571383u32);
         assert_eq!(
-            Instruction::decode(151924421u32), Instruction::O_Rem_E_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Mul_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571383u32);
     }
     #[test]
-    fn encode_o_rem_e_u8() {
+    fn O_Mul_i32() {
+        let instr = Instruction::decode(2695006839u32);
+        println!("{:032b}", 2695006839u32);
         assert_eq!(
-            Instruction::O_Rem_E_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924421u32
+            instr, Instruction::O_Mul_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006839u32);
     }
     #[test]
-    fn decode_o_rem_e_u16() {
+    fn O_Mul_i64() {
+        let instr = Instruction::decode(2963442295u32);
+        println!("{:032b}", 2963442295u32);
         assert_eq!(
-            Instruction::decode(420359877u32), Instruction::O_Rem_E_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Mul_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442295u32);
     }
     #[test]
-    fn encode_o_rem_e_u16() {
+    fn O_Mul_u8() {
+        let instr = Instruction::decode(10652279u32);
+        println!("{:032b}", 10652279u32);
         assert_eq!(
-            Instruction::O_Rem_E_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359877u32
+            instr, Instruction::O_Mul_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652279u32);
     }
     #[test]
-    fn decode_o_rem_e_u32() {
+    fn O_Mul_u16() {
+        let instr = Instruction::decode(279087735u32);
+        println!("{:032b}", 279087735u32);
         assert_eq!(
-            Instruction::decode(688795333u32), Instruction::O_Rem_E_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Mul_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087735u32);
     }
     #[test]
-    fn encode_o_rem_e_u32() {
+    fn O_Mul_u32() {
+        let instr = Instruction::decode(547523191u32);
+        println!("{:032b}", 547523191u32);
         assert_eq!(
-            Instruction::O_Rem_E_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795333u32
+            instr, Instruction::O_Mul_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523191u32);
     }
     #[test]
-    fn decode_o_rem_e_u64() {
+    fn O_Mul_u64() {
+        let instr = Instruction::decode(815958647u32);
+        println!("{:032b}", 815958647u32);
         assert_eq!(
-            Instruction::decode(957230789u32), Instruction::O_Rem_E_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Mul_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958647u32);
     }
     #[test]
-    fn encode_o_rem_e_u64() {
+    fn O_Neg_i8() {
+        let instr = Instruction::decode(2147650183u32);
+        println!("{:032b}", 2147650183u32);
         assert_eq!(
-            Instruction::O_Rem_E_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230789u32
+            instr, Instruction::O_Neg_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650183u32);
     }
     #[test]
-    fn decode_o_shl_i8() {
+    fn O_Neg_i16() {
+        let instr = Instruction::decode(2416085639u32);
+        println!("{:032b}", 2416085639u32);
         assert_eq!(
-            Instruction::decode(2299408133u32), Instruction::O_Shl_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Neg_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085639u32);
     }
     #[test]
-    fn encode_o_shl_i8() {
+    fn O_Neg_i32() {
+        let instr = Instruction::decode(2684521095u32);
+        println!("{:032b}", 2684521095u32);
         assert_eq!(
-            Instruction::O_Shl_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408133u32
+            instr, Instruction::O_Neg_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521095u32);
     }
     #[test]
-    fn decode_o_shl_i16() {
+    fn O_Neg_i64() {
+        let instr = Instruction::decode(2952956551u32);
+        println!("{:032b}", 2952956551u32);
         assert_eq!(
-            Instruction::decode(2567843589u32), Instruction::O_Shl_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Neg_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956551u32);
     }
     #[test]
-    fn encode_o_shl_i16() {
+    fn O_Pow_i8() {
+        let instr = Instruction::decode(2158135959u32);
+        println!("{:032b}", 2158135959u32);
         assert_eq!(
-            Instruction::O_Shl_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843589u32
+            instr, Instruction::O_Pow_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135959u32);
     }
     #[test]
-    fn decode_o_shl_i32() {
+    fn O_Pow_i16() {
+        let instr = Instruction::decode(2426571415u32);
+        println!("{:032b}", 2426571415u32);
         assert_eq!(
-            Instruction::decode(2836279045u32), Instruction::O_Shl_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Pow_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571415u32);
     }
     #[test]
-    fn encode_o_shl_i32() {
+    fn O_Pow_i32() {
+        let instr = Instruction::decode(2695006871u32);
+        println!("{:032b}", 2695006871u32);
         assert_eq!(
-            Instruction::O_Shl_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836279045u32
+            instr, Instruction::O_Pow_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006871u32);
     }
     #[test]
-    fn decode_o_shl_i64() {
+    fn O_Pow_i64() {
+        let instr = Instruction::decode(2963442327u32);
+        println!("{:032b}", 2963442327u32);
         assert_eq!(
-            Instruction::decode(3104714501u32), Instruction::O_Shl_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Pow_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442327u32);
     }
     #[test]
-    fn encode_o_shl_i64() {
+    fn O_Pow_u8() {
+        let instr = Instruction::decode(10652311u32);
+        println!("{:032b}", 10652311u32);
         assert_eq!(
-            Instruction::O_Shl_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714501u32
+            instr, Instruction::O_Pow_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652311u32);
     }
     #[test]
-    fn decode_o_shl_u8() {
+    fn O_Pow_u16() {
+        let instr = Instruction::decode(279087767u32);
+        println!("{:032b}", 279087767u32);
         assert_eq!(
-            Instruction::decode(151924485u32), Instruction::O_Shl_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Pow_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087767u32);
     }
     #[test]
-    fn encode_o_shl_u8() {
+    fn O_Pow_u32() {
+        let instr = Instruction::decode(547523223u32);
+        println!("{:032b}", 547523223u32);
         assert_eq!(
-            Instruction::O_Shl_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924485u32
+            instr, Instruction::O_Pow_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523223u32);
     }
     #[test]
-    fn decode_o_shl_u16() {
+    fn O_Pow_u64() {
+        let instr = Instruction::decode(815958679u32);
+        println!("{:032b}", 815958679u32);
         assert_eq!(
-            Instruction::decode(420359941u32), Instruction::O_Shl_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Pow_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958679u32);
     }
     #[test]
-    fn encode_o_shl_u16() {
+    fn O_Rem_i8() {
+        let instr = Instruction::decode(2158135975u32);
+        println!("{:032b}", 2158135975u32);
         assert_eq!(
-            Instruction::O_Shl_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359941u32
+            instr, Instruction::O_Rem_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135975u32);
     }
     #[test]
-    fn decode_o_shl_u32() {
+    fn O_Rem_i16() {
+        let instr = Instruction::decode(2426571431u32);
+        println!("{:032b}", 2426571431u32);
         assert_eq!(
-            Instruction::decode(688795397u32), Instruction::O_Shl_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Rem_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571431u32);
     }
     #[test]
-    fn encode_o_shl_u32() {
+    fn O_Rem_i32() {
+        let instr = Instruction::decode(2695006887u32);
+        println!("{:032b}", 2695006887u32);
         assert_eq!(
-            Instruction::O_Shl_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795397u32
+            instr, Instruction::O_Rem_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006887u32);
     }
     #[test]
-    fn decode_o_shl_u64() {
+    fn O_Rem_i64() {
+        let instr = Instruction::decode(2963442343u32);
+        println!("{:032b}", 2963442343u32);
         assert_eq!(
-            Instruction::decode(957230853u32), Instruction::O_Shl_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Rem_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442343u32);
     }
     #[test]
-    fn encode_o_shl_u64() {
+    fn O_Rem_u8() {
+        let instr = Instruction::decode(10652327u32);
+        println!("{:032b}", 10652327u32);
         assert_eq!(
-            Instruction::O_Shl_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230853u32
+            instr, Instruction::O_Rem_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652327u32);
     }
     #[test]
-    fn decode_o_shr_i8() {
+    fn O_Rem_u16() {
+        let instr = Instruction::decode(279087783u32);
+        println!("{:032b}", 279087783u32);
         assert_eq!(
-            Instruction::decode(2299408197u32), Instruction::O_Shr_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Rem_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087783u32);
     }
     #[test]
-    fn encode_o_shr_i8() {
+    fn O_Rem_u32() {
+        let instr = Instruction::decode(547523239u32);
+        println!("{:032b}", 547523239u32);
         assert_eq!(
-            Instruction::O_Shr_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408197u32
+            instr, Instruction::O_Rem_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523239u32);
     }
     #[test]
-    fn decode_o_shr_i16() {
+    fn O_Rem_u64() {
+        let instr = Instruction::decode(815958695u32);
+        println!("{:032b}", 815958695u32);
         assert_eq!(
-            Instruction::decode(2567843653u32), Instruction::O_Shr_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Rem_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958695u32);
     }
     #[test]
-    fn encode_o_shr_i16() {
+    fn O_Rem_E_i8() {
+        let instr = Instruction::decode(2158135991u32);
+        println!("{:032b}", 2158135991u32);
         assert_eq!(
-            Instruction::O_Shr_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843653u32
+            instr, Instruction::O_Rem_E_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135991u32);
     }
     #[test]
-    fn decode_o_shr_i32() {
+    fn O_Rem_E_i16() {
+        let instr = Instruction::decode(2426571447u32);
+        println!("{:032b}", 2426571447u32);
         assert_eq!(
-            Instruction::decode(2836279109u32), Instruction::O_Shr_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Rem_E_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571447u32);
     }
     #[test]
-    fn encode_o_shr_i32() {
+    fn O_Rem_E_i32() {
+        let instr = Instruction::decode(2695006903u32);
+        println!("{:032b}", 2695006903u32);
         assert_eq!(
-            Instruction::O_Shr_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836279109u32
+            instr, Instruction::O_Rem_E_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006903u32);
     }
     #[test]
-    fn decode_o_shr_i64() {
+    fn O_Rem_E_i64() {
+        let instr = Instruction::decode(2963442359u32);
+        println!("{:032b}", 2963442359u32);
         assert_eq!(
-            Instruction::decode(3104714565u32), Instruction::O_Shr_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Rem_E_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442359u32);
     }
     #[test]
-    fn encode_o_shr_i64() {
+    fn O_Rem_E_u8() {
+        let instr = Instruction::decode(10652343u32);
+        println!("{:032b}", 10652343u32);
         assert_eq!(
-            Instruction::O_Shr_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714565u32
+            instr, Instruction::O_Rem_E_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652343u32);
     }
     #[test]
-    fn decode_o_shr_u8() {
+    fn O_Rem_E_u16() {
+        let instr = Instruction::decode(279087799u32);
+        println!("{:032b}", 279087799u32);
         assert_eq!(
-            Instruction::decode(151924549u32), Instruction::O_Shr_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Rem_E_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087799u32);
     }
     #[test]
-    fn encode_o_shr_u8() {
+    fn O_Rem_E_u32() {
+        let instr = Instruction::decode(547523255u32);
+        println!("{:032b}", 547523255u32);
         assert_eq!(
-            Instruction::O_Shr_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924549u32
+            instr, Instruction::O_Rem_E_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523255u32);
     }
     #[test]
-    fn decode_o_shr_u16() {
+    fn O_Rem_E_u64() {
+        let instr = Instruction::decode(815958711u32);
+        println!("{:032b}", 815958711u32);
         assert_eq!(
-            Instruction::decode(420360005u32), Instruction::O_Shr_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Rem_E_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958711u32);
     }
     #[test]
-    fn encode_o_shr_u16() {
+    fn O_Shl_i8() {
+        let instr = Instruction::decode(2158136007u32);
+        println!("{:032b}", 2158136007u32);
         assert_eq!(
-            Instruction::O_Shr_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420360005u32
+            instr, Instruction::O_Shl_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158136007u32);
     }
     #[test]
-    fn decode_o_shr_u32() {
+    fn O_Shl_i16() {
+        let instr = Instruction::decode(2426571463u32);
+        println!("{:032b}", 2426571463u32);
         assert_eq!(
-            Instruction::decode(688795461u32), Instruction::O_Shr_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Shl_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571463u32);
     }
     #[test]
-    fn encode_o_shr_u32() {
+    fn O_Shl_i32() {
+        let instr = Instruction::decode(2695006919u32);
+        println!("{:032b}", 2695006919u32);
         assert_eq!(
-            Instruction::O_Shr_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795461u32
+            instr, Instruction::O_Shl_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006919u32);
     }
     #[test]
-    fn decode_o_shr_u64() {
+    fn O_Shl_i64() {
+        let instr = Instruction::decode(2963442375u32);
+        println!("{:032b}", 2963442375u32);
         assert_eq!(
-            Instruction::decode(957230917u32), Instruction::O_Shr_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Shl_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442375u32);
     }
     #[test]
-    fn encode_o_shr_u64() {
+    fn O_Shl_u8() {
+        let instr = Instruction::decode(10652359u32);
+        println!("{:032b}", 10652359u32);
         assert_eq!(
-            Instruction::O_Shr_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230917u32
+            instr, Instruction::O_Shl_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652359u32);
     }
     #[test]
-    fn decode_o_sub_i8() {
+    fn O_Shl_u16() {
+        let instr = Instruction::decode(279087815u32);
+        println!("{:032b}", 279087815u32);
         assert_eq!(
-            Instruction::decode(2299408261u32), Instruction::O_Sub_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Shl_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087815u32);
     }
     #[test]
-    fn encode_o_sub_i8() {
+    fn O_Shl_u32() {
+        let instr = Instruction::decode(547523271u32);
+        println!("{:032b}", 547523271u32);
         assert_eq!(
-            Instruction::O_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408261u32
+            instr, Instruction::O_Shl_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523271u32);
     }
     #[test]
-    fn decode_o_sub_i16() {
+    fn O_Shl_u64() {
+        let instr = Instruction::decode(815958727u32);
+        println!("{:032b}", 815958727u32);
         assert_eq!(
-            Instruction::decode(2567843717u32), Instruction::O_Sub_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Shl_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958727u32);
     }
     #[test]
-    fn encode_o_sub_i16() {
+    fn O_Shr_i8() {
+        let instr = Instruction::decode(2158136023u32);
+        println!("{:032b}", 2158136023u32);
         assert_eq!(
-            Instruction::O_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843717u32
+            instr, Instruction::O_Shr_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158136023u32);
     }
     #[test]
-    fn decode_o_sub_i32() {
+    fn O_Shr_i16() {
+        let instr = Instruction::decode(2426571479u32);
+        println!("{:032b}", 2426571479u32);
         assert_eq!(
-            Instruction::decode(2836279173u32), Instruction::O_Sub_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Shr_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571479u32);
     }
     #[test]
-    fn encode_o_sub_i32() {
+    fn O_Shr_i32() {
+        let instr = Instruction::decode(2695006935u32);
+        println!("{:032b}", 2695006935u32);
         assert_eq!(
-            Instruction::O_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836279173u32
+            instr, Instruction::O_Shr_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006935u32);
     }
     #[test]
-    fn decode_o_sub_i64() {
+    fn O_Shr_i64() {
+        let instr = Instruction::decode(2963442391u32);
+        println!("{:032b}", 2963442391u32);
         assert_eq!(
-            Instruction::decode(3104714629u32), Instruction::O_Sub_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Shr_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442391u32);
     }
     #[test]
-    fn encode_o_sub_i64() {
+    fn O_Shr_u8() {
+        let instr = Instruction::decode(10652375u32);
+        println!("{:032b}", 10652375u32);
         assert_eq!(
-            Instruction::O_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714629u32
+            instr, Instruction::O_Shr_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652375u32);
     }
     #[test]
-    fn decode_o_sub_u8() {
+    fn O_Shr_u16() {
+        let instr = Instruction::decode(279087831u32);
+        println!("{:032b}", 279087831u32);
         assert_eq!(
-            Instruction::decode(151924613u32), Instruction::O_Sub_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Shr_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087831u32);
     }
     #[test]
-    fn encode_o_sub_u8() {
+    fn O_Shr_u32() {
+        let instr = Instruction::decode(547523287u32);
+        println!("{:032b}", 547523287u32);
         assert_eq!(
-            Instruction::O_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924613u32
+            instr, Instruction::O_Shr_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523287u32);
     }
     #[test]
-    fn decode_o_sub_u16() {
+    fn O_Shr_u64() {
+        let instr = Instruction::decode(815958743u32);
+        println!("{:032b}", 815958743u32);
         assert_eq!(
-            Instruction::decode(420360069u32), Instruction::O_Sub_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Shr_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958743u32);
     }
     #[test]
-    fn encode_o_sub_u16() {
+    fn O_Sub_i8() {
+        let instr = Instruction::decode(2158136039u32);
+        println!("{:032b}", 2158136039u32);
         assert_eq!(
-            Instruction::O_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420360069u32
+            instr, Instruction::O_Sub_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158136039u32);
     }
     #[test]
-    fn decode_o_sub_u32() {
+    fn O_Sub_i16() {
+        let instr = Instruction::decode(2426571495u32);
+        println!("{:032b}", 2426571495u32);
         assert_eq!(
-            Instruction::decode(688795525u32), Instruction::O_Sub_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Sub_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571495u32);
     }
     #[test]
-    fn encode_o_sub_u32() {
+    fn O_Sub_i32() {
+        let instr = Instruction::decode(2695006951u32);
+        println!("{:032b}", 2695006951u32);
         assert_eq!(
-            Instruction::O_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795525u32
+            instr, Instruction::O_Sub_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006951u32);
     }
     #[test]
-    fn decode_o_sub_u64() {
+    fn O_Sub_i64() {
+        let instr = Instruction::decode(2963442407u32);
+        println!("{:032b}", 2963442407u32);
         assert_eq!(
-            Instruction::decode(957230981u32), Instruction::O_Sub_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Sub_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442407u32);
     }
     #[test]
-    fn encode_o_sub_u64() {
+    fn O_Sub_u8() {
+        let instr = Instruction::decode(10652391u32);
+        println!("{:032b}", 10652391u32);
         assert_eq!(
-            Instruction::O_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230981u32
+            instr, Instruction::O_Sub_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652391u32);
     }
     #[test]
-    fn decode_o_sub_u_i8() {
+    fn O_Sub_u16() {
+        let instr = Instruction::decode(279087847u32);
+        println!("{:032b}", 279087847u32);
         assert_eq!(
-            Instruction::decode(2299408325u32), Instruction::O_Sub_U_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Sub_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087847u32);
     }
     #[test]
-    fn encode_o_sub_u_i8() {
+    fn O_Sub_u32() {
+        let instr = Instruction::decode(547523303u32);
+        println!("{:032b}", 547523303u32);
         assert_eq!(
-            Instruction::O_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408325u32
+            instr, Instruction::O_Sub_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523303u32);
     }
     #[test]
-    fn decode_o_sub_u_i16() {
+    fn O_Sub_u64() {
+        let instr = Instruction::decode(815958759u32);
+        println!("{:032b}", 815958759u32);
         assert_eq!(
-            Instruction::decode(2567843781u32), Instruction::O_Sub_U_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Sub_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958759u32);
     }
     #[test]
-    fn encode_o_sub_u_i16() {
+    fn O_Sub_U_i8() {
+        let instr = Instruction::decode(2158136055u32);
+        println!("{:032b}", 2158136055u32);
         assert_eq!(
-            Instruction::O_Sub_U_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843781u32
+            instr, Instruction::O_Sub_U_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158136055u32);
     }
     #[test]
-    fn decode_o_sub_u_i32() {
+    fn O_Sub_U_i16() {
+        let instr = Instruction::decode(2426571511u32);
+        println!("{:032b}", 2426571511u32);
         assert_eq!(
-            Instruction::decode(2836279237u32), Instruction::O_Sub_U_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Sub_U_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571511u32);
     }
     #[test]
-    fn encode_o_sub_u_i32() {
+    fn O_Sub_U_i32() {
+        let instr = Instruction::decode(2695006967u32);
+        println!("{:032b}", 2695006967u32);
         assert_eq!(
-            Instruction::O_Sub_U_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836279237u32
+            instr, Instruction::O_Sub_U_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006967u32);
     }
     #[test]
-    fn decode_o_sub_u_i64() {
+    fn O_Sub_U_i64() {
+        let instr = Instruction::decode(2963442423u32);
+        println!("{:032b}", 2963442423u32);
         assert_eq!(
-            Instruction::decode(3104714693u32), Instruction::O_Sub_U_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::O_Sub_U_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442423u32);
     }
     #[test]
-    fn encode_o_sub_u_i64() {
+    fn S_Abs_i8() {
+        let instr = Instruction::decode(2147650056u32);
+        println!("{:032b}", 2147650056u32);
         assert_eq!(
-            Instruction::O_Sub_U_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714693u32
+            instr, Instruction::S_Abs_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650056u32);
     }
     #[test]
-    fn decode_s_abs_i8() {
+    fn S_Abs_i16() {
+        let instr = Instruction::decode(2416085512u32);
+        println!("{:032b}", 2416085512u32);
         assert_eq!(
-            Instruction::decode(2148412422u32), Instruction::S_Abs_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::S_Abs_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085512u32);
     }
     #[test]
-    fn encode_s_abs_i8() {
+    fn S_Abs_i32() {
+        let instr = Instruction::decode(2684520968u32);
+        println!("{:032b}", 2684520968u32);
         assert_eq!(
-            Instruction::S_Abs_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148412422u32
+            instr, Instruction::S_Abs_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684520968u32);
     }
     #[test]
-    fn decode_s_abs_i16() {
+    fn S_Abs_i64() {
+        let instr = Instruction::decode(2952956424u32);
+        println!("{:032b}", 2952956424u32);
         assert_eq!(
-            Instruction::decode(2416847878u32), Instruction::S_Abs_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::S_Abs_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956424u32);
     }
     #[test]
-    fn encode_s_abs_i16() {
+    fn S_Add_i8() {
+        let instr = Instruction::decode(2158135832u32);
+        println!("{:032b}", 2158135832u32);
         assert_eq!(
-            Instruction::S_Abs_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416847878u32
+            instr, Instruction::S_Add_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135832u32);
     }
     #[test]
-    fn decode_s_abs_i32() {
+    fn S_Add_i16() {
+        let instr = Instruction::decode(2426571288u32);
+        println!("{:032b}", 2426571288u32);
         assert_eq!(
-            Instruction::decode(2685283334u32), Instruction::S_Abs_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::S_Add_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571288u32);
     }
     #[test]
-    fn encode_s_abs_i32() {
+    fn S_Add_i32() {
+        let instr = Instruction::decode(2695006744u32);
+        println!("{:032b}", 2695006744u32);
         assert_eq!(
-            Instruction::S_Abs_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685283334u32
+            instr, Instruction::S_Add_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006744u32);
     }
     #[test]
-    fn decode_s_abs_i64() {
+    fn S_Add_i64() {
+        let instr = Instruction::decode(2963442200u32);
+        println!("{:032b}", 2963442200u32);
         assert_eq!(
-            Instruction::decode(2953718790u32), Instruction::S_Abs_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::S_Add_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442200u32);
     }
     #[test]
-    fn encode_s_abs_i64() {
+    fn S_Add_u8() {
+        let instr = Instruction::decode(10652184u32);
+        println!("{:032b}", 10652184u32);
         assert_eq!(
-            Instruction::S_Abs_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953718790u32
+            instr, Instruction::S_Add_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652184u32);
     }
     #[test]
-    fn decode_s_add_i8() {
+    fn S_Add_u16() {
+        let instr = Instruction::decode(279087640u32);
+        println!("{:032b}", 279087640u32);
         assert_eq!(
-            Instruction::decode(2299407430u32), Instruction::S_Add_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Add_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087640u32);
     }
     #[test]
-    fn encode_s_add_i8() {
+    fn S_Add_u32() {
+        let instr = Instruction::decode(547523096u32);
+        println!("{:032b}", 547523096u32);
         assert_eq!(
-            Instruction::S_Add_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407430u32
+            instr, Instruction::S_Add_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523096u32);
     }
     #[test]
-    fn decode_s_add_i16() {
+    fn S_Add_u64() {
+        let instr = Instruction::decode(815958552u32);
+        println!("{:032b}", 815958552u32);
         assert_eq!(
-            Instruction::decode(2567842886u32), Instruction::S_Add_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Add_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958552u32);
     }
     #[test]
-    fn encode_s_add_i16() {
+    fn S_Add_U_i8() {
+        let instr = Instruction::decode(2158135848u32);
+        println!("{:032b}", 2158135848u32);
         assert_eq!(
-            Instruction::S_Add_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567842886u32
+            instr, Instruction::S_Add_U_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135848u32);
     }
     #[test]
-    fn decode_s_add_i32() {
+    fn S_Add_U_i16() {
+        let instr = Instruction::decode(2426571304u32);
+        println!("{:032b}", 2426571304u32);
         assert_eq!(
-            Instruction::decode(2836278342u32), Instruction::S_Add_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Add_U_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571304u32);
     }
     #[test]
-    fn encode_s_add_i32() {
+    fn S_Add_U_i32() {
+        let instr = Instruction::decode(2695006760u32);
+        println!("{:032b}", 2695006760u32);
         assert_eq!(
-            Instruction::S_Add_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278342u32
+            instr, Instruction::S_Add_U_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006760u32);
     }
     #[test]
-    fn decode_s_add_i64() {
+    fn S_Add_U_i64() {
+        let instr = Instruction::decode(2963442216u32);
+        println!("{:032b}", 2963442216u32);
         assert_eq!(
-            Instruction::decode(3104713798u32), Instruction::S_Add_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Add_U_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442216u32);
     }
     #[test]
-    fn encode_s_add_i64() {
+    fn S_Add_S_u8() {
+        let instr = Instruction::decode(10652200u32);
+        println!("{:032b}", 10652200u32);
         assert_eq!(
-            Instruction::S_Add_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713798u32
+            instr, Instruction::S_Add_S_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652200u32);
     }
     #[test]
-    fn decode_s_add_u8() {
+    fn S_Add_S_u16() {
+        let instr = Instruction::decode(279087656u32);
+        println!("{:032b}", 279087656u32);
         assert_eq!(
-            Instruction::decode(151923782u32), Instruction::S_Add_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Add_S_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087656u32);
     }
     #[test]
-    fn encode_s_add_u8() {
+    fn S_Add_S_u32() {
+        let instr = Instruction::decode(547523112u32);
+        println!("{:032b}", 547523112u32);
         assert_eq!(
-            Instruction::S_Add_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923782u32
+            instr, Instruction::S_Add_S_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523112u32);
     }
     #[test]
-    fn decode_s_add_u16() {
+    fn S_Add_S_u64() {
+        let instr = Instruction::decode(815958568u32);
+        println!("{:032b}", 815958568u32);
         assert_eq!(
-            Instruction::decode(420359238u32), Instruction::S_Add_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Add_S_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958568u32);
     }
     #[test]
-    fn encode_s_add_u16() {
+    fn S_Div_i8() {
+        let instr = Instruction::decode(2158135864u32);
+        println!("{:032b}", 2158135864u32);
         assert_eq!(
-            Instruction::S_Add_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359238u32
+            instr, Instruction::S_Div_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135864u32);
     }
     #[test]
-    fn decode_s_add_u32() {
+    fn S_Div_i16() {
+        let instr = Instruction::decode(2426571320u32);
+        println!("{:032b}", 2426571320u32);
         assert_eq!(
-            Instruction::decode(688794694u32), Instruction::S_Add_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Div_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571320u32);
     }
     #[test]
-    fn encode_s_add_u32() {
+    fn S_Div_i32() {
+        let instr = Instruction::decode(2695006776u32);
+        println!("{:032b}", 2695006776u32);
         assert_eq!(
-            Instruction::S_Add_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794694u32
+            instr, Instruction::S_Div_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006776u32);
     }
     #[test]
-    fn decode_s_add_u64() {
+    fn S_Div_i64() {
+        let instr = Instruction::decode(2963442232u32);
+        println!("{:032b}", 2963442232u32);
         assert_eq!(
-            Instruction::decode(957230150u32), Instruction::S_Add_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Div_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442232u32);
     }
     #[test]
-    fn encode_s_add_u64() {
+    fn S_Div_u8() {
+        let instr = Instruction::decode(10652216u32);
+        println!("{:032b}", 10652216u32);
         assert_eq!(
-            Instruction::S_Add_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230150u32
+            instr, Instruction::S_Div_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652216u32);
     }
     #[test]
-    fn decode_s_add_u_i8() {
+    fn S_Div_u16() {
+        let instr = Instruction::decode(279087672u32);
+        println!("{:032b}", 279087672u32);
         assert_eq!(
-            Instruction::decode(2299407494u32), Instruction::S_Add_U_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Div_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087672u32);
     }
     #[test]
-    fn encode_s_add_u_i8() {
+    fn S_Div_u32() {
+        let instr = Instruction::decode(547523128u32);
+        println!("{:032b}", 547523128u32);
         assert_eq!(
-            Instruction::S_Add_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407494u32
+            instr, Instruction::S_Div_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523128u32);
     }
     #[test]
-    fn decode_s_add_u_i16() {
+    fn S_Div_u64() {
+        let instr = Instruction::decode(815958584u32);
+        println!("{:032b}", 815958584u32);
         assert_eq!(
-            Instruction::decode(2567842950u32), Instruction::S_Add_U_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Div_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958584u32);
     }
     #[test]
-    fn encode_s_add_u_i16() {
+    fn S_Mul_i8() {
+        let instr = Instruction::decode(2158135928u32);
+        println!("{:032b}", 2158135928u32);
         assert_eq!(
-            Instruction::S_Add_U_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567842950u32
+            instr, Instruction::S_Mul_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135928u32);
     }
     #[test]
-    fn decode_s_add_u_i32() {
+    fn S_Mul_i16() {
+        let instr = Instruction::decode(2426571384u32);
+        println!("{:032b}", 2426571384u32);
         assert_eq!(
-            Instruction::decode(2836278406u32), Instruction::S_Add_U_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Mul_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571384u32);
     }
     #[test]
-    fn encode_s_add_u_i32() {
+    fn S_Mul_i32() {
+        let instr = Instruction::decode(2695006840u32);
+        println!("{:032b}", 2695006840u32);
         assert_eq!(
-            Instruction::S_Add_U_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278406u32
+            instr, Instruction::S_Mul_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006840u32);
     }
     #[test]
-    fn decode_s_add_u_i64() {
+    fn S_Mul_i64() {
+        let instr = Instruction::decode(2963442296u32);
+        println!("{:032b}", 2963442296u32);
         assert_eq!(
-            Instruction::decode(3104713862u32), Instruction::S_Add_U_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Mul_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442296u32);
     }
     #[test]
-    fn encode_s_add_u_i64() {
+    fn S_Mul_u8() {
+        let instr = Instruction::decode(10652280u32);
+        println!("{:032b}", 10652280u32);
         assert_eq!(
-            Instruction::S_Add_U_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713862u32
+            instr, Instruction::S_Mul_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652280u32);
     }
     #[test]
-    fn decode_s_add_s_u8() {
+    fn S_Mul_u16() {
+        let instr = Instruction::decode(279087736u32);
+        println!("{:032b}", 279087736u32);
         assert_eq!(
-            Instruction::decode(151923846u32), Instruction::S_Add_S_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Mul_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087736u32);
     }
     #[test]
-    fn encode_s_add_s_u8() {
+    fn S_Mul_u32() {
+        let instr = Instruction::decode(547523192u32);
+        println!("{:032b}", 547523192u32);
         assert_eq!(
-            Instruction::S_Add_S_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923846u32
+            instr, Instruction::S_Mul_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523192u32);
     }
     #[test]
-    fn decode_s_add_s_u16() {
+    fn S_Mul_u64() {
+        let instr = Instruction::decode(815958648u32);
+        println!("{:032b}", 815958648u32);
         assert_eq!(
-            Instruction::decode(420359302u32), Instruction::S_Add_S_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Mul_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958648u32);
     }
     #[test]
-    fn encode_s_add_s_u16() {
+    fn S_Neg_i8() {
+        let instr = Instruction::decode(2147650184u32);
+        println!("{:032b}", 2147650184u32);
         assert_eq!(
-            Instruction::S_Add_S_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359302u32
+            instr, Instruction::S_Neg_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2147650184u32);
     }
     #[test]
-    fn decode_s_add_s_u32() {
+    fn S_Neg_i16() {
+        let instr = Instruction::decode(2416085640u32);
+        println!("{:032b}", 2416085640u32);
         assert_eq!(
-            Instruction::decode(688794758u32), Instruction::S_Add_S_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Neg_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2416085640u32);
     }
     #[test]
-    fn encode_s_add_s_u32() {
+    fn S_Neg_i32() {
+        let instr = Instruction::decode(2684521096u32);
+        println!("{:032b}", 2684521096u32);
         assert_eq!(
-            Instruction::S_Add_S_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794758u32
+            instr, Instruction::S_Neg_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2684521096u32);
     }
     #[test]
-    fn decode_s_add_s_u64() {
+    fn S_Neg_i64() {
+        let instr = Instruction::decode(2952956552u32);
+        println!("{:032b}", 2952956552u32);
         assert_eq!(
-            Instruction::decode(957230214u32), Instruction::S_Add_S_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Neg_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2952956552u32);
     }
     #[test]
-    fn encode_s_add_s_u64() {
+    fn S_Pow_i8() {
+        let instr = Instruction::decode(2158135960u32);
+        println!("{:032b}", 2158135960u32);
         assert_eq!(
-            Instruction::S_Add_S_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230214u32
+            instr, Instruction::S_Pow_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135960u32);
     }
     #[test]
-    fn decode_s_div_i8() {
+    fn S_Pow_i16() {
+        let instr = Instruction::decode(2426571416u32);
+        println!("{:032b}", 2426571416u32);
         assert_eq!(
-            Instruction::decode(2299407558u32), Instruction::S_Div_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Pow_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571416u32);
     }
     #[test]
-    fn encode_s_div_i8() {
+    fn S_Pow_i32() {
+        let instr = Instruction::decode(2695006872u32);
+        println!("{:032b}", 2695006872u32);
         assert_eq!(
-            Instruction::S_Div_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407558u32
+            instr, Instruction::S_Pow_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006872u32);
     }
     #[test]
-    fn decode_s_div_i16() {
+    fn S_Pow_i64() {
+        let instr = Instruction::decode(2963442328u32);
+        println!("{:032b}", 2963442328u32);
         assert_eq!(
-            Instruction::decode(2567843014u32), Instruction::S_Div_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Pow_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442328u32);
     }
     #[test]
-    fn encode_s_div_i16() {
+    fn S_Pow_u8() {
+        let instr = Instruction::decode(10652312u32);
+        println!("{:032b}", 10652312u32);
         assert_eq!(
-            Instruction::S_Div_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843014u32
+            instr, Instruction::S_Pow_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652312u32);
     }
     #[test]
-    fn decode_s_div_i32() {
+    fn S_Pow_u16() {
+        let instr = Instruction::decode(279087768u32);
+        println!("{:032b}", 279087768u32);
         assert_eq!(
-            Instruction::decode(2836278470u32), Instruction::S_Div_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Pow_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087768u32);
     }
     #[test]
-    fn encode_s_div_i32() {
+    fn S_Pow_u32() {
+        let instr = Instruction::decode(547523224u32);
+        println!("{:032b}", 547523224u32);
         assert_eq!(
-            Instruction::S_Div_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278470u32
+            instr, Instruction::S_Pow_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523224u32);
     }
     #[test]
-    fn decode_s_div_i64() {
+    fn S_Pow_u64() {
+        let instr = Instruction::decode(815958680u32);
+        println!("{:032b}", 815958680u32);
         assert_eq!(
-            Instruction::decode(3104713926u32), Instruction::S_Div_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Pow_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958680u32);
     }
     #[test]
-    fn encode_s_div_i64() {
+    fn S_Sub_i8() {
+        let instr = Instruction::decode(2158136040u32);
+        println!("{:032b}", 2158136040u32);
         assert_eq!(
-            Instruction::S_Div_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104713926u32
+            instr, Instruction::S_Sub_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158136040u32);
     }
     #[test]
-    fn decode_s_div_u8() {
+    fn S_Sub_i16() {
+        let instr = Instruction::decode(2426571496u32);
+        println!("{:032b}", 2426571496u32);
         assert_eq!(
-            Instruction::decode(151923910u32), Instruction::S_Div_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Sub_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571496u32);
     }
     #[test]
-    fn encode_s_div_u8() {
+    fn S_Sub_i32() {
+        let instr = Instruction::decode(2695006952u32);
+        println!("{:032b}", 2695006952u32);
         assert_eq!(
-            Instruction::S_Div_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151923910u32
+            instr, Instruction::S_Sub_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006952u32);
     }
     #[test]
-    fn decode_s_div_u16() {
+    fn S_Sub_i64() {
+        let instr = Instruction::decode(2963442408u32);
+        println!("{:032b}", 2963442408u32);
         assert_eq!(
-            Instruction::decode(420359366u32), Instruction::S_Div_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Sub_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442408u32);
     }
     #[test]
-    fn encode_s_div_u16() {
+    fn S_Sub_u8() {
+        let instr = Instruction::decode(10652392u32);
+        println!("{:032b}", 10652392u32);
         assert_eq!(
-            Instruction::S_Div_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359366u32
+            instr, Instruction::S_Sub_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652392u32);
     }
     #[test]
-    fn decode_s_div_u32() {
+    fn S_Sub_u16() {
+        let instr = Instruction::decode(279087848u32);
+        println!("{:032b}", 279087848u32);
         assert_eq!(
-            Instruction::decode(688794822u32), Instruction::S_Div_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Sub_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087848u32);
     }
     #[test]
-    fn encode_s_div_u32() {
+    fn S_Sub_u32() {
+        let instr = Instruction::decode(547523304u32);
+        println!("{:032b}", 547523304u32);
         assert_eq!(
-            Instruction::S_Div_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688794822u32
+            instr, Instruction::S_Sub_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523304u32);
     }
     #[test]
-    fn decode_s_div_u64() {
+    fn S_Sub_u64() {
+        let instr = Instruction::decode(815958760u32);
+        println!("{:032b}", 815958760u32);
         assert_eq!(
-            Instruction::decode(957230278u32), Instruction::S_Div_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Sub_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958760u32);
     }
     #[test]
-    fn encode_s_div_u64() {
+    fn S_Sub_U_i8() {
+        let instr = Instruction::decode(2158136056u32);
+        println!("{:032b}", 2158136056u32);
         assert_eq!(
-            Instruction::S_Div_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230278u32
+            instr, Instruction::S_Sub_U_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158136056u32);
     }
     #[test]
-    fn decode_s_mul_i8() {
+    fn S_Sub_U_i16() {
+        let instr = Instruction::decode(2426571512u32);
+        println!("{:032b}", 2426571512u32);
         assert_eq!(
-            Instruction::decode(2299407814u32), Instruction::S_Mul_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Sub_U_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571512u32);
     }
     #[test]
-    fn encode_s_mul_i8() {
+    fn S_Sub_U_i32() {
+        let instr = Instruction::decode(2695006968u32);
+        println!("{:032b}", 2695006968u32);
         assert_eq!(
-            Instruction::S_Mul_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407814u32
+            instr, Instruction::S_Sub_U_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006968u32);
     }
     #[test]
-    fn decode_s_mul_i16() {
+    fn S_Sub_U_i64() {
+        let instr = Instruction::decode(2963442424u32);
+        println!("{:032b}", 2963442424u32);
         assert_eq!(
-            Instruction::decode(2567843270u32), Instruction::S_Mul_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::S_Sub_U_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442424u32);
     }
     #[test]
-    fn encode_s_mul_i16() {
+    fn Abs_f32() {
+        let instr = Instruction::decode(3758262793u32);
+        println!("{:032b}", 3758262793u32);
         assert_eq!(
-            Instruction::S_Mul_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843270u32
+            instr, Instruction::Abs_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3758262793u32);
     }
     #[test]
-    fn decode_s_mul_i32() {
+    fn Abs_f64() {
+        let instr = Instruction::decode(4026698249u32);
+        println!("{:032b}", 4026698249u32);
         assert_eq!(
-            Instruction::decode(2836278726u32), Instruction::S_Mul_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Abs_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4026698249u32);
     }
     #[test]
-    fn encode_s_mul_i32() {
+    fn Add_f32() {
+        let instr = Instruction::decode(3768748569u32);
+        println!("{:032b}", 3768748569u32);
         assert_eq!(
-            Instruction::S_Mul_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278726u32
+            instr, Instruction::Add_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748569u32);
     }
     #[test]
-    fn decode_s_mul_i64() {
+    fn Add_f64() {
+        let instr = Instruction::decode(4037184025u32);
+        println!("{:032b}", 4037184025u32);
         assert_eq!(
-            Instruction::decode(3104714182u32), Instruction::S_Mul_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Add_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184025u32);
     }
     #[test]
-    fn encode_s_mul_i64() {
+    fn Div_f32() {
+        let instr = Instruction::decode(3768748601u32);
+        println!("{:032b}", 3768748601u32);
         assert_eq!(
-            Instruction::S_Mul_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714182u32
+            instr, Instruction::Div_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748601u32);
     }
     #[test]
-    fn decode_s_mul_u8() {
+    fn Div_f64() {
+        let instr = Instruction::decode(4037184057u32);
+        println!("{:032b}", 4037184057u32);
         assert_eq!(
-            Instruction::decode(151924166u32), Instruction::S_Mul_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Div_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184057u32);
     }
     #[test]
-    fn encode_s_mul_u8() {
+    fn Div_E_f32() {
+        let instr = Instruction::decode(3768748617u32);
+        println!("{:032b}", 3768748617u32);
         assert_eq!(
-            Instruction::S_Mul_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924166u32
+            instr, Instruction::Div_E_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748617u32);
     }
     #[test]
-    fn decode_s_mul_u16() {
+    fn Div_E_f64() {
+        let instr = Instruction::decode(4037184073u32);
+        println!("{:032b}", 4037184073u32);
         assert_eq!(
-            Instruction::decode(420359622u32), Instruction::S_Mul_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Div_E_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184073u32);
     }
     #[test]
-    fn encode_s_mul_u16() {
+    fn Log_f32() {
+        let instr = Instruction::decode(3768748633u32);
+        println!("{:032b}", 3768748633u32);
         assert_eq!(
-            Instruction::S_Mul_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359622u32
+            instr, Instruction::Log_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748633u32);
     }
     #[test]
-    fn decode_s_mul_u32() {
+    fn Log_f64() {
+        let instr = Instruction::decode(4037184089u32);
+        println!("{:032b}", 4037184089u32);
         assert_eq!(
-            Instruction::decode(688795078u32), Instruction::S_Mul_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Log_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184089u32);
     }
     #[test]
-    fn encode_s_mul_u32() {
+    fn Sqrt_f32() {
+        let instr = Instruction::decode(3758262889u32);
+        println!("{:032b}", 3758262889u32);
         assert_eq!(
-            Instruction::S_Mul_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795078u32
+            instr, Instruction::Sqrt_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3758262889u32);
     }
     #[test]
-    fn decode_s_mul_u64() {
+    fn Sqrt_f64() {
+        let instr = Instruction::decode(4026698345u32);
+        println!("{:032b}", 4026698345u32);
         assert_eq!(
-            Instruction::decode(957230534u32), Instruction::S_Mul_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Sqrt_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4026698345u32);
     }
     #[test]
-    fn encode_s_mul_u64() {
+    fn Mul_f32() {
+        let instr = Instruction::decode(3768748665u32);
+        println!("{:032b}", 3768748665u32);
         assert_eq!(
-            Instruction::S_Mul_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230534u32
+            instr, Instruction::Mul_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748665u32);
     }
     #[test]
-    fn decode_s_neg_i8() {
+    fn Mul_f64() {
+        let instr = Instruction::decode(4037184121u32);
+        println!("{:032b}", 4037184121u32);
         assert_eq!(
-            Instruction::decode(2148412934u32), Instruction::S_Neg_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Mul_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184121u32);
     }
     #[test]
-    fn encode_s_neg_i8() {
+    fn Neg_f32() {
+        let instr = Instruction::decode(3758262921u32);
+        println!("{:032b}", 3758262921u32);
         assert_eq!(
-            Instruction::S_Neg_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2148412934u32
+            instr, Instruction::Neg_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3758262921u32);
     }
     #[test]
-    fn decode_s_neg_i16() {
+    fn Neg_f64() {
+        let instr = Instruction::decode(4026698377u32);
+        println!("{:032b}", 4026698377u32);
         assert_eq!(
-            Instruction::decode(2416848390u32), Instruction::S_Neg_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Neg_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4026698377u32);
     }
     #[test]
-    fn encode_s_neg_i16() {
+    fn Pow_f32() {
+        let instr = Instruction::decode(3768748697u32);
+        println!("{:032b}", 3768748697u32);
         assert_eq!(
-            Instruction::S_Neg_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2416848390u32
+            instr, Instruction::Pow_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748697u32);
     }
     #[test]
-    fn decode_s_neg_i32() {
+    fn Pow_f64() {
+        let instr = Instruction::decode(4037184153u32);
+        println!("{:032b}", 4037184153u32);
         assert_eq!(
-            Instruction::decode(2685283846u32), Instruction::S_Neg_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Pow_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184153u32);
     }
     #[test]
-    fn encode_s_neg_i32() {
+    fn Rem_f32() {
+        let instr = Instruction::decode(3768748713u32);
+        println!("{:032b}", 3768748713u32);
         assert_eq!(
-            Instruction::S_Neg_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2685283846u32
+            instr, Instruction::Rem_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748713u32);
     }
     #[test]
-    fn decode_s_neg_i64() {
+    fn Rem_f64() {
+        let instr = Instruction::decode(4037184169u32);
+        println!("{:032b}", 4037184169u32);
         assert_eq!(
-            Instruction::decode(2953719302u32), Instruction::S_Neg_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Rem_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184169u32);
     }
     #[test]
-    fn encode_s_neg_i64() {
+    fn Rem_E_f32() {
+        let instr = Instruction::decode(3768748729u32);
+        println!("{:032b}", 3768748729u32);
         assert_eq!(
-            Instruction::S_Neg_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 2953719302u32
+            instr, Instruction::Rem_E_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748729u32);
     }
     #[test]
-    fn decode_s_pow_i8() {
+    fn Rem_E_f64() {
+        let instr = Instruction::decode(4037184185u32);
+        println!("{:032b}", 4037184185u32);
         assert_eq!(
-            Instruction::decode(2299407942u32), Instruction::S_Pow_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Rem_E_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184185u32);
     }
     #[test]
-    fn encode_s_pow_i8() {
+    fn Cbrt_f32() {
+        let instr = Instruction::decode(3758263001u32);
+        println!("{:032b}", 3758263001u32);
         assert_eq!(
-            Instruction::S_Pow_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299407942u32
+            instr, Instruction::Cbrt_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3758263001u32);
     }
     #[test]
-    fn decode_s_pow_i16() {
+    fn Cbrt_f64() {
+        let instr = Instruction::decode(4026698457u32);
+        println!("{:032b}", 4026698457u32);
         assert_eq!(
-            Instruction::decode(2567843398u32), Instruction::S_Pow_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cbrt_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4026698457u32);
     }
     #[test]
-    fn encode_s_pow_i16() {
+    fn Sub_f32() {
+        let instr = Instruction::decode(3768748777u32);
+        println!("{:032b}", 3768748777u32);
         assert_eq!(
-            Instruction::S_Pow_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843398u32
+            instr, Instruction::Sub_f32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 3768748777u32);
     }
     #[test]
-    fn decode_s_pow_i32() {
+    fn Sub_f64() {
+        let instr = Instruction::decode(4037184233u32);
+        println!("{:032b}", 4037184233u32);
         assert_eq!(
-            Instruction::decode(2836278854u32), Instruction::S_Pow_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Sub_f64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 4037184233u32);
     }
     #[test]
-    fn encode_s_pow_i32() {
+    fn Fetch_Add_i8() {
+        let instr = Instruction::decode(2158135818u32);
+        println!("{:032b}", 2158135818u32);
         assert_eq!(
-            Instruction::S_Pow_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836278854u32
+            instr, Instruction::Fetch_Add_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135818u32);
     }
     #[test]
-    fn decode_s_pow_i64() {
+    fn Fetch_Add_i16() {
+        let instr = Instruction::decode(2426571274u32);
+        println!("{:032b}", 2426571274u32);
         assert_eq!(
-            Instruction::decode(3104714310u32), Instruction::S_Pow_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Add_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571274u32);
     }
     #[test]
-    fn encode_s_pow_i64() {
+    fn Fetch_Add_i32() {
+        let instr = Instruction::decode(2695006730u32);
+        println!("{:032b}", 2695006730u32);
         assert_eq!(
-            Instruction::S_Pow_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714310u32
+            instr, Instruction::Fetch_Add_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006730u32);
     }
     #[test]
-    fn decode_s_pow_u8() {
+    fn Fetch_Add_i64() {
+        let instr = Instruction::decode(2963442186u32);
+        println!("{:032b}", 2963442186u32);
         assert_eq!(
-            Instruction::decode(151924294u32), Instruction::S_Pow_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Add_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442186u32);
     }
     #[test]
-    fn encode_s_pow_u8() {
+    fn Fetch_Add_u8() {
+        let instr = Instruction::decode(10652170u32);
+        println!("{:032b}", 10652170u32);
         assert_eq!(
-            Instruction::S_Pow_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924294u32
+            instr, Instruction::Fetch_Add_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652170u32);
     }
     #[test]
-    fn decode_s_pow_u16() {
+    fn Fetch_Add_u16() {
+        let instr = Instruction::decode(279087626u32);
+        println!("{:032b}", 279087626u32);
         assert_eq!(
-            Instruction::decode(420359750u32), Instruction::S_Pow_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Add_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087626u32);
     }
     #[test]
-    fn encode_s_pow_u16() {
+    fn Fetch_Add_u32() {
+        let instr = Instruction::decode(547523082u32);
+        println!("{:032b}", 547523082u32);
         assert_eq!(
-            Instruction::S_Pow_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420359750u32
+            instr, Instruction::Fetch_Add_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523082u32);
     }
     #[test]
-    fn decode_s_pow_u32() {
+    fn Fetch_Add_u64() {
+        let instr = Instruction::decode(815958538u32);
+        println!("{:032b}", 815958538u32);
         assert_eq!(
-            Instruction::decode(688795206u32), Instruction::S_Pow_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Add_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958538u32);
     }
     #[test]
-    fn encode_s_pow_u32() {
+    fn Fetch_Sub_i8() {
+        let instr = Instruction::decode(2158135834u32);
+        println!("{:032b}", 2158135834u32);
         assert_eq!(
-            Instruction::S_Pow_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795206u32
+            instr, Instruction::Fetch_Sub_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135834u32);
     }
     #[test]
-    fn decode_s_pow_u64() {
+    fn Fetch_Sub_i16() {
+        let instr = Instruction::decode(2426571290u32);
+        println!("{:032b}", 2426571290u32);
         assert_eq!(
-            Instruction::decode(957230662u32), Instruction::S_Pow_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Sub_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571290u32);
     }
     #[test]
-    fn encode_s_pow_u64() {
+    fn Fetch_Sub_i32() {
+        let instr = Instruction::decode(2695006746u32);
+        println!("{:032b}", 2695006746u32);
         assert_eq!(
-            Instruction::S_Pow_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230662u32
+            instr, Instruction::Fetch_Sub_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006746u32);
     }
     #[test]
-    fn decode_s_sub_i8() {
+    fn Fetch_Sub_i64() {
+        let instr = Instruction::decode(2963442202u32);
+        println!("{:032b}", 2963442202u32);
         assert_eq!(
-            Instruction::decode(2299408262u32), Instruction::S_Sub_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Sub_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442202u32);
     }
     #[test]
-    fn encode_s_sub_i8() {
+    fn Fetch_Sub_u8() {
+        let instr = Instruction::decode(10652186u32);
+        println!("{:032b}", 10652186u32);
         assert_eq!(
-            Instruction::S_Sub_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408262u32
+            instr, Instruction::Fetch_Sub_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652186u32);
     }
     #[test]
-    fn decode_s_sub_i16() {
+    fn Fetch_Sub_u16() {
+        let instr = Instruction::decode(279087642u32);
+        println!("{:032b}", 279087642u32);
         assert_eq!(
-            Instruction::decode(2567843718u32), Instruction::S_Sub_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Sub_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087642u32);
     }
     #[test]
-    fn encode_s_sub_i16() {
+    fn Fetch_Sub_u32() {
+        let instr = Instruction::decode(547523098u32);
+        println!("{:032b}", 547523098u32);
         assert_eq!(
-            Instruction::S_Sub_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843718u32
+            instr, Instruction::Fetch_Sub_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523098u32);
     }
     #[test]
-    fn decode_s_sub_i32() {
+    fn Fetch_Sub_u64() {
+        let instr = Instruction::decode(815958554u32);
+        println!("{:032b}", 815958554u32);
         assert_eq!(
-            Instruction::decode(2836279174u32), Instruction::S_Sub_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Sub_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958554u32);
     }
     #[test]
-    fn encode_s_sub_i32() {
+    fn Fetch_Min_i8() {
+        let instr = Instruction::decode(2158135850u32);
+        println!("{:032b}", 2158135850u32);
         assert_eq!(
-            Instruction::S_Sub_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836279174u32
+            instr, Instruction::Fetch_Min_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135850u32);
     }
     #[test]
-    fn decode_s_sub_i64() {
+    fn Fetch_Min_i16() {
+        let instr = Instruction::decode(2426571306u32);
+        println!("{:032b}", 2426571306u32);
         assert_eq!(
-            Instruction::decode(3104714630u32), Instruction::S_Sub_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Min_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571306u32);
     }
     #[test]
-    fn encode_s_sub_i64() {
+    fn Fetch_Min_i32() {
+        let instr = Instruction::decode(2695006762u32);
+        println!("{:032b}", 2695006762u32);
         assert_eq!(
-            Instruction::S_Sub_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714630u32
+            instr, Instruction::Fetch_Min_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006762u32);
     }
     #[test]
-    fn decode_s_sub_u8() {
+    fn Fetch_Min_i64() {
+        let instr = Instruction::decode(2963442218u32);
+        println!("{:032b}", 2963442218u32);
         assert_eq!(
-            Instruction::decode(151924614u32), Instruction::S_Sub_u8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Min_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442218u32);
     }
     #[test]
-    fn encode_s_sub_u8() {
+    fn Fetch_Min_u8() {
+        let instr = Instruction::decode(10652202u32);
+        println!("{:032b}", 10652202u32);
         assert_eq!(
-            Instruction::S_Sub_u8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 151924614u32
+            instr, Instruction::Fetch_Min_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652202u32);
     }
     #[test]
-    fn decode_s_sub_u16() {
+    fn Fetch_Min_u16() {
+        let instr = Instruction::decode(279087658u32);
+        println!("{:032b}", 279087658u32);
         assert_eq!(
-            Instruction::decode(420360070u32), Instruction::S_Sub_u16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Min_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087658u32);
     }
     #[test]
-    fn encode_s_sub_u16() {
+    fn Fetch_Min_u32() {
+        let instr = Instruction::decode(547523114u32);
+        println!("{:032b}", 547523114u32);
         assert_eq!(
-            Instruction::S_Sub_u16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 420360070u32
+            instr, Instruction::Fetch_Min_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523114u32);
     }
     #[test]
-    fn decode_s_sub_u32() {
+    fn Fetch_Min_u64() {
+        let instr = Instruction::decode(815958570u32);
+        println!("{:032b}", 815958570u32);
         assert_eq!(
-            Instruction::decode(688795526u32), Instruction::S_Sub_u32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Min_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958570u32);
     }
     #[test]
-    fn encode_s_sub_u32() {
+    fn Fetch_Max_i8() {
+        let instr = Instruction::decode(2158135866u32);
+        println!("{:032b}", 2158135866u32);
         assert_eq!(
-            Instruction::S_Sub_u32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 688795526u32
+            instr, Instruction::Fetch_Max_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135866u32);
     }
     #[test]
-    fn decode_s_sub_u64() {
+    fn Fetch_Max_i16() {
+        let instr = Instruction::decode(2426571322u32);
+        println!("{:032b}", 2426571322u32);
         assert_eq!(
-            Instruction::decode(957230982u32), Instruction::S_Sub_u64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Max_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571322u32);
     }
     #[test]
-    fn encode_s_sub_u64() {
+    fn Fetch_Max_i32() {
+        let instr = Instruction::decode(2695006778u32);
+        println!("{:032b}", 2695006778u32);
         assert_eq!(
-            Instruction::S_Sub_u64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 957230982u32
+            instr, Instruction::Fetch_Max_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006778u32);
     }
     #[test]
-    fn decode_s_sub_u_i8() {
+    fn Fetch_Max_i64() {
+        let instr = Instruction::decode(2963442234u32);
+        println!("{:032b}", 2963442234u32);
         assert_eq!(
-            Instruction::decode(2299408326u32), Instruction::S_Sub_U_i8 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Max_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442234u32);
     }
     #[test]
-    fn encode_s_sub_u_i8() {
+    fn Fetch_Max_u8() {
+        let instr = Instruction::decode(10652218u32);
+        println!("{:032b}", 10652218u32);
         assert_eq!(
-            Instruction::S_Sub_U_i8 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2299408326u32
+            instr, Instruction::Fetch_Max_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652218u32);
     }
     #[test]
-    fn decode_s_sub_u_i16() {
+    fn Fetch_Max_u16() {
+        let instr = Instruction::decode(279087674u32);
+        println!("{:032b}", 279087674u32);
         assert_eq!(
-            Instruction::decode(2567843782u32), Instruction::S_Sub_U_i16 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Max_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087674u32);
     }
     #[test]
-    fn encode_s_sub_u_i16() {
+    fn Fetch_Max_u32() {
+        let instr = Instruction::decode(547523130u32);
+        println!("{:032b}", 547523130u32);
         assert_eq!(
-            Instruction::S_Sub_U_i16 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2567843782u32
+            instr, Instruction::Fetch_Max_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523130u32);
     }
     #[test]
-    fn decode_s_sub_u_i32() {
+    fn Fetch_Max_u64() {
+        let instr = Instruction::decode(815958586u32);
+        println!("{:032b}", 815958586u32);
         assert_eq!(
-            Instruction::decode(2836279238u32), Instruction::S_Sub_U_i32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Max_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958586u32);
     }
     #[test]
-    fn encode_s_sub_u_i32() {
+    fn Fetch_And_i8() {
+        let instr = Instruction::decode(2158135882u32);
+        println!("{:032b}", 2158135882u32);
         assert_eq!(
-            Instruction::S_Sub_U_i32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 2836279238u32
+            instr, Instruction::Fetch_And_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135882u32);
     }
     #[test]
-    fn decode_s_sub_u_i64() {
+    fn Fetch_And_i16() {
+        let instr = Instruction::decode(2426571338u32);
+        println!("{:032b}", 2426571338u32);
         assert_eq!(
-            Instruction::decode(3104714694u32), Instruction::S_Sub_U_i64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_And_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571338u32);
     }
     #[test]
-    fn encode_s_sub_u_i64() {
+    fn Fetch_And_i32() {
+        let instr = Instruction::decode(2695006794u32);
+        println!("{:032b}", 2695006794u32);
         assert_eq!(
-            Instruction::S_Sub_U_i64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3104714694u32
+            instr, Instruction::Fetch_And_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006794u32);
     }
     #[test]
-    fn decode_abs_f32() {
+    fn Fetch_And_i64() {
+        let instr = Instruction::decode(2963442250u32);
+        println!("{:032b}", 2963442250u32);
         assert_eq!(
-            Instruction::decode(3759025159u32), Instruction::Abs_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Fetch_And_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442250u32);
     }
     #[test]
-    fn encode_abs_f32() {
+    fn Fetch_And_u8() {
+        let instr = Instruction::decode(10652234u32);
+        println!("{:032b}", 10652234u32);
         assert_eq!(
-            Instruction::Abs_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 3759025159u32
+            instr, Instruction::Fetch_And_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652234u32);
     }
     #[test]
-    fn decode_abs_f64() {
+    fn Fetch_And_u16() {
+        let instr = Instruction::decode(279087690u32);
+        println!("{:032b}", 279087690u32);
         assert_eq!(
-            Instruction::decode(4027460615u32), Instruction::Abs_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Fetch_And_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087690u32);
     }
     #[test]
-    fn encode_abs_f64() {
+    fn Fetch_And_u32() {
+        let instr = Instruction::decode(547523146u32);
+        println!("{:032b}", 547523146u32);
         assert_eq!(
-            Instruction::Abs_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 4027460615u32
+            instr, Instruction::Fetch_And_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523146u32);
     }
     #[test]
-    fn decode_add_f32() {
+    fn Fetch_And_u64() {
+        let instr = Instruction::decode(815958602u32);
+        println!("{:032b}", 815958602u32);
         assert_eq!(
-            Instruction::decode(3910020167u32), Instruction::Add_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_And_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958602u32);
     }
     #[test]
-    fn encode_add_f32() {
+    fn Fetch_Nand_i8() {
+        let instr = Instruction::decode(2158135898u32);
+        println!("{:032b}", 2158135898u32);
         assert_eq!(
-            Instruction::Add_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3910020167u32
+            instr, Instruction::Fetch_Nand_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135898u32);
     }
     #[test]
-    fn decode_add_f64() {
+    fn Fetch_Nand_i16() {
+        let instr = Instruction::decode(2426571354u32);
+        println!("{:032b}", 2426571354u32);
         assert_eq!(
-            Instruction::decode(4178455623u32), Instruction::Add_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Nand_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571354u32);
     }
     #[test]
-    fn encode_add_f64() {
+    fn Fetch_Nand_i32() {
+        let instr = Instruction::decode(2695006810u32);
+        println!("{:032b}", 2695006810u32);
         assert_eq!(
-            Instruction::Add_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 4178455623u32
+            instr, Instruction::Fetch_Nand_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006810u32);
     }
     #[test]
-    fn decode_div_f32() {
+    fn Fetch_Nand_i64() {
+        let instr = Instruction::decode(2963442266u32);
+        println!("{:032b}", 2963442266u32);
         assert_eq!(
-            Instruction::decode(3910020295u32), Instruction::Div_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Nand_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442266u32);
     }
     #[test]
-    fn encode_div_f32() {
+    fn Fetch_Nand_u8() {
+        let instr = Instruction::decode(10652250u32);
+        println!("{:032b}", 10652250u32);
         assert_eq!(
-            Instruction::Div_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3910020295u32
+            instr, Instruction::Fetch_Nand_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652250u32);
     }
     #[test]
-    fn decode_div_f64() {
+    fn Fetch_Nand_u16() {
+        let instr = Instruction::decode(279087706u32);
+        println!("{:032b}", 279087706u32);
         assert_eq!(
-            Instruction::decode(4178455751u32), Instruction::Div_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Nand_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087706u32);
     }
     #[test]
-    fn encode_div_f64() {
+    fn Fetch_Nand_u32() {
+        let instr = Instruction::decode(547523162u32);
+        println!("{:032b}", 547523162u32);
         assert_eq!(
-            Instruction::Div_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 4178455751u32
+            instr, Instruction::Fetch_Nand_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523162u32);
     }
     #[test]
-    fn decode_div_e_f32() {
+    fn Fetch_Nand_u64() {
+        let instr = Instruction::decode(815958618u32);
+        println!("{:032b}", 815958618u32);
         assert_eq!(
-            Instruction::decode(3910020359u32), Instruction::Div_E_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Nand_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958618u32);
     }
     #[test]
-    fn encode_div_e_f32() {
+    fn Fetch_Or_i8() {
+        let instr = Instruction::decode(2158135914u32);
+        println!("{:032b}", 2158135914u32);
         assert_eq!(
-            Instruction::Div_E_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3910020359u32
+            instr, Instruction::Fetch_Or_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135914u32);
     }
     #[test]
-    fn decode_div_e_f64() {
+    fn Fetch_Or_i16() {
+        let instr = Instruction::decode(2426571370u32);
+        println!("{:032b}", 2426571370u32);
         assert_eq!(
-            Instruction::decode(4178455815u32), Instruction::Div_E_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Or_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571370u32);
     }
     #[test]
-    fn encode_div_e_f64() {
+    fn Fetch_Or_i32() {
+        let instr = Instruction::decode(2695006826u32);
+        println!("{:032b}", 2695006826u32);
         assert_eq!(
-            Instruction::Div_E_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 4178455815u32
+            instr, Instruction::Fetch_Or_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006826u32);
     }
     #[test]
-    fn decode_log_f32() {
+    fn Fetch_Or_i64() {
+        let instr = Instruction::decode(2963442282u32);
+        println!("{:032b}", 2963442282u32);
         assert_eq!(
-            Instruction::decode(3910020423u32), Instruction::Log_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Or_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442282u32);
     }
     #[test]
-    fn encode_log_f32() {
+    fn Fetch_Or_u8() {
+        let instr = Instruction::decode(10652266u32);
+        println!("{:032b}", 10652266u32);
         assert_eq!(
-            Instruction::Log_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3910020423u32
+            instr, Instruction::Fetch_Or_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652266u32);
     }
     #[test]
-    fn decode_log_f64() {
+    fn Fetch_Or_u16() {
+        let instr = Instruction::decode(279087722u32);
+        println!("{:032b}", 279087722u32);
         assert_eq!(
-            Instruction::decode(4178455879u32), Instruction::Log_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Or_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087722u32);
     }
     #[test]
-    fn encode_log_f64() {
+    fn Fetch_Or_u32() {
+        let instr = Instruction::decode(547523178u32);
+        println!("{:032b}", 547523178u32);
         assert_eq!(
-            Instruction::Log_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 4178455879u32
+            instr, Instruction::Fetch_Or_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523178u32);
     }
     #[test]
-    fn decode_sqrt_f32() {
+    fn Fetch_Or_u64() {
+        let instr = Instruction::decode(815958634u32);
+        println!("{:032b}", 815958634u32);
         assert_eq!(
-            Instruction::decode(3759025543u32), Instruction::Sqrt_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Fetch_Or_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958634u32);
     }
     #[test]
-    fn encode_sqrt_f32() {
+    fn Fetch_Xor_i8() {
+        let instr = Instruction::decode(2158135930u32);
+        println!("{:032b}", 2158135930u32);
         assert_eq!(
-            Instruction::Sqrt_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 3759025543u32
+            instr, Instruction::Fetch_Xor_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135930u32);
     }
     #[test]
-    fn decode_sqrt_f64() {
+    fn Fetch_Xor_i16() {
+        let instr = Instruction::decode(2426571386u32);
+        println!("{:032b}", 2426571386u32);
         assert_eq!(
-            Instruction::decode(4027460999u32), Instruction::Sqrt_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Fetch_Xor_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571386u32);
     }
     #[test]
-    fn encode_sqrt_f64() {
+    fn Fetch_Xor_i32() {
+        let instr = Instruction::decode(2695006842u32);
+        println!("{:032b}", 2695006842u32);
         assert_eq!(
-            Instruction::Sqrt_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 4027460999u32
+            instr, Instruction::Fetch_Xor_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006842u32);
     }
     #[test]
-    fn decode_mul_f32() {
+    fn Fetch_Xor_i64() {
+        let instr = Instruction::decode(2963442298u32);
+        println!("{:032b}", 2963442298u32);
         assert_eq!(
-            Instruction::decode(3910020551u32), Instruction::Mul_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Xor_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442298u32);
     }
     #[test]
-    fn encode_mul_f32() {
+    fn Fetch_Xor_u8() {
+        let instr = Instruction::decode(10652282u32);
+        println!("{:032b}", 10652282u32);
         assert_eq!(
-            Instruction::Mul_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3910020551u32
+            instr, Instruction::Fetch_Xor_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652282u32);
     }
     #[test]
-    fn decode_mul_f64() {
+    fn Fetch_Xor_u16() {
+        let instr = Instruction::decode(279087738u32);
+        println!("{:032b}", 279087738u32);
         assert_eq!(
-            Instruction::decode(4178456007u32), Instruction::Mul_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Fetch_Xor_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087738u32);
     }
     #[test]
-    fn encode_mul_f64() {
+    fn Fetch_Xor_u32() {
+        let instr = Instruction::decode(547523194u32);
+        println!("{:032b}", 547523194u32);
         assert_eq!(
-            Instruction::Mul_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 4178456007u32
+            instr, Instruction::Fetch_Xor_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523194u32);
     }
     #[test]
-    fn decode_neg_f32() {
+    fn Fetch_Xor_u64() {
+        let instr = Instruction::decode(815958650u32);
+        println!("{:032b}", 815958650u32);
         assert_eq!(
-            Instruction::decode(3759025671u32), Instruction::Neg_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Fetch_Xor_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958650u32);
     }
     #[test]
-    fn encode_neg_f32() {
+    fn Cmp_Exchg_i8() {
+        let instr = Instruction::decode(2158135946u32);
+        println!("{:032b}", 2158135946u32);
         assert_eq!(
-            Instruction::Neg_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 3759025671u32
+            instr, Instruction::Cmp_Exchg_i8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2158135946u32);
     }
     #[test]
-    fn decode_neg_f64() {
+    fn Cmp_Exchg_i16() {
+        let instr = Instruction::decode(2426571402u32);
+        println!("{:032b}", 2426571402u32);
         assert_eq!(
-            Instruction::decode(4027461127u32), Instruction::Neg_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Cmp_Exchg_i16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2426571402u32);
     }
     #[test]
-    fn encode_neg_f64() {
+    fn Cmp_Exchg_i32() {
+        let instr = Instruction::decode(2695006858u32);
+        println!("{:032b}", 2695006858u32);
         assert_eq!(
-            Instruction::Neg_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 4027461127u32
+            instr, Instruction::Cmp_Exchg_i32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2695006858u32);
     }
     #[test]
-    fn decode_pow_f32() {
+    fn Cmp_Exchg_i64() {
+        let instr = Instruction::decode(2963442314u32);
+        println!("{:032b}", 2963442314u32);
         assert_eq!(
-            Instruction::decode(3910020679u32), Instruction::Pow_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cmp_Exchg_i64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 2963442314u32);
     }
     #[test]
-    fn encode_pow_f32() {
+    fn Cmp_Exchg_u8() {
+        let instr = Instruction::decode(10652298u32);
+        println!("{:032b}", 10652298u32);
         assert_eq!(
-            Instruction::Pow_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3910020679u32
+            instr, Instruction::Cmp_Exchg_u8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 10652298u32);
     }
     #[test]
-    fn decode_pow_f64() {
+    fn Cmp_Exchg_u16() {
+        let instr = Instruction::decode(279087754u32);
+        println!("{:032b}", 279087754u32);
         assert_eq!(
-            Instruction::decode(4178456135u32), Instruction::Pow_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cmp_Exchg_u16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 279087754u32);
     }
     #[test]
-    fn encode_pow_f64() {
+    fn Cmp_Exchg_u32() {
+        let instr = Instruction::decode(547523210u32);
+        println!("{:032b}", 547523210u32);
         assert_eq!(
-            Instruction::Pow_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 4178456135u32
+            instr, Instruction::Cmp_Exchg_u32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 547523210u32);
     }
     #[test]
-    fn decode_rem_f32() {
+    fn Cmp_Exchg_u64() {
+        let instr = Instruction::decode(815958666u32);
+        println!("{:032b}", 815958666u32);
         assert_eq!(
-            Instruction::decode(3910020743u32), Instruction::Rem_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Cmp_Exchg_u64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), rs2 : Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 815958666u32);
     }
     #[test]
-    fn encode_rem_f32() {
+    fn Atomic_Ld_8() {
+        let instr = Instruction::decode(166554u32);
+        println!("{:032b}", 166554u32);
         assert_eq!(
-            Instruction::Rem_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3910020743u32
+            instr, Instruction::Atomic_Ld_8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166554u32);
     }
     #[test]
-    fn decode_rem_f64() {
+    fn Atomic_Ld_16() {
+        let instr = Instruction::decode(268602010u32);
+        println!("{:032b}", 268602010u32);
         assert_eq!(
-            Instruction::decode(4178456199u32), Instruction::Rem_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Atomic_Ld_16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268602010u32);
     }
     #[test]
-    fn encode_rem_f64() {
+    fn Atomic_Ld_32() {
+        let instr = Instruction::decode(537037466u32);
+        println!("{:032b}", 537037466u32);
         assert_eq!(
-            Instruction::Rem_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 4178456199u32
+            instr, Instruction::Atomic_Ld_32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037466u32);
     }
     #[test]
-    fn decode_rem_e_f32() {
+    fn Atomic_Ld_64() {
+        let instr = Instruction::decode(805472922u32);
+        println!("{:032b}", 805472922u32);
         assert_eq!(
-            Instruction::decode(3910020807u32), Instruction::Rem_E_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Atomic_Ld_64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472922u32);
     }
     #[test]
-    fn encode_rem_e_f32() {
+    fn Atomic_St_8() {
+        let instr = Instruction::decode(166570u32);
+        println!("{:032b}", 166570u32);
         assert_eq!(
-            Instruction::Rem_E_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3910020807u32
+            instr, Instruction::Atomic_St_8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166570u32);
     }
     #[test]
-    fn decode_rem_e_f64() {
+    fn Atomic_St_16() {
+        let instr = Instruction::decode(268602026u32);
+        println!("{:032b}", 268602026u32);
         assert_eq!(
-            Instruction::decode(4178456263u32), Instruction::Rem_E_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Atomic_St_16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268602026u32);
     }
     #[test]
-    fn encode_rem_e_f64() {
+    fn Atomic_St_32() {
+        let instr = Instruction::decode(537037482u32);
+        println!("{:032b}", 537037482u32);
         assert_eq!(
-            Instruction::Rem_E_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 4178456263u32
+            instr, Instruction::Atomic_St_32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037482u32);
     }
     #[test]
-    fn decode_cbrt_f32() {
+    fn Atomic_St_64() {
+        let instr = Instruction::decode(805472938u32);
+        println!("{:032b}", 805472938u32);
         assert_eq!(
-            Instruction::decode(3759025991u32), Instruction::Cbrt_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Atomic_St_64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805472938u32);
     }
     #[test]
-    fn encode_cbrt_f32() {
+    fn Spawn() {
+        let instr = Instruction::decode(330426u32);
+        println!("{:032b}", 330426u32);
         assert_eq!(
-            Instruction::Cbrt_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 3759025991u32
+            instr, Instruction::Spawn { rd : Register::from_index(10), imm : 10, }
         );
+        assert_eq!(instr.encode(), 330426u32);
     }
     #[test]
-    fn decode_cbrt_f64() {
+    fn Wait() {
+        let instr = Instruction::decode(166602u32);
+        println!("{:032b}", 166602u32);
         assert_eq!(
-            Instruction::decode(4027461447u32), Instruction::Cbrt_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), }
+            instr, Instruction::Wait { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166602u32);
     }
     #[test]
-    fn encode_cbrt_f64() {
+    fn Notify() {
+        let instr = Instruction::decode(166618u32);
+        println!("{:032b}", 166618u32);
         assert_eq!(
-            Instruction::Cbrt_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), } .encode(), 4027461447u32
+            instr, Instruction::Notify { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166618u32);
     }
     #[test]
-    fn decode_sub_f32() {
+    fn Swap_8() {
+        let instr = Instruction::decode(166634u32);
+        println!("{:032b}", 166634u32);
         assert_eq!(
-            Instruction::decode(3910020999u32), Instruction::Sub_f32 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Swap_8 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 166634u32);
     }
     #[test]
-    fn encode_sub_f32() {
+    fn Swap_16() {
+        let instr = Instruction::decode(268602090u32);
+        println!("{:032b}", 268602090u32);
         assert_eq!(
-            Instruction::Sub_f32 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 3910020999u32
+            instr, Instruction::Swap_16 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 268602090u32);
     }
     #[test]
-    fn decode_sub_f64() {
+    fn Swap_32() {
+        let instr = Instruction::decode(537037546u32);
+        println!("{:032b}", 537037546u32);
         assert_eq!(
-            Instruction::decode(4178456455u32), Instruction::Sub_f64 { rd :
-            Register::General_Purpose(5), rs1 : Register::General_Purpose(8), rs2 :
-            Register::General_Purpose(30), }
+            instr, Instruction::Swap_32 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 537037546u32);
     }
     #[test]
-    fn encode_sub_f64() {
+    fn Swap_64() {
+        let instr = Instruction::decode(805473002u32);
+        println!("{:032b}", 805473002u32);
         assert_eq!(
-            Instruction::Sub_f64 { rd : Register::General_Purpose(5), rs1 :
-            Register::General_Purpose(8), rs2 : Register::General_Purpose(30), }
-            .encode(), 4178456455u32
+            instr, Instruction::Swap_64 { rd : Register::from_index(10), rs1 :
+            Register::from_index(10), }
         );
+        assert_eq!(instr.encode(), 805473002u32);
     }
 }
