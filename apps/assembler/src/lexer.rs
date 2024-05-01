@@ -32,104 +32,142 @@ enum Lexed_Token {
     Trap,
     #[token("call")]
     Call,
-    #[token("call_r")]
-    Call_R,
-    #[token("call_i")]
-    Call_I,
     #[token("ret")]
     Ret,
     #[token("ecall")]
     Ecall,
     #[token("jal")]
     Jal,
-    #[token("jal_r")]
-    Jal_R,
-    #[token("jal_i")]
-    Jal_I,
-    #[token("jnz")]
-    Jnz,
-    #[token("jnz_r")]
-    Jnz_R,
-    #[token("jnz_i")]
-    Jnz_I,
-    #[token("jiz")]
-    Jiz,
-    #[token("jiz_r")]
-    Jiz_R,
-    #[token("jiz_i")]
-    Jiz_I,
-    #[token("ld.8")]
-    Ld_8,
-    #[token("ld.16")]
-    Ld_16,
-    #[token("ld.32")]
-    Ld_32,
-    #[token("ld.64")]
-    Ld_64,
-    #[token("ld_i")]
-    Ld_I,
-    #[token("ld_a.8")]
-    Ld_A_8,
-    #[token("ld_a.16")]
-    Ld_A_16,
-    #[token("ld_a.32")]
-    Ld_A_32,
-    #[token("ld_a.64")]
-    Ld_A_64,
-    #[token("st.8")]
-    St_8,
-    #[token("st.16")]
-    St_16,
-    #[token("st.32")]
-    St_32,
-    #[token("st.64")]
-    St_64,
-    #[token("st_i")]
-    St_I,
+    #[token("bie")]
+    Bie,
+    #[token("bne")]
+    Bne,
+    #[token("blts")]
+    Blts,
+    #[token("bltu")]
+    Bltu,
+    #[token("bles")]
+    Bles,
+    #[token("bleu")]
+    Bleu,
+    #[token("bgts")]
+    Bgts,
+    #[token("bgtu")]
+    Bgtu,
+    #[token("bges")]
+    Bges,
+    #[token("bgeu")]
+    Bgeu,
+    #[token("bie.f32")]
+    Bie_f32,
+    #[token("bie.f64")]
+    Bie_f64,
+    #[token("bne.f32")]
+    Bne_f32,
+    #[token("bne.f64")]
+    Bne_f64,
+    #[token("blt.f32")]
+    Blt_f32,
+    #[token("blt.f64")]
+    Blt_f64,
+    #[token("ble.f32")]
+    Ble_f32,
+    #[token("ble.f64")]
+    Ble_f64,
+    #[token("bgt.f32")]
+    Bgt_f32,
+    #[token("bgt.f64")]
+    Bgt_f64,
+    #[token("bge.f32")]
+    Bge_f32,
+    #[token("bge.f64")]
+    Bge_f64,
+    #[token("cie")]
+    Cie,
+    #[token("cie.f32")]
+    Cie_f32,
+    #[token("cie.f64")]
+    Cie_f64,
+    #[token("cne")]
+    Cne,
+    #[token("cne.f32")]
+    Cne_f32,
+    #[token("cne.f64")]
+    Cne_f64,
+    #[token("clts")]
+    Clts,
+    #[token("cltu")]
+    Cltu,
+    #[token("clt.f32")]
+    Clt_f32,
+    #[token("clt.f64")]
+    Clt_f64,
+    #[token("cles")]
+    Cles,
+    #[token("cleu")]
+    Cleu,
+    #[token("cle.f32")]
+    Cle_f32,
+    #[token("cle.f64")]
+    Cle_f64,
+    #[token("cgts")]
+    Cgts,
+    #[token("cgtu")]
+    Cgtu,
+    #[token("cgt.f32")]
+    Cgt_f32,
+    #[token("cgt.f64")]
+    Cgt_f64,
+    #[token("cges")]
+    Cges,
+    #[token("cgeu")]
+    Cgeu,
+    #[token("cge.f32")]
+    Cge_f32,
+    #[token("cge.f64")]
+    Cge_f64,
+    #[token("lra.8")]
+    Lra_8,
+    #[token("lra.16")]
+    Lra_16,
+    #[token("lra.32")]
+    Lra_32,
+    #[token("lra.64")]
+    Lra_64,
+    #[token("lsi")]
+    Lsi,
+    #[token("lui")]
+    Lui,
+    #[token("lia.8")]
+    Lia_8,
+    #[token("lia.16")]
+    Lia_16,
+    #[token("lia.32")]
+    Lia_32,
+    #[token("lia.64")]
+    Lia_64,
+    #[token("sra.8")]
+    Sra_8,
+    #[token("sra.16")]
+    Sra_16,
+    #[token("sra.32")]
+    Sra_32,
+    #[token("sra.64")]
+    Sra_64,
+    #[token("ssi")]
+    Ssi,
+    #[token("sui")]
+    Sui,
     #[token("mov")]
     Mov,
-    #[token("psh")]
-    Psh,
-    #[token("psh_i")]
-    Psh_I,
     #[token("pop")]
     Pop,
-    #[token("ie")]
-    Ie,
-    #[token("ie.f32")]
-    Ie_f32,
-    #[token("ie.f64")]
-    Ie_f64,
-    #[token("ne")]
-    Ne,
-    #[token("ne.f32")]
-    Ne_f32,
-    #[token("ne.f64")]
-    Ne_f64,
-    #[token("lt")]
-    Lt,
-    #[token("lt.f32")]
-    Lt_f32,
-    #[token("lt.f64")]
-    Lt_f64,
-    #[token("le")]
-    Le,
-    #[token("le.f32")]
-    Le_f32,
-    #[token("le.f64")]
-    Le_f64,
-    #[token("gt")]
-    Gt,
-    #[token("gt.f32")]
-    Gt_f32,
-    #[token("gt.f64")]
-    Gt_f64,
-    #[token("ge")]
-    Ge,
-    #[token("ge.f32")]
-    Ge_f32,
-    #[token("ge.f64")]
-    Ge_f64,
+    #[token("psh")]
+    Psh,
+    #[token("psi")]
+    Psi,
+    #[token("pui")]
+    Pui,
     #[token("and.i8")]
     And_i8,
     #[token("and.i16")]
@@ -990,6 +1028,180 @@ enum Lexed_Token {
     Sub_f32,
     #[token("sub.f64")]
     Sub_f64,
+    #[token("fetch_add.i8")]
+    Fetch_Add_i8,
+    #[token("fetch_add.i16")]
+    Fetch_Add_i16,
+    #[token("fetch_add.i32")]
+    Fetch_Add_i32,
+    #[token("fetch_add.i64")]
+    Fetch_Add_i64,
+    #[token("fetch_add.u8")]
+    Fetch_Add_u8,
+    #[token("fetch_add.u16")]
+    Fetch_Add_u16,
+    #[token("fetch_add.u32")]
+    Fetch_Add_u32,
+    #[token("fetch_add.u64")]
+    Fetch_Add_u64,
+    #[token("fetch_sub.i8")]
+    Fetch_Sub_i8,
+    #[token("fetch_sub.i16")]
+    Fetch_Sub_i16,
+    #[token("fetch_sub.i32")]
+    Fetch_Sub_i32,
+    #[token("fetch_sub.i64")]
+    Fetch_Sub_i64,
+    #[token("fetch_sub.u8")]
+    Fetch_Sub_u8,
+    #[token("fetch_sub.u16")]
+    Fetch_Sub_u16,
+    #[token("fetch_sub.u32")]
+    Fetch_Sub_u32,
+    #[token("fetch_sub.u64")]
+    Fetch_Sub_u64,
+    #[token("fetch_min.i8")]
+    Fetch_Min_i8,
+    #[token("fetch_min.i16")]
+    Fetch_Min_i16,
+    #[token("fetch_min.i32")]
+    Fetch_Min_i32,
+    #[token("fetch_min.i64")]
+    Fetch_Min_i64,
+    #[token("fetch_min.u8")]
+    Fetch_Min_u8,
+    #[token("fetch_min.u16")]
+    Fetch_Min_u16,
+    #[token("fetch_min.u32")]
+    Fetch_Min_u32,
+    #[token("fetch_min.u64")]
+    Fetch_Min_u64,
+    #[token("fetch_max.i8")]
+    Fetch_Max_i8,
+    #[token("fetch_max.i16")]
+    Fetch_Max_i16,
+    #[token("fetch_max.i32")]
+    Fetch_Max_i32,
+    #[token("fetch_max.i64")]
+    Fetch_Max_i64,
+    #[token("fetch_max.u8")]
+    Fetch_Max_u8,
+    #[token("fetch_max.u16")]
+    Fetch_Max_u16,
+    #[token("fetch_max.u32")]
+    Fetch_Max_u32,
+    #[token("fetch_max.u64")]
+    Fetch_Max_u64,
+    #[token("fetch_and.i8")]
+    Fetch_And_i8,
+    #[token("fetch_and.i16")]
+    Fetch_And_i16,
+    #[token("fetch_and.i32")]
+    Fetch_And_i32,
+    #[token("fetch_and.i64")]
+    Fetch_And_i64,
+    #[token("fetch_and.u8")]
+    Fetch_And_u8,
+    #[token("fetch_and.u16")]
+    Fetch_And_u16,
+    #[token("fetch_and.u32")]
+    Fetch_And_u32,
+    #[token("fetch_and.u64")]
+    Fetch_And_u64,
+    #[token("fetch_nand.i8")]
+    Fetch_Nand_i8,
+    #[token("fetch_nand.i16")]
+    Fetch_Nand_i16,
+    #[token("fetch_nand.i32")]
+    Fetch_Nand_i32,
+    #[token("fetch_nand.i64")]
+    Fetch_Nand_i64,
+    #[token("fetch_nand.u8")]
+    Fetch_Nand_u8,
+    #[token("fetch_nand.u16")]
+    Fetch_Nand_u16,
+    #[token("fetch_nand.u32")]
+    Fetch_Nand_u32,
+    #[token("fetch_nand.u64")]
+    Fetch_Nand_u64,
+    #[token("fetch_or.i8")]
+    Fetch_Or_i8,
+    #[token("fetch_or.i16")]
+    Fetch_Or_i16,
+    #[token("fetch_or.i32")]
+    Fetch_Or_i32,
+    #[token("fetch_or.i64")]
+    Fetch_Or_i64,
+    #[token("fetch_or.u8")]
+    Fetch_Or_u8,
+    #[token("fetch_or.u16")]
+    Fetch_Or_u16,
+    #[token("fetch_or.u32")]
+    Fetch_Or_u32,
+    #[token("fetch_or.u64")]
+    Fetch_Or_u64,
+    #[token("fetch_xor.i8")]
+    Fetch_Xor_i8,
+    #[token("fetch_xor.i16")]
+    Fetch_Xor_i16,
+    #[token("fetch_xor.i32")]
+    Fetch_Xor_i32,
+    #[token("fetch_xor.i64")]
+    Fetch_Xor_i64,
+    #[token("fetch_xor.u8")]
+    Fetch_Xor_u8,
+    #[token("fetch_xor.u16")]
+    Fetch_Xor_u16,
+    #[token("fetch_xor.u32")]
+    Fetch_Xor_u32,
+    #[token("fetch_xor.u64")]
+    Fetch_Xor_u64,
+    #[token("cmp_exchg.i8")]
+    Cmp_Exchg_i8,
+    #[token("cmp_exchg.i16")]
+    Cmp_Exchg_i16,
+    #[token("cmp_exchg.i32")]
+    Cmp_Exchg_i32,
+    #[token("cmp_exchg.i64")]
+    Cmp_Exchg_i64,
+    #[token("cmp_exchg.u8")]
+    Cmp_Exchg_u8,
+    #[token("cmp_exchg.u16")]
+    Cmp_Exchg_u16,
+    #[token("cmp_exchg.u32")]
+    Cmp_Exchg_u32,
+    #[token("cmp_exchg.u64")]
+    Cmp_Exchg_u64,
+    #[token("atomic_ld.8")]
+    Atomic_Ld_8,
+    #[token("atomic_ld.16")]
+    Atomic_Ld_16,
+    #[token("atomic_ld.32")]
+    Atomic_Ld_32,
+    #[token("atomic_ld.64")]
+    Atomic_Ld_64,
+    #[token("atomic_st.8")]
+    Atomic_St_8,
+    #[token("atomic_st.16")]
+    Atomic_St_16,
+    #[token("atomic_st.32")]
+    Atomic_St_32,
+    #[token("atomic_st.64")]
+    Atomic_St_64,
+    #[token("spawn")]
+    Spawn,
+    #[token("wait")]
+    Wait,
+    #[token("notify")]
+    Notify,
+    #[token("swap.8")]
+    Swap_8,
+    #[token("swap.16")]
+    Swap_16,
+    #[token("swap.32")]
+    Swap_32,
+    #[token("swap.64")]
+    Swap_64,
     #[token(".i8")]
     Type_i8,
     #[token(".u8")]
@@ -1068,1442 +1280,1760 @@ impl<'source> Assembly_Lexer<'source> {
                 Lexed_Token::Call => {
                     (Token_Kind::Instruction, Token_Value::integer(2u64), 0)
                 }
-                Lexed_Token::Call_R => {
+                Lexed_Token::Ret => {
                     (Token_Kind::Instruction, Token_Value::integer(3u64), 0)
                 }
-                Lexed_Token::Call_I => {
+                Lexed_Token::Ecall => {
                     (Token_Kind::Instruction, Token_Value::integer(4u64), 0)
                 }
-                Lexed_Token::Ret => {
+                Lexed_Token::Jal => {
                     (Token_Kind::Instruction, Token_Value::integer(5u64), 0)
                 }
-                Lexed_Token::Ecall => {
+                Lexed_Token::Bie => {
                     (Token_Kind::Instruction, Token_Value::integer(6u64), 0)
                 }
-                Lexed_Token::Jal => {
+                Lexed_Token::Bne => {
                     (Token_Kind::Instruction, Token_Value::integer(7u64), 0)
                 }
-                Lexed_Token::Jal_R => {
+                Lexed_Token::Blts => {
                     (Token_Kind::Instruction, Token_Value::integer(8u64), 0)
                 }
-                Lexed_Token::Jal_I => {
+                Lexed_Token::Bltu => {
                     (Token_Kind::Instruction, Token_Value::integer(9u64), 0)
                 }
-                Lexed_Token::Jnz => {
+                Lexed_Token::Bles => {
                     (Token_Kind::Instruction, Token_Value::integer(10u64), 0)
                 }
-                Lexed_Token::Jnz_R => {
+                Lexed_Token::Bleu => {
                     (Token_Kind::Instruction, Token_Value::integer(11u64), 0)
                 }
-                Lexed_Token::Jnz_I => {
+                Lexed_Token::Bgts => {
                     (Token_Kind::Instruction, Token_Value::integer(12u64), 0)
                 }
-                Lexed_Token::Jiz => {
+                Lexed_Token::Bgtu => {
                     (Token_Kind::Instruction, Token_Value::integer(13u64), 0)
                 }
-                Lexed_Token::Jiz_R => {
+                Lexed_Token::Bges => {
                     (Token_Kind::Instruction, Token_Value::integer(14u64), 0)
                 }
-                Lexed_Token::Jiz_I => {
+                Lexed_Token::Bgeu => {
                     (Token_Kind::Instruction, Token_Value::integer(15u64), 0)
                 }
-                Lexed_Token::Ld_8 => {
+                Lexed_Token::Bie_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(16u64), 0)
                 }
-                Lexed_Token::Ld_16 => {
+                Lexed_Token::Bie_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(17u64), 0)
                 }
-                Lexed_Token::Ld_32 => {
+                Lexed_Token::Bne_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(18u64), 0)
                 }
-                Lexed_Token::Ld_64 => {
+                Lexed_Token::Bne_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(19u64), 0)
                 }
-                Lexed_Token::Ld_I => {
+                Lexed_Token::Blt_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(20u64), 0)
                 }
-                Lexed_Token::Ld_A_8 => {
+                Lexed_Token::Blt_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(21u64), 0)
                 }
-                Lexed_Token::Ld_A_16 => {
+                Lexed_Token::Ble_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(22u64), 0)
                 }
-                Lexed_Token::Ld_A_32 => {
+                Lexed_Token::Ble_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(23u64), 0)
                 }
-                Lexed_Token::Ld_A_64 => {
+                Lexed_Token::Bgt_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(24u64), 0)
                 }
-                Lexed_Token::St_8 => {
+                Lexed_Token::Bgt_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(25u64), 0)
                 }
-                Lexed_Token::St_16 => {
+                Lexed_Token::Bge_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(26u64), 0)
                 }
-                Lexed_Token::St_32 => {
+                Lexed_Token::Bge_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(27u64), 0)
                 }
-                Lexed_Token::St_64 => {
+                Lexed_Token::Cie => {
                     (Token_Kind::Instruction, Token_Value::integer(28u64), 0)
                 }
-                Lexed_Token::St_I => {
+                Lexed_Token::Cie_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(29u64), 0)
                 }
-                Lexed_Token::Mov => {
+                Lexed_Token::Cie_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(30u64), 0)
                 }
-                Lexed_Token::Psh => {
+                Lexed_Token::Cne => {
                     (Token_Kind::Instruction, Token_Value::integer(31u64), 0)
                 }
-                Lexed_Token::Psh_I => {
+                Lexed_Token::Cne_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(32u64), 0)
                 }
-                Lexed_Token::Pop => {
+                Lexed_Token::Cne_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(33u64), 0)
                 }
-                Lexed_Token::Ie => {
+                Lexed_Token::Clts => {
                     (Token_Kind::Instruction, Token_Value::integer(34u64), 0)
                 }
-                Lexed_Token::Ie_f32 => {
+                Lexed_Token::Cltu => {
                     (Token_Kind::Instruction, Token_Value::integer(35u64), 0)
                 }
-                Lexed_Token::Ie_f64 => {
+                Lexed_Token::Clt_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(36u64), 0)
                 }
-                Lexed_Token::Ne => {
+                Lexed_Token::Clt_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(37u64), 0)
                 }
-                Lexed_Token::Ne_f32 => {
+                Lexed_Token::Cles => {
                     (Token_Kind::Instruction, Token_Value::integer(38u64), 0)
                 }
-                Lexed_Token::Ne_f64 => {
+                Lexed_Token::Cleu => {
                     (Token_Kind::Instruction, Token_Value::integer(39u64), 0)
                 }
-                Lexed_Token::Lt => {
+                Lexed_Token::Cle_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(40u64), 0)
                 }
-                Lexed_Token::Lt_f32 => {
+                Lexed_Token::Cle_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(41u64), 0)
                 }
-                Lexed_Token::Lt_f64 => {
+                Lexed_Token::Cgts => {
                     (Token_Kind::Instruction, Token_Value::integer(42u64), 0)
                 }
-                Lexed_Token::Le => {
+                Lexed_Token::Cgtu => {
                     (Token_Kind::Instruction, Token_Value::integer(43u64), 0)
                 }
-                Lexed_Token::Le_f32 => {
+                Lexed_Token::Cgt_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(44u64), 0)
                 }
-                Lexed_Token::Le_f64 => {
+                Lexed_Token::Cgt_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(45u64), 0)
                 }
-                Lexed_Token::Gt => {
+                Lexed_Token::Cges => {
                     (Token_Kind::Instruction, Token_Value::integer(46u64), 0)
                 }
-                Lexed_Token::Gt_f32 => {
+                Lexed_Token::Cgeu => {
                     (Token_Kind::Instruction, Token_Value::integer(47u64), 0)
                 }
-                Lexed_Token::Gt_f64 => {
+                Lexed_Token::Cge_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(48u64), 0)
                 }
-                Lexed_Token::Ge => {
+                Lexed_Token::Cge_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(49u64), 0)
                 }
-                Lexed_Token::Ge_f32 => {
+                Lexed_Token::Lra_8 => {
                     (Token_Kind::Instruction, Token_Value::integer(50u64), 0)
                 }
-                Lexed_Token::Ge_f64 => {
+                Lexed_Token::Lra_16 => {
                     (Token_Kind::Instruction, Token_Value::integer(51u64), 0)
                 }
-                Lexed_Token::And_i8 => {
+                Lexed_Token::Lra_32 => {
                     (Token_Kind::Instruction, Token_Value::integer(52u64), 0)
                 }
-                Lexed_Token::And_i16 => {
+                Lexed_Token::Lra_64 => {
                     (Token_Kind::Instruction, Token_Value::integer(53u64), 0)
                 }
-                Lexed_Token::And_i32 => {
+                Lexed_Token::Lsi => {
                     (Token_Kind::Instruction, Token_Value::integer(54u64), 0)
                 }
-                Lexed_Token::And_i64 => {
+                Lexed_Token::Lui => {
                     (Token_Kind::Instruction, Token_Value::integer(55u64), 0)
                 }
-                Lexed_Token::And_u8 => {
+                Lexed_Token::Lia_8 => {
                     (Token_Kind::Instruction, Token_Value::integer(56u64), 0)
                 }
-                Lexed_Token::And_u16 => {
+                Lexed_Token::Lia_16 => {
                     (Token_Kind::Instruction, Token_Value::integer(57u64), 0)
                 }
-                Lexed_Token::And_u32 => {
+                Lexed_Token::Lia_32 => {
                     (Token_Kind::Instruction, Token_Value::integer(58u64), 0)
                 }
-                Lexed_Token::And_u64 => {
+                Lexed_Token::Lia_64 => {
                     (Token_Kind::Instruction, Token_Value::integer(59u64), 0)
                 }
-                Lexed_Token::Or_i8 => {
+                Lexed_Token::Sra_8 => {
                     (Token_Kind::Instruction, Token_Value::integer(60u64), 0)
                 }
-                Lexed_Token::Or_i16 => {
+                Lexed_Token::Sra_16 => {
                     (Token_Kind::Instruction, Token_Value::integer(61u64), 0)
                 }
-                Lexed_Token::Or_i32 => {
+                Lexed_Token::Sra_32 => {
                     (Token_Kind::Instruction, Token_Value::integer(62u64), 0)
                 }
-                Lexed_Token::Or_i64 => {
+                Lexed_Token::Sra_64 => {
                     (Token_Kind::Instruction, Token_Value::integer(63u64), 0)
                 }
-                Lexed_Token::Or_u8 => {
+                Lexed_Token::Ssi => {
                     (Token_Kind::Instruction, Token_Value::integer(64u64), 0)
                 }
-                Lexed_Token::Or_u16 => {
+                Lexed_Token::Sui => {
                     (Token_Kind::Instruction, Token_Value::integer(65u64), 0)
                 }
-                Lexed_Token::Or_u32 => {
+                Lexed_Token::Mov => {
                     (Token_Kind::Instruction, Token_Value::integer(66u64), 0)
                 }
-                Lexed_Token::Or_u64 => {
+                Lexed_Token::Pop => {
                     (Token_Kind::Instruction, Token_Value::integer(67u64), 0)
                 }
-                Lexed_Token::Xor_i8 => {
+                Lexed_Token::Psh => {
                     (Token_Kind::Instruction, Token_Value::integer(68u64), 0)
                 }
-                Lexed_Token::Xor_i16 => {
+                Lexed_Token::Psi => {
                     (Token_Kind::Instruction, Token_Value::integer(69u64), 0)
                 }
-                Lexed_Token::Xor_i32 => {
+                Lexed_Token::Pui => {
                     (Token_Kind::Instruction, Token_Value::integer(70u64), 0)
                 }
-                Lexed_Token::Xor_i64 => {
+                Lexed_Token::And_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(71u64), 0)
                 }
-                Lexed_Token::Xor_u8 => {
+                Lexed_Token::And_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(72u64), 0)
                 }
-                Lexed_Token::Xor_u16 => {
+                Lexed_Token::And_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(73u64), 0)
                 }
-                Lexed_Token::Xor_u32 => {
+                Lexed_Token::And_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(74u64), 0)
                 }
-                Lexed_Token::Xor_u64 => {
+                Lexed_Token::And_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(75u64), 0)
                 }
-                Lexed_Token::Not_i8 => {
+                Lexed_Token::And_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(76u64), 0)
                 }
-                Lexed_Token::Not_i16 => {
+                Lexed_Token::And_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(77u64), 0)
                 }
-                Lexed_Token::Not_i32 => {
+                Lexed_Token::And_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(78u64), 0)
                 }
-                Lexed_Token::Not_i64 => {
+                Lexed_Token::Or_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(79u64), 0)
                 }
-                Lexed_Token::Not_u8 => {
+                Lexed_Token::Or_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(80u64), 0)
                 }
-                Lexed_Token::Not_u16 => {
+                Lexed_Token::Or_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(81u64), 0)
                 }
-                Lexed_Token::Not_u32 => {
+                Lexed_Token::Or_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(82u64), 0)
                 }
-                Lexed_Token::Not_u64 => {
+                Lexed_Token::Or_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(83u64), 0)
                 }
-                Lexed_Token::Shl_i8 => {
+                Lexed_Token::Or_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(84u64), 0)
                 }
-                Lexed_Token::Shl_i16 => {
+                Lexed_Token::Or_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(85u64), 0)
                 }
-                Lexed_Token::Shl_i32 => {
+                Lexed_Token::Or_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(86u64), 0)
                 }
-                Lexed_Token::Shl_i64 => {
+                Lexed_Token::Xor_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(87u64), 0)
                 }
-                Lexed_Token::Shl_u8 => {
+                Lexed_Token::Xor_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(88u64), 0)
                 }
-                Lexed_Token::Shl_u16 => {
+                Lexed_Token::Xor_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(89u64), 0)
                 }
-                Lexed_Token::Shl_u32 => {
+                Lexed_Token::Xor_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(90u64), 0)
                 }
-                Lexed_Token::Shl_u64 => {
+                Lexed_Token::Xor_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(91u64), 0)
                 }
-                Lexed_Token::Shr_i8 => {
+                Lexed_Token::Xor_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(92u64), 0)
                 }
-                Lexed_Token::Shr_i16 => {
+                Lexed_Token::Xor_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(93u64), 0)
                 }
-                Lexed_Token::Shr_i32 => {
+                Lexed_Token::Xor_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(94u64), 0)
                 }
-                Lexed_Token::Shr_i64 => {
+                Lexed_Token::Not_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(95u64), 0)
                 }
-                Lexed_Token::Shr_u8 => {
+                Lexed_Token::Not_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(96u64), 0)
                 }
-                Lexed_Token::Shr_u16 => {
+                Lexed_Token::Not_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(97u64), 0)
                 }
-                Lexed_Token::Shr_u32 => {
+                Lexed_Token::Not_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(98u64), 0)
                 }
-                Lexed_Token::Shr_u64 => {
+                Lexed_Token::Not_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(99u64), 0)
                 }
-                Lexed_Token::Rot_L_i8 => {
+                Lexed_Token::Not_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(100u64), 0)
                 }
-                Lexed_Token::Rot_L_i16 => {
+                Lexed_Token::Not_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(101u64), 0)
                 }
-                Lexed_Token::Rot_L_i32 => {
+                Lexed_Token::Not_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(102u64), 0)
                 }
-                Lexed_Token::Rot_L_i64 => {
+                Lexed_Token::Shl_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(103u64), 0)
                 }
-                Lexed_Token::Rot_L_u8 => {
+                Lexed_Token::Shl_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(104u64), 0)
                 }
-                Lexed_Token::Rot_L_u16 => {
+                Lexed_Token::Shl_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(105u64), 0)
                 }
-                Lexed_Token::Rot_L_u32 => {
+                Lexed_Token::Shl_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(106u64), 0)
                 }
-                Lexed_Token::Rot_L_u64 => {
+                Lexed_Token::Shl_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(107u64), 0)
                 }
-                Lexed_Token::Rot_R_i8 => {
+                Lexed_Token::Shl_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(108u64), 0)
                 }
-                Lexed_Token::Rot_R_i16 => {
+                Lexed_Token::Shl_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(109u64), 0)
                 }
-                Lexed_Token::Rot_R_i32 => {
+                Lexed_Token::Shl_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(110u64), 0)
                 }
-                Lexed_Token::Rot_R_i64 => {
+                Lexed_Token::Shr_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(111u64), 0)
                 }
-                Lexed_Token::Rot_R_u8 => {
+                Lexed_Token::Shr_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(112u64), 0)
                 }
-                Lexed_Token::Rot_R_u16 => {
+                Lexed_Token::Shr_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(113u64), 0)
                 }
-                Lexed_Token::Rot_R_u32 => {
+                Lexed_Token::Shr_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(114u64), 0)
                 }
-                Lexed_Token::Rot_R_u64 => {
+                Lexed_Token::Shr_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(115u64), 0)
                 }
-                Lexed_Token::C_Ones_i8 => {
+                Lexed_Token::Shr_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(116u64), 0)
                 }
-                Lexed_Token::C_Ones_i16 => {
+                Lexed_Token::Shr_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(117u64), 0)
                 }
-                Lexed_Token::C_Ones_i32 => {
+                Lexed_Token::Shr_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(118u64), 0)
                 }
-                Lexed_Token::C_Ones_i64 => {
+                Lexed_Token::Rot_L_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(119u64), 0)
                 }
-                Lexed_Token::C_Ones_u8 => {
+                Lexed_Token::Rot_L_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(120u64), 0)
                 }
-                Lexed_Token::C_Ones_u16 => {
+                Lexed_Token::Rot_L_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(121u64), 0)
                 }
-                Lexed_Token::C_Ones_u32 => {
+                Lexed_Token::Rot_L_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(122u64), 0)
                 }
-                Lexed_Token::C_Ones_u64 => {
+                Lexed_Token::Rot_L_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(123u64), 0)
                 }
-                Lexed_Token::L_Ones_i8 => {
+                Lexed_Token::Rot_L_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(124u64), 0)
                 }
-                Lexed_Token::L_Ones_i16 => {
+                Lexed_Token::Rot_L_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(125u64), 0)
                 }
-                Lexed_Token::L_Ones_i32 => {
+                Lexed_Token::Rot_L_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(126u64), 0)
                 }
-                Lexed_Token::L_Ones_i64 => {
+                Lexed_Token::Rot_R_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(127u64), 0)
                 }
-                Lexed_Token::L_Ones_u8 => {
+                Lexed_Token::Rot_R_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(128u64), 0)
                 }
-                Lexed_Token::L_Ones_u16 => {
+                Lexed_Token::Rot_R_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(129u64), 0)
                 }
-                Lexed_Token::L_Ones_u32 => {
+                Lexed_Token::Rot_R_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(130u64), 0)
                 }
-                Lexed_Token::L_Ones_u64 => {
+                Lexed_Token::Rot_R_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(131u64), 0)
                 }
-                Lexed_Token::T_Ones_i8 => {
+                Lexed_Token::Rot_R_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(132u64), 0)
                 }
-                Lexed_Token::T_Ones_i16 => {
+                Lexed_Token::Rot_R_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(133u64), 0)
                 }
-                Lexed_Token::T_Ones_i32 => {
+                Lexed_Token::Rot_R_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(134u64), 0)
                 }
-                Lexed_Token::T_Ones_i64 => {
+                Lexed_Token::C_Ones_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(135u64), 0)
                 }
-                Lexed_Token::T_Ones_u8 => {
+                Lexed_Token::C_Ones_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(136u64), 0)
                 }
-                Lexed_Token::T_Ones_u16 => {
+                Lexed_Token::C_Ones_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(137u64), 0)
                 }
-                Lexed_Token::T_Ones_u32 => {
+                Lexed_Token::C_Ones_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(138u64), 0)
                 }
-                Lexed_Token::T_Ones_u64 => {
+                Lexed_Token::C_Ones_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(139u64), 0)
                 }
-                Lexed_Token::C_Zeros_i8 => {
+                Lexed_Token::C_Ones_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(140u64), 0)
                 }
-                Lexed_Token::C_Zeros_i16 => {
+                Lexed_Token::C_Ones_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(141u64), 0)
                 }
-                Lexed_Token::C_Zeros_i32 => {
+                Lexed_Token::C_Ones_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(142u64), 0)
                 }
-                Lexed_Token::C_Zeros_i64 => {
+                Lexed_Token::L_Ones_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(143u64), 0)
                 }
-                Lexed_Token::C_Zeros_u8 => {
+                Lexed_Token::L_Ones_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(144u64), 0)
                 }
-                Lexed_Token::C_Zeros_u16 => {
+                Lexed_Token::L_Ones_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(145u64), 0)
                 }
-                Lexed_Token::C_Zeros_u32 => {
+                Lexed_Token::L_Ones_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(146u64), 0)
                 }
-                Lexed_Token::C_Zeros_u64 => {
+                Lexed_Token::L_Ones_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(147u64), 0)
                 }
-                Lexed_Token::L_Zeros_i8 => {
+                Lexed_Token::L_Ones_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(148u64), 0)
                 }
-                Lexed_Token::L_Zeros_i16 => {
+                Lexed_Token::L_Ones_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(149u64), 0)
                 }
-                Lexed_Token::L_Zeros_i32 => {
+                Lexed_Token::L_Ones_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(150u64), 0)
                 }
-                Lexed_Token::L_Zeros_i64 => {
+                Lexed_Token::T_Ones_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(151u64), 0)
                 }
-                Lexed_Token::L_Zeros_u8 => {
+                Lexed_Token::T_Ones_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(152u64), 0)
                 }
-                Lexed_Token::L_Zeros_u16 => {
+                Lexed_Token::T_Ones_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(153u64), 0)
                 }
-                Lexed_Token::L_Zeros_u32 => {
+                Lexed_Token::T_Ones_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(154u64), 0)
                 }
-                Lexed_Token::L_Zeros_u64 => {
+                Lexed_Token::T_Ones_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(155u64), 0)
                 }
-                Lexed_Token::T_Zeros_i8 => {
+                Lexed_Token::T_Ones_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(156u64), 0)
                 }
-                Lexed_Token::T_Zeros_i16 => {
+                Lexed_Token::T_Ones_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(157u64), 0)
                 }
-                Lexed_Token::T_Zeros_i32 => {
+                Lexed_Token::T_Ones_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(158u64), 0)
                 }
-                Lexed_Token::T_Zeros_i64 => {
+                Lexed_Token::C_Zeros_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(159u64), 0)
                 }
-                Lexed_Token::T_Zeros_u8 => {
+                Lexed_Token::C_Zeros_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(160u64), 0)
                 }
-                Lexed_Token::T_Zeros_u16 => {
+                Lexed_Token::C_Zeros_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(161u64), 0)
                 }
-                Lexed_Token::T_Zeros_u32 => {
+                Lexed_Token::C_Zeros_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(162u64), 0)
                 }
-                Lexed_Token::T_Zeros_u64 => {
+                Lexed_Token::C_Zeros_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(163u64), 0)
                 }
-                Lexed_Token::R_Bytes_i8 => {
+                Lexed_Token::C_Zeros_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(164u64), 0)
                 }
-                Lexed_Token::R_Bytes_i16 => {
+                Lexed_Token::C_Zeros_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(165u64), 0)
                 }
-                Lexed_Token::R_Bytes_i32 => {
+                Lexed_Token::C_Zeros_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(166u64), 0)
                 }
-                Lexed_Token::R_Bytes_i64 => {
+                Lexed_Token::L_Zeros_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(167u64), 0)
                 }
-                Lexed_Token::R_Bytes_u8 => {
+                Lexed_Token::L_Zeros_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(168u64), 0)
                 }
-                Lexed_Token::R_Bytes_u16 => {
+                Lexed_Token::L_Zeros_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(169u64), 0)
                 }
-                Lexed_Token::R_Bytes_u32 => {
+                Lexed_Token::L_Zeros_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(170u64), 0)
                 }
-                Lexed_Token::R_Bytes_u64 => {
+                Lexed_Token::L_Zeros_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(171u64), 0)
                 }
-                Lexed_Token::R_Bits_i8 => {
+                Lexed_Token::L_Zeros_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(172u64), 0)
                 }
-                Lexed_Token::R_Bits_i16 => {
+                Lexed_Token::L_Zeros_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(173u64), 0)
                 }
-                Lexed_Token::R_Bits_i32 => {
+                Lexed_Token::L_Zeros_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(174u64), 0)
                 }
-                Lexed_Token::R_Bits_i64 => {
+                Lexed_Token::T_Zeros_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(175u64), 0)
                 }
-                Lexed_Token::R_Bits_u8 => {
+                Lexed_Token::T_Zeros_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(176u64), 0)
                 }
-                Lexed_Token::R_Bits_u16 => {
+                Lexed_Token::T_Zeros_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(177u64), 0)
                 }
-                Lexed_Token::R_Bits_u32 => {
+                Lexed_Token::T_Zeros_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(178u64), 0)
                 }
-                Lexed_Token::R_Bits_u64 => {
+                Lexed_Token::T_Zeros_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(179u64), 0)
                 }
-                Lexed_Token::C_Abs_i8 => {
+                Lexed_Token::T_Zeros_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(180u64), 0)
                 }
-                Lexed_Token::C_Abs_i16 => {
+                Lexed_Token::T_Zeros_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(181u64), 0)
                 }
-                Lexed_Token::C_Abs_i32 => {
+                Lexed_Token::T_Zeros_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(182u64), 0)
                 }
-                Lexed_Token::C_Abs_i64 => {
+                Lexed_Token::R_Bytes_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(183u64), 0)
                 }
-                Lexed_Token::C_Add_i8 => {
+                Lexed_Token::R_Bytes_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(184u64), 0)
                 }
-                Lexed_Token::C_Add_i16 => {
+                Lexed_Token::R_Bytes_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(185u64), 0)
                 }
-                Lexed_Token::C_Add_i32 => {
+                Lexed_Token::R_Bytes_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(186u64), 0)
                 }
-                Lexed_Token::C_Add_i64 => {
+                Lexed_Token::R_Bytes_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(187u64), 0)
                 }
-                Lexed_Token::C_Add_u8 => {
+                Lexed_Token::R_Bytes_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(188u64), 0)
                 }
-                Lexed_Token::C_Add_u16 => {
+                Lexed_Token::R_Bytes_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(189u64), 0)
                 }
-                Lexed_Token::C_Add_u32 => {
+                Lexed_Token::R_Bytes_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(190u64), 0)
                 }
-                Lexed_Token::C_Add_u64 => {
+                Lexed_Token::R_Bits_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(191u64), 0)
                 }
-                Lexed_Token::C_Add_U_i8 => {
+                Lexed_Token::R_Bits_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(192u64), 0)
                 }
-                Lexed_Token::C_Add_U_i16 => {
+                Lexed_Token::R_Bits_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(193u64), 0)
                 }
-                Lexed_Token::C_Add_U_i32 => {
+                Lexed_Token::R_Bits_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(194u64), 0)
                 }
-                Lexed_Token::C_Add_U_i64 => {
+                Lexed_Token::R_Bits_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(195u64), 0)
                 }
-                Lexed_Token::C_Add_S_u8 => {
+                Lexed_Token::R_Bits_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(196u64), 0)
                 }
-                Lexed_Token::C_Add_S_u16 => {
+                Lexed_Token::R_Bits_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(197u64), 0)
                 }
-                Lexed_Token::C_Add_S_u32 => {
+                Lexed_Token::R_Bits_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(198u64), 0)
                 }
-                Lexed_Token::C_Add_S_u64 => {
+                Lexed_Token::C_Abs_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(199u64), 0)
                 }
-                Lexed_Token::C_Div_i8 => {
+                Lexed_Token::C_Abs_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(200u64), 0)
                 }
-                Lexed_Token::C_Div_i16 => {
+                Lexed_Token::C_Abs_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(201u64), 0)
                 }
-                Lexed_Token::C_Div_i32 => {
+                Lexed_Token::C_Abs_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(202u64), 0)
                 }
-                Lexed_Token::C_Div_i64 => {
+                Lexed_Token::C_Add_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(203u64), 0)
                 }
-                Lexed_Token::C_Div_u8 => {
+                Lexed_Token::C_Add_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(204u64), 0)
                 }
-                Lexed_Token::C_Div_u16 => {
+                Lexed_Token::C_Add_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(205u64), 0)
                 }
-                Lexed_Token::C_Div_u32 => {
+                Lexed_Token::C_Add_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(206u64), 0)
                 }
-                Lexed_Token::C_Div_u64 => {
+                Lexed_Token::C_Add_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(207u64), 0)
                 }
-                Lexed_Token::C_Div_E_i8 => {
+                Lexed_Token::C_Add_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(208u64), 0)
                 }
-                Lexed_Token::C_Div_E_i16 => {
+                Lexed_Token::C_Add_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(209u64), 0)
                 }
-                Lexed_Token::C_Div_E_i32 => {
+                Lexed_Token::C_Add_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(210u64), 0)
                 }
-                Lexed_Token::C_Div_E_i64 => {
+                Lexed_Token::C_Add_U_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(211u64), 0)
                 }
-                Lexed_Token::C_Div_E_u8 => {
+                Lexed_Token::C_Add_U_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(212u64), 0)
                 }
-                Lexed_Token::C_Div_E_u16 => {
+                Lexed_Token::C_Add_U_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(213u64), 0)
                 }
-                Lexed_Token::C_Div_E_u32 => {
+                Lexed_Token::C_Add_U_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(214u64), 0)
                 }
-                Lexed_Token::C_Div_E_u64 => {
+                Lexed_Token::C_Add_S_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(215u64), 0)
                 }
-                Lexed_Token::C_Log_i8 => {
+                Lexed_Token::C_Add_S_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(216u64), 0)
                 }
-                Lexed_Token::C_Log_i16 => {
+                Lexed_Token::C_Add_S_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(217u64), 0)
                 }
-                Lexed_Token::C_Log_i32 => {
+                Lexed_Token::C_Add_S_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(218u64), 0)
                 }
-                Lexed_Token::C_Log_i64 => {
+                Lexed_Token::C_Div_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(219u64), 0)
                 }
-                Lexed_Token::C_Log_u8 => {
+                Lexed_Token::C_Div_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(220u64), 0)
                 }
-                Lexed_Token::C_Log_u16 => {
+                Lexed_Token::C_Div_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(221u64), 0)
                 }
-                Lexed_Token::C_Log_u32 => {
+                Lexed_Token::C_Div_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(222u64), 0)
                 }
-                Lexed_Token::C_Log_u64 => {
+                Lexed_Token::C_Div_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(223u64), 0)
                 }
-                Lexed_Token::C_Sqrt_i8 => {
+                Lexed_Token::C_Div_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(224u64), 0)
                 }
-                Lexed_Token::C_Sqrt_i16 => {
+                Lexed_Token::C_Div_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(225u64), 0)
                 }
-                Lexed_Token::C_Sqrt_i32 => {
+                Lexed_Token::C_Div_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(226u64), 0)
                 }
-                Lexed_Token::C_Sqrt_i64 => {
+                Lexed_Token::C_Div_E_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(227u64), 0)
                 }
-                Lexed_Token::C_Sqrt_u8 => {
+                Lexed_Token::C_Div_E_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(228u64), 0)
                 }
-                Lexed_Token::C_Sqrt_u16 => {
+                Lexed_Token::C_Div_E_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(229u64), 0)
                 }
-                Lexed_Token::C_Sqrt_u32 => {
+                Lexed_Token::C_Div_E_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(230u64), 0)
                 }
-                Lexed_Token::C_Sqrt_u64 => {
+                Lexed_Token::C_Div_E_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(231u64), 0)
                 }
-                Lexed_Token::C_Mul_i8 => {
+                Lexed_Token::C_Div_E_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(232u64), 0)
                 }
-                Lexed_Token::C_Mul_i16 => {
+                Lexed_Token::C_Div_E_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(233u64), 0)
                 }
-                Lexed_Token::C_Mul_i32 => {
+                Lexed_Token::C_Div_E_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(234u64), 0)
                 }
-                Lexed_Token::C_Mul_i64 => {
+                Lexed_Token::C_Log_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(235u64), 0)
                 }
-                Lexed_Token::C_Mul_u8 => {
+                Lexed_Token::C_Log_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(236u64), 0)
                 }
-                Lexed_Token::C_Mul_u16 => {
+                Lexed_Token::C_Log_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(237u64), 0)
                 }
-                Lexed_Token::C_Mul_u32 => {
+                Lexed_Token::C_Log_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(238u64), 0)
                 }
-                Lexed_Token::C_Mul_u64 => {
+                Lexed_Token::C_Log_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(239u64), 0)
                 }
-                Lexed_Token::C_Neg_i8 => {
+                Lexed_Token::C_Log_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(240u64), 0)
                 }
-                Lexed_Token::C_Neg_i16 => {
+                Lexed_Token::C_Log_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(241u64), 0)
                 }
-                Lexed_Token::C_Neg_i32 => {
+                Lexed_Token::C_Log_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(242u64), 0)
                 }
-                Lexed_Token::C_Neg_i64 => {
+                Lexed_Token::C_Sqrt_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(243u64), 0)
                 }
-                Lexed_Token::C_Pow_i8 => {
+                Lexed_Token::C_Sqrt_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(244u64), 0)
                 }
-                Lexed_Token::C_Pow_i16 => {
+                Lexed_Token::C_Sqrt_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(245u64), 0)
                 }
-                Lexed_Token::C_Pow_i32 => {
+                Lexed_Token::C_Sqrt_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(246u64), 0)
                 }
-                Lexed_Token::C_Pow_i64 => {
+                Lexed_Token::C_Sqrt_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(247u64), 0)
                 }
-                Lexed_Token::C_Pow_u8 => {
+                Lexed_Token::C_Sqrt_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(248u64), 0)
                 }
-                Lexed_Token::C_Pow_u16 => {
+                Lexed_Token::C_Sqrt_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(249u64), 0)
                 }
-                Lexed_Token::C_Pow_u32 => {
+                Lexed_Token::C_Sqrt_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(250u64), 0)
                 }
-                Lexed_Token::C_Pow_u64 => {
+                Lexed_Token::C_Mul_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(251u64), 0)
                 }
-                Lexed_Token::C_Rem_i8 => {
+                Lexed_Token::C_Mul_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(252u64), 0)
                 }
-                Lexed_Token::C_Rem_i16 => {
+                Lexed_Token::C_Mul_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(253u64), 0)
                 }
-                Lexed_Token::C_Rem_i32 => {
+                Lexed_Token::C_Mul_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(254u64), 0)
                 }
-                Lexed_Token::C_Rem_i64 => {
+                Lexed_Token::C_Mul_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(255u64), 0)
                 }
-                Lexed_Token::C_Rem_u8 => {
+                Lexed_Token::C_Mul_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(256u64), 0)
                 }
-                Lexed_Token::C_Rem_u16 => {
+                Lexed_Token::C_Mul_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(257u64), 0)
                 }
-                Lexed_Token::C_Rem_u32 => {
+                Lexed_Token::C_Mul_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(258u64), 0)
                 }
-                Lexed_Token::C_Rem_u64 => {
+                Lexed_Token::C_Neg_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(259u64), 0)
                 }
-                Lexed_Token::C_Rem_E_i8 => {
+                Lexed_Token::C_Neg_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(260u64), 0)
                 }
-                Lexed_Token::C_Rem_E_i16 => {
+                Lexed_Token::C_Neg_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(261u64), 0)
                 }
-                Lexed_Token::C_Rem_E_i32 => {
+                Lexed_Token::C_Neg_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(262u64), 0)
                 }
-                Lexed_Token::C_Rem_E_i64 => {
+                Lexed_Token::C_Pow_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(263u64), 0)
                 }
-                Lexed_Token::C_Rem_E_u8 => {
+                Lexed_Token::C_Pow_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(264u64), 0)
                 }
-                Lexed_Token::C_Rem_E_u16 => {
+                Lexed_Token::C_Pow_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(265u64), 0)
                 }
-                Lexed_Token::C_Rem_E_u32 => {
+                Lexed_Token::C_Pow_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(266u64), 0)
                 }
-                Lexed_Token::C_Rem_E_u64 => {
+                Lexed_Token::C_Pow_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(267u64), 0)
                 }
-                Lexed_Token::C_Shl_i8 => {
+                Lexed_Token::C_Pow_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(268u64), 0)
                 }
-                Lexed_Token::C_Shl_i16 => {
+                Lexed_Token::C_Pow_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(269u64), 0)
                 }
-                Lexed_Token::C_Shl_i32 => {
+                Lexed_Token::C_Pow_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(270u64), 0)
                 }
-                Lexed_Token::C_Shl_i64 => {
+                Lexed_Token::C_Rem_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(271u64), 0)
                 }
-                Lexed_Token::C_Shl_u8 => {
+                Lexed_Token::C_Rem_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(272u64), 0)
                 }
-                Lexed_Token::C_Shl_u16 => {
+                Lexed_Token::C_Rem_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(273u64), 0)
                 }
-                Lexed_Token::C_Shl_u32 => {
+                Lexed_Token::C_Rem_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(274u64), 0)
                 }
-                Lexed_Token::C_Shl_u64 => {
+                Lexed_Token::C_Rem_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(275u64), 0)
                 }
-                Lexed_Token::C_Shr_i8 => {
+                Lexed_Token::C_Rem_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(276u64), 0)
                 }
-                Lexed_Token::C_Shr_i16 => {
+                Lexed_Token::C_Rem_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(277u64), 0)
                 }
-                Lexed_Token::C_Shr_i32 => {
+                Lexed_Token::C_Rem_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(278u64), 0)
                 }
-                Lexed_Token::C_Shr_i64 => {
+                Lexed_Token::C_Rem_E_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(279u64), 0)
                 }
-                Lexed_Token::C_Shr_u8 => {
+                Lexed_Token::C_Rem_E_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(280u64), 0)
                 }
-                Lexed_Token::C_Shr_u16 => {
+                Lexed_Token::C_Rem_E_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(281u64), 0)
                 }
-                Lexed_Token::C_Shr_u32 => {
+                Lexed_Token::C_Rem_E_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(282u64), 0)
                 }
-                Lexed_Token::C_Shr_u64 => {
+                Lexed_Token::C_Rem_E_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(283u64), 0)
                 }
-                Lexed_Token::C_Sub_i8 => {
+                Lexed_Token::C_Rem_E_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(284u64), 0)
                 }
-                Lexed_Token::C_Sub_i16 => {
+                Lexed_Token::C_Rem_E_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(285u64), 0)
                 }
-                Lexed_Token::C_Sub_i32 => {
+                Lexed_Token::C_Rem_E_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(286u64), 0)
                 }
-                Lexed_Token::C_Sub_i64 => {
+                Lexed_Token::C_Shl_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(287u64), 0)
                 }
-                Lexed_Token::C_Sub_u8 => {
+                Lexed_Token::C_Shl_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(288u64), 0)
                 }
-                Lexed_Token::C_Sub_u16 => {
+                Lexed_Token::C_Shl_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(289u64), 0)
                 }
-                Lexed_Token::C_Sub_u32 => {
+                Lexed_Token::C_Shl_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(290u64), 0)
                 }
-                Lexed_Token::C_Sub_u64 => {
+                Lexed_Token::C_Shl_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(291u64), 0)
                 }
-                Lexed_Token::C_Sub_U_i8 => {
+                Lexed_Token::C_Shl_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(292u64), 0)
                 }
-                Lexed_Token::C_Sub_U_i16 => {
+                Lexed_Token::C_Shl_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(293u64), 0)
                 }
-                Lexed_Token::C_Sub_U_i32 => {
+                Lexed_Token::C_Shl_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(294u64), 0)
                 }
-                Lexed_Token::C_Sub_U_i64 => {
+                Lexed_Token::C_Shr_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(295u64), 0)
                 }
-                Lexed_Token::O_Abs_i8 => {
+                Lexed_Token::C_Shr_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(296u64), 0)
                 }
-                Lexed_Token::O_Abs_i16 => {
+                Lexed_Token::C_Shr_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(297u64), 0)
                 }
-                Lexed_Token::O_Abs_i32 => {
+                Lexed_Token::C_Shr_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(298u64), 0)
                 }
-                Lexed_Token::O_Abs_i64 => {
+                Lexed_Token::C_Shr_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(299u64), 0)
                 }
-                Lexed_Token::O_Add_i8 => {
+                Lexed_Token::C_Shr_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(300u64), 0)
                 }
-                Lexed_Token::O_Add_i16 => {
+                Lexed_Token::C_Shr_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(301u64), 0)
                 }
-                Lexed_Token::O_Add_i32 => {
+                Lexed_Token::C_Shr_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(302u64), 0)
                 }
-                Lexed_Token::O_Add_i64 => {
+                Lexed_Token::C_Sub_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(303u64), 0)
                 }
-                Lexed_Token::O_Add_u8 => {
+                Lexed_Token::C_Sub_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(304u64), 0)
                 }
-                Lexed_Token::O_Add_u16 => {
+                Lexed_Token::C_Sub_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(305u64), 0)
                 }
-                Lexed_Token::O_Add_u32 => {
+                Lexed_Token::C_Sub_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(306u64), 0)
                 }
-                Lexed_Token::O_Add_u64 => {
+                Lexed_Token::C_Sub_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(307u64), 0)
                 }
-                Lexed_Token::O_Add_U_i8 => {
+                Lexed_Token::C_Sub_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(308u64), 0)
                 }
-                Lexed_Token::O_Add_U_i16 => {
+                Lexed_Token::C_Sub_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(309u64), 0)
                 }
-                Lexed_Token::O_Add_U_i32 => {
+                Lexed_Token::C_Sub_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(310u64), 0)
                 }
-                Lexed_Token::O_Add_U_i64 => {
+                Lexed_Token::C_Sub_U_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(311u64), 0)
                 }
-                Lexed_Token::O_Add_S_u8 => {
+                Lexed_Token::C_Sub_U_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(312u64), 0)
                 }
-                Lexed_Token::O_Add_S_u16 => {
+                Lexed_Token::C_Sub_U_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(313u64), 0)
                 }
-                Lexed_Token::O_Add_S_u32 => {
+                Lexed_Token::C_Sub_U_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(314u64), 0)
                 }
-                Lexed_Token::O_Add_S_u64 => {
+                Lexed_Token::O_Abs_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(315u64), 0)
                 }
-                Lexed_Token::O_Div_i8 => {
+                Lexed_Token::O_Abs_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(316u64), 0)
                 }
-                Lexed_Token::O_Div_i16 => {
+                Lexed_Token::O_Abs_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(317u64), 0)
                 }
-                Lexed_Token::O_Div_i32 => {
+                Lexed_Token::O_Abs_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(318u64), 0)
                 }
-                Lexed_Token::O_Div_i64 => {
+                Lexed_Token::O_Add_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(319u64), 0)
                 }
-                Lexed_Token::O_Div_u8 => {
+                Lexed_Token::O_Add_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(320u64), 0)
                 }
-                Lexed_Token::O_Div_u16 => {
+                Lexed_Token::O_Add_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(321u64), 0)
                 }
-                Lexed_Token::O_Div_u32 => {
+                Lexed_Token::O_Add_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(322u64), 0)
                 }
-                Lexed_Token::O_Div_u64 => {
+                Lexed_Token::O_Add_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(323u64), 0)
                 }
-                Lexed_Token::O_Div_E_i8 => {
+                Lexed_Token::O_Add_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(324u64), 0)
                 }
-                Lexed_Token::O_Div_E_i16 => {
+                Lexed_Token::O_Add_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(325u64), 0)
                 }
-                Lexed_Token::O_Div_E_i32 => {
+                Lexed_Token::O_Add_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(326u64), 0)
                 }
-                Lexed_Token::O_Div_E_i64 => {
+                Lexed_Token::O_Add_U_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(327u64), 0)
                 }
-                Lexed_Token::O_Div_E_u8 => {
+                Lexed_Token::O_Add_U_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(328u64), 0)
                 }
-                Lexed_Token::O_Div_E_u16 => {
+                Lexed_Token::O_Add_U_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(329u64), 0)
                 }
-                Lexed_Token::O_Div_E_u32 => {
+                Lexed_Token::O_Add_U_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(330u64), 0)
                 }
-                Lexed_Token::O_Div_E_u64 => {
+                Lexed_Token::O_Add_S_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(331u64), 0)
                 }
-                Lexed_Token::O_Mul_i8 => {
+                Lexed_Token::O_Add_S_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(332u64), 0)
                 }
-                Lexed_Token::O_Mul_i16 => {
+                Lexed_Token::O_Add_S_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(333u64), 0)
                 }
-                Lexed_Token::O_Mul_i32 => {
+                Lexed_Token::O_Add_S_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(334u64), 0)
                 }
-                Lexed_Token::O_Mul_i64 => {
+                Lexed_Token::O_Div_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(335u64), 0)
                 }
-                Lexed_Token::O_Mul_u8 => {
+                Lexed_Token::O_Div_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(336u64), 0)
                 }
-                Lexed_Token::O_Mul_u16 => {
+                Lexed_Token::O_Div_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(337u64), 0)
                 }
-                Lexed_Token::O_Mul_u32 => {
+                Lexed_Token::O_Div_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(338u64), 0)
                 }
-                Lexed_Token::O_Mul_u64 => {
+                Lexed_Token::O_Div_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(339u64), 0)
                 }
-                Lexed_Token::O_Neg_i8 => {
+                Lexed_Token::O_Div_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(340u64), 0)
                 }
-                Lexed_Token::O_Neg_i16 => {
+                Lexed_Token::O_Div_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(341u64), 0)
                 }
-                Lexed_Token::O_Neg_i32 => {
+                Lexed_Token::O_Div_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(342u64), 0)
                 }
-                Lexed_Token::O_Neg_i64 => {
+                Lexed_Token::O_Div_E_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(343u64), 0)
                 }
-                Lexed_Token::O_Pow_i8 => {
+                Lexed_Token::O_Div_E_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(344u64), 0)
                 }
-                Lexed_Token::O_Pow_i16 => {
+                Lexed_Token::O_Div_E_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(345u64), 0)
                 }
-                Lexed_Token::O_Pow_i32 => {
+                Lexed_Token::O_Div_E_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(346u64), 0)
                 }
-                Lexed_Token::O_Pow_i64 => {
+                Lexed_Token::O_Div_E_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(347u64), 0)
                 }
-                Lexed_Token::O_Pow_u8 => {
+                Lexed_Token::O_Div_E_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(348u64), 0)
                 }
-                Lexed_Token::O_Pow_u16 => {
+                Lexed_Token::O_Div_E_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(349u64), 0)
                 }
-                Lexed_Token::O_Pow_u32 => {
+                Lexed_Token::O_Div_E_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(350u64), 0)
                 }
-                Lexed_Token::O_Pow_u64 => {
+                Lexed_Token::O_Mul_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(351u64), 0)
                 }
-                Lexed_Token::O_Rem_i8 => {
+                Lexed_Token::O_Mul_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(352u64), 0)
                 }
-                Lexed_Token::O_Rem_i16 => {
+                Lexed_Token::O_Mul_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(353u64), 0)
                 }
-                Lexed_Token::O_Rem_i32 => {
+                Lexed_Token::O_Mul_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(354u64), 0)
                 }
-                Lexed_Token::O_Rem_i64 => {
+                Lexed_Token::O_Mul_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(355u64), 0)
                 }
-                Lexed_Token::O_Rem_u8 => {
+                Lexed_Token::O_Mul_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(356u64), 0)
                 }
-                Lexed_Token::O_Rem_u16 => {
+                Lexed_Token::O_Mul_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(357u64), 0)
                 }
-                Lexed_Token::O_Rem_u32 => {
+                Lexed_Token::O_Mul_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(358u64), 0)
                 }
-                Lexed_Token::O_Rem_u64 => {
+                Lexed_Token::O_Neg_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(359u64), 0)
                 }
-                Lexed_Token::O_Rem_E_i8 => {
+                Lexed_Token::O_Neg_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(360u64), 0)
                 }
-                Lexed_Token::O_Rem_E_i16 => {
+                Lexed_Token::O_Neg_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(361u64), 0)
                 }
-                Lexed_Token::O_Rem_E_i32 => {
+                Lexed_Token::O_Neg_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(362u64), 0)
                 }
-                Lexed_Token::O_Rem_E_i64 => {
+                Lexed_Token::O_Pow_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(363u64), 0)
                 }
-                Lexed_Token::O_Rem_E_u8 => {
+                Lexed_Token::O_Pow_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(364u64), 0)
                 }
-                Lexed_Token::O_Rem_E_u16 => {
+                Lexed_Token::O_Pow_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(365u64), 0)
                 }
-                Lexed_Token::O_Rem_E_u32 => {
+                Lexed_Token::O_Pow_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(366u64), 0)
                 }
-                Lexed_Token::O_Rem_E_u64 => {
+                Lexed_Token::O_Pow_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(367u64), 0)
                 }
-                Lexed_Token::O_Shl_i8 => {
+                Lexed_Token::O_Pow_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(368u64), 0)
                 }
-                Lexed_Token::O_Shl_i16 => {
+                Lexed_Token::O_Pow_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(369u64), 0)
                 }
-                Lexed_Token::O_Shl_i32 => {
+                Lexed_Token::O_Pow_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(370u64), 0)
                 }
-                Lexed_Token::O_Shl_i64 => {
+                Lexed_Token::O_Rem_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(371u64), 0)
                 }
-                Lexed_Token::O_Shl_u8 => {
+                Lexed_Token::O_Rem_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(372u64), 0)
                 }
-                Lexed_Token::O_Shl_u16 => {
+                Lexed_Token::O_Rem_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(373u64), 0)
                 }
-                Lexed_Token::O_Shl_u32 => {
+                Lexed_Token::O_Rem_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(374u64), 0)
                 }
-                Lexed_Token::O_Shl_u64 => {
+                Lexed_Token::O_Rem_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(375u64), 0)
                 }
-                Lexed_Token::O_Shr_i8 => {
+                Lexed_Token::O_Rem_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(376u64), 0)
                 }
-                Lexed_Token::O_Shr_i16 => {
+                Lexed_Token::O_Rem_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(377u64), 0)
                 }
-                Lexed_Token::O_Shr_i32 => {
+                Lexed_Token::O_Rem_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(378u64), 0)
                 }
-                Lexed_Token::O_Shr_i64 => {
+                Lexed_Token::O_Rem_E_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(379u64), 0)
                 }
-                Lexed_Token::O_Shr_u8 => {
+                Lexed_Token::O_Rem_E_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(380u64), 0)
                 }
-                Lexed_Token::O_Shr_u16 => {
+                Lexed_Token::O_Rem_E_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(381u64), 0)
                 }
-                Lexed_Token::O_Shr_u32 => {
+                Lexed_Token::O_Rem_E_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(382u64), 0)
                 }
-                Lexed_Token::O_Shr_u64 => {
+                Lexed_Token::O_Rem_E_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(383u64), 0)
                 }
-                Lexed_Token::O_Sub_i8 => {
+                Lexed_Token::O_Rem_E_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(384u64), 0)
                 }
-                Lexed_Token::O_Sub_i16 => {
+                Lexed_Token::O_Rem_E_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(385u64), 0)
                 }
-                Lexed_Token::O_Sub_i32 => {
+                Lexed_Token::O_Rem_E_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(386u64), 0)
                 }
-                Lexed_Token::O_Sub_i64 => {
+                Lexed_Token::O_Shl_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(387u64), 0)
                 }
-                Lexed_Token::O_Sub_u8 => {
+                Lexed_Token::O_Shl_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(388u64), 0)
                 }
-                Lexed_Token::O_Sub_u16 => {
+                Lexed_Token::O_Shl_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(389u64), 0)
                 }
-                Lexed_Token::O_Sub_u32 => {
+                Lexed_Token::O_Shl_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(390u64), 0)
                 }
-                Lexed_Token::O_Sub_u64 => {
+                Lexed_Token::O_Shl_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(391u64), 0)
                 }
-                Lexed_Token::O_Sub_U_i8 => {
+                Lexed_Token::O_Shl_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(392u64), 0)
                 }
-                Lexed_Token::O_Sub_U_i16 => {
+                Lexed_Token::O_Shl_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(393u64), 0)
                 }
-                Lexed_Token::O_Sub_U_i32 => {
+                Lexed_Token::O_Shl_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(394u64), 0)
                 }
-                Lexed_Token::O_Sub_U_i64 => {
+                Lexed_Token::O_Shr_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(395u64), 0)
                 }
-                Lexed_Token::S_Abs_i8 => {
+                Lexed_Token::O_Shr_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(396u64), 0)
                 }
-                Lexed_Token::S_Abs_i16 => {
+                Lexed_Token::O_Shr_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(397u64), 0)
                 }
-                Lexed_Token::S_Abs_i32 => {
+                Lexed_Token::O_Shr_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(398u64), 0)
                 }
-                Lexed_Token::S_Abs_i64 => {
+                Lexed_Token::O_Shr_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(399u64), 0)
                 }
-                Lexed_Token::S_Add_i8 => {
+                Lexed_Token::O_Shr_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(400u64), 0)
                 }
-                Lexed_Token::S_Add_i16 => {
+                Lexed_Token::O_Shr_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(401u64), 0)
                 }
-                Lexed_Token::S_Add_i32 => {
+                Lexed_Token::O_Shr_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(402u64), 0)
                 }
-                Lexed_Token::S_Add_i64 => {
+                Lexed_Token::O_Sub_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(403u64), 0)
                 }
-                Lexed_Token::S_Add_u8 => {
+                Lexed_Token::O_Sub_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(404u64), 0)
                 }
-                Lexed_Token::S_Add_u16 => {
+                Lexed_Token::O_Sub_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(405u64), 0)
                 }
-                Lexed_Token::S_Add_u32 => {
+                Lexed_Token::O_Sub_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(406u64), 0)
                 }
-                Lexed_Token::S_Add_u64 => {
+                Lexed_Token::O_Sub_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(407u64), 0)
                 }
-                Lexed_Token::S_Add_U_i8 => {
+                Lexed_Token::O_Sub_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(408u64), 0)
                 }
-                Lexed_Token::S_Add_U_i16 => {
+                Lexed_Token::O_Sub_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(409u64), 0)
                 }
-                Lexed_Token::S_Add_U_i32 => {
+                Lexed_Token::O_Sub_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(410u64), 0)
                 }
-                Lexed_Token::S_Add_U_i64 => {
+                Lexed_Token::O_Sub_U_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(411u64), 0)
                 }
-                Lexed_Token::S_Add_S_u8 => {
+                Lexed_Token::O_Sub_U_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(412u64), 0)
                 }
-                Lexed_Token::S_Add_S_u16 => {
+                Lexed_Token::O_Sub_U_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(413u64), 0)
                 }
-                Lexed_Token::S_Add_S_u32 => {
+                Lexed_Token::O_Sub_U_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(414u64), 0)
                 }
-                Lexed_Token::S_Add_S_u64 => {
+                Lexed_Token::S_Abs_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(415u64), 0)
                 }
-                Lexed_Token::S_Div_i8 => {
+                Lexed_Token::S_Abs_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(416u64), 0)
                 }
-                Lexed_Token::S_Div_i16 => {
+                Lexed_Token::S_Abs_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(417u64), 0)
                 }
-                Lexed_Token::S_Div_i32 => {
+                Lexed_Token::S_Abs_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(418u64), 0)
                 }
-                Lexed_Token::S_Div_i64 => {
+                Lexed_Token::S_Add_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(419u64), 0)
                 }
-                Lexed_Token::S_Div_u8 => {
+                Lexed_Token::S_Add_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(420u64), 0)
                 }
-                Lexed_Token::S_Div_u16 => {
+                Lexed_Token::S_Add_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(421u64), 0)
                 }
-                Lexed_Token::S_Div_u32 => {
+                Lexed_Token::S_Add_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(422u64), 0)
                 }
-                Lexed_Token::S_Div_u64 => {
+                Lexed_Token::S_Add_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(423u64), 0)
                 }
-                Lexed_Token::S_Mul_i8 => {
+                Lexed_Token::S_Add_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(424u64), 0)
                 }
-                Lexed_Token::S_Mul_i16 => {
+                Lexed_Token::S_Add_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(425u64), 0)
                 }
-                Lexed_Token::S_Mul_i32 => {
+                Lexed_Token::S_Add_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(426u64), 0)
                 }
-                Lexed_Token::S_Mul_i64 => {
+                Lexed_Token::S_Add_U_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(427u64), 0)
                 }
-                Lexed_Token::S_Mul_u8 => {
+                Lexed_Token::S_Add_U_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(428u64), 0)
                 }
-                Lexed_Token::S_Mul_u16 => {
+                Lexed_Token::S_Add_U_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(429u64), 0)
                 }
-                Lexed_Token::S_Mul_u32 => {
+                Lexed_Token::S_Add_U_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(430u64), 0)
                 }
-                Lexed_Token::S_Mul_u64 => {
+                Lexed_Token::S_Add_S_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(431u64), 0)
                 }
-                Lexed_Token::S_Neg_i8 => {
+                Lexed_Token::S_Add_S_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(432u64), 0)
                 }
-                Lexed_Token::S_Neg_i16 => {
+                Lexed_Token::S_Add_S_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(433u64), 0)
                 }
-                Lexed_Token::S_Neg_i32 => {
+                Lexed_Token::S_Add_S_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(434u64), 0)
                 }
-                Lexed_Token::S_Neg_i64 => {
+                Lexed_Token::S_Div_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(435u64), 0)
                 }
-                Lexed_Token::S_Pow_i8 => {
+                Lexed_Token::S_Div_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(436u64), 0)
                 }
-                Lexed_Token::S_Pow_i16 => {
+                Lexed_Token::S_Div_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(437u64), 0)
                 }
-                Lexed_Token::S_Pow_i32 => {
+                Lexed_Token::S_Div_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(438u64), 0)
                 }
-                Lexed_Token::S_Pow_i64 => {
+                Lexed_Token::S_Div_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(439u64), 0)
                 }
-                Lexed_Token::S_Pow_u8 => {
+                Lexed_Token::S_Div_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(440u64), 0)
                 }
-                Lexed_Token::S_Pow_u16 => {
+                Lexed_Token::S_Div_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(441u64), 0)
                 }
-                Lexed_Token::S_Pow_u32 => {
+                Lexed_Token::S_Div_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(442u64), 0)
                 }
-                Lexed_Token::S_Pow_u64 => {
+                Lexed_Token::S_Mul_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(443u64), 0)
                 }
-                Lexed_Token::S_Sub_i8 => {
+                Lexed_Token::S_Mul_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(444u64), 0)
                 }
-                Lexed_Token::S_Sub_i16 => {
+                Lexed_Token::S_Mul_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(445u64), 0)
                 }
-                Lexed_Token::S_Sub_i32 => {
+                Lexed_Token::S_Mul_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(446u64), 0)
                 }
-                Lexed_Token::S_Sub_i64 => {
+                Lexed_Token::S_Mul_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(447u64), 0)
                 }
-                Lexed_Token::S_Sub_u8 => {
+                Lexed_Token::S_Mul_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(448u64), 0)
                 }
-                Lexed_Token::S_Sub_u16 => {
+                Lexed_Token::S_Mul_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(449u64), 0)
                 }
-                Lexed_Token::S_Sub_u32 => {
+                Lexed_Token::S_Mul_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(450u64), 0)
                 }
-                Lexed_Token::S_Sub_u64 => {
+                Lexed_Token::S_Neg_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(451u64), 0)
                 }
-                Lexed_Token::S_Sub_U_i8 => {
+                Lexed_Token::S_Neg_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(452u64), 0)
                 }
-                Lexed_Token::S_Sub_U_i16 => {
+                Lexed_Token::S_Neg_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(453u64), 0)
                 }
-                Lexed_Token::S_Sub_U_i32 => {
+                Lexed_Token::S_Neg_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(454u64), 0)
                 }
-                Lexed_Token::S_Sub_U_i64 => {
+                Lexed_Token::S_Pow_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(455u64), 0)
                 }
-                Lexed_Token::Abs_f32 => {
+                Lexed_Token::S_Pow_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(456u64), 0)
                 }
-                Lexed_Token::Abs_f64 => {
+                Lexed_Token::S_Pow_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(457u64), 0)
                 }
-                Lexed_Token::Add_f32 => {
+                Lexed_Token::S_Pow_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(458u64), 0)
                 }
-                Lexed_Token::Add_f64 => {
+                Lexed_Token::S_Pow_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(459u64), 0)
                 }
-                Lexed_Token::Div_f32 => {
+                Lexed_Token::S_Pow_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(460u64), 0)
                 }
-                Lexed_Token::Div_f64 => {
+                Lexed_Token::S_Pow_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(461u64), 0)
                 }
-                Lexed_Token::Div_E_f32 => {
+                Lexed_Token::S_Pow_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(462u64), 0)
                 }
-                Lexed_Token::Div_E_f64 => {
+                Lexed_Token::S_Sub_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(463u64), 0)
                 }
-                Lexed_Token::Log_f32 => {
+                Lexed_Token::S_Sub_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(464u64), 0)
                 }
-                Lexed_Token::Log_f64 => {
+                Lexed_Token::S_Sub_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(465u64), 0)
                 }
-                Lexed_Token::Sqrt_f32 => {
+                Lexed_Token::S_Sub_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(466u64), 0)
                 }
-                Lexed_Token::Sqrt_f64 => {
+                Lexed_Token::S_Sub_u8 => {
                     (Token_Kind::Instruction, Token_Value::integer(467u64), 0)
                 }
-                Lexed_Token::Mul_f32 => {
+                Lexed_Token::S_Sub_u16 => {
                     (Token_Kind::Instruction, Token_Value::integer(468u64), 0)
                 }
-                Lexed_Token::Mul_f64 => {
+                Lexed_Token::S_Sub_u32 => {
                     (Token_Kind::Instruction, Token_Value::integer(469u64), 0)
                 }
-                Lexed_Token::Neg_f32 => {
+                Lexed_Token::S_Sub_u64 => {
                     (Token_Kind::Instruction, Token_Value::integer(470u64), 0)
                 }
-                Lexed_Token::Neg_f64 => {
+                Lexed_Token::S_Sub_U_i8 => {
                     (Token_Kind::Instruction, Token_Value::integer(471u64), 0)
                 }
-                Lexed_Token::Pow_f32 => {
+                Lexed_Token::S_Sub_U_i16 => {
                     (Token_Kind::Instruction, Token_Value::integer(472u64), 0)
                 }
-                Lexed_Token::Pow_f64 => {
+                Lexed_Token::S_Sub_U_i32 => {
                     (Token_Kind::Instruction, Token_Value::integer(473u64), 0)
                 }
-                Lexed_Token::Rem_f32 => {
+                Lexed_Token::S_Sub_U_i64 => {
                     (Token_Kind::Instruction, Token_Value::integer(474u64), 0)
                 }
-                Lexed_Token::Rem_f64 => {
+                Lexed_Token::Abs_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(475u64), 0)
                 }
-                Lexed_Token::Rem_E_f32 => {
+                Lexed_Token::Abs_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(476u64), 0)
                 }
-                Lexed_Token::Rem_E_f64 => {
+                Lexed_Token::Add_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(477u64), 0)
                 }
-                Lexed_Token::Cbrt_f32 => {
+                Lexed_Token::Add_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(478u64), 0)
                 }
-                Lexed_Token::Cbrt_f64 => {
+                Lexed_Token::Div_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(479u64), 0)
                 }
-                Lexed_Token::Sub_f32 => {
+                Lexed_Token::Div_f64 => {
                     (Token_Kind::Instruction, Token_Value::integer(480u64), 0)
                 }
-                Lexed_Token::Sub_f64 => {
+                Lexed_Token::Div_E_f32 => {
                     (Token_Kind::Instruction, Token_Value::integer(481u64), 0)
+                }
+                Lexed_Token::Div_E_f64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(482u64), 0)
+                }
+                Lexed_Token::Log_f32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(483u64), 0)
+                }
+                Lexed_Token::Log_f64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(484u64), 0)
+                }
+                Lexed_Token::Sqrt_f32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(485u64), 0)
+                }
+                Lexed_Token::Sqrt_f64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(486u64), 0)
+                }
+                Lexed_Token::Mul_f32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(487u64), 0)
+                }
+                Lexed_Token::Mul_f64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(488u64), 0)
+                }
+                Lexed_Token::Neg_f32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(489u64), 0)
+                }
+                Lexed_Token::Neg_f64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(490u64), 0)
+                }
+                Lexed_Token::Pow_f32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(491u64), 0)
+                }
+                Lexed_Token::Pow_f64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(492u64), 0)
+                }
+                Lexed_Token::Rem_f32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(493u64), 0)
+                }
+                Lexed_Token::Rem_f64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(494u64), 0)
+                }
+                Lexed_Token::Rem_E_f32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(495u64), 0)
+                }
+                Lexed_Token::Rem_E_f64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(496u64), 0)
+                }
+                Lexed_Token::Cbrt_f32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(497u64), 0)
+                }
+                Lexed_Token::Cbrt_f64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(498u64), 0)
+                }
+                Lexed_Token::Sub_f32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(499u64), 0)
+                }
+                Lexed_Token::Sub_f64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(500u64), 0)
+                }
+                Lexed_Token::Fetch_Add_i8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(501u64), 0)
+                }
+                Lexed_Token::Fetch_Add_i16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(502u64), 0)
+                }
+                Lexed_Token::Fetch_Add_i32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(503u64), 0)
+                }
+                Lexed_Token::Fetch_Add_i64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(504u64), 0)
+                }
+                Lexed_Token::Fetch_Add_u8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(505u64), 0)
+                }
+                Lexed_Token::Fetch_Add_u16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(506u64), 0)
+                }
+                Lexed_Token::Fetch_Add_u32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(507u64), 0)
+                }
+                Lexed_Token::Fetch_Add_u64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(508u64), 0)
+                }
+                Lexed_Token::Fetch_Sub_i8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(509u64), 0)
+                }
+                Lexed_Token::Fetch_Sub_i16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(510u64), 0)
+                }
+                Lexed_Token::Fetch_Sub_i32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(511u64), 0)
+                }
+                Lexed_Token::Fetch_Sub_i64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(512u64), 0)
+                }
+                Lexed_Token::Fetch_Sub_u8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(513u64), 0)
+                }
+                Lexed_Token::Fetch_Sub_u16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(514u64), 0)
+                }
+                Lexed_Token::Fetch_Sub_u32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(515u64), 0)
+                }
+                Lexed_Token::Fetch_Sub_u64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(516u64), 0)
+                }
+                Lexed_Token::Fetch_Min_i8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(517u64), 0)
+                }
+                Lexed_Token::Fetch_Min_i16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(518u64), 0)
+                }
+                Lexed_Token::Fetch_Min_i32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(519u64), 0)
+                }
+                Lexed_Token::Fetch_Min_i64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(520u64), 0)
+                }
+                Lexed_Token::Fetch_Min_u8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(521u64), 0)
+                }
+                Lexed_Token::Fetch_Min_u16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(522u64), 0)
+                }
+                Lexed_Token::Fetch_Min_u32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(523u64), 0)
+                }
+                Lexed_Token::Fetch_Min_u64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(524u64), 0)
+                }
+                Lexed_Token::Fetch_Max_i8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(525u64), 0)
+                }
+                Lexed_Token::Fetch_Max_i16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(526u64), 0)
+                }
+                Lexed_Token::Fetch_Max_i32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(527u64), 0)
+                }
+                Lexed_Token::Fetch_Max_i64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(528u64), 0)
+                }
+                Lexed_Token::Fetch_Max_u8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(529u64), 0)
+                }
+                Lexed_Token::Fetch_Max_u16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(530u64), 0)
+                }
+                Lexed_Token::Fetch_Max_u32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(531u64), 0)
+                }
+                Lexed_Token::Fetch_Max_u64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(532u64), 0)
+                }
+                Lexed_Token::Fetch_And_i8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(533u64), 0)
+                }
+                Lexed_Token::Fetch_And_i16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(534u64), 0)
+                }
+                Lexed_Token::Fetch_And_i32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(535u64), 0)
+                }
+                Lexed_Token::Fetch_And_i64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(536u64), 0)
+                }
+                Lexed_Token::Fetch_And_u8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(537u64), 0)
+                }
+                Lexed_Token::Fetch_And_u16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(538u64), 0)
+                }
+                Lexed_Token::Fetch_And_u32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(539u64), 0)
+                }
+                Lexed_Token::Fetch_And_u64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(540u64), 0)
+                }
+                Lexed_Token::Fetch_Nand_i8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(541u64), 0)
+                }
+                Lexed_Token::Fetch_Nand_i16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(542u64), 0)
+                }
+                Lexed_Token::Fetch_Nand_i32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(543u64), 0)
+                }
+                Lexed_Token::Fetch_Nand_i64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(544u64), 0)
+                }
+                Lexed_Token::Fetch_Nand_u8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(545u64), 0)
+                }
+                Lexed_Token::Fetch_Nand_u16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(546u64), 0)
+                }
+                Lexed_Token::Fetch_Nand_u32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(547u64), 0)
+                }
+                Lexed_Token::Fetch_Nand_u64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(548u64), 0)
+                }
+                Lexed_Token::Fetch_Or_i8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(549u64), 0)
+                }
+                Lexed_Token::Fetch_Or_i16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(550u64), 0)
+                }
+                Lexed_Token::Fetch_Or_i32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(551u64), 0)
+                }
+                Lexed_Token::Fetch_Or_i64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(552u64), 0)
+                }
+                Lexed_Token::Fetch_Or_u8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(553u64), 0)
+                }
+                Lexed_Token::Fetch_Or_u16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(554u64), 0)
+                }
+                Lexed_Token::Fetch_Or_u32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(555u64), 0)
+                }
+                Lexed_Token::Fetch_Or_u64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(556u64), 0)
+                }
+                Lexed_Token::Fetch_Xor_i8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(557u64), 0)
+                }
+                Lexed_Token::Fetch_Xor_i16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(558u64), 0)
+                }
+                Lexed_Token::Fetch_Xor_i32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(559u64), 0)
+                }
+                Lexed_Token::Fetch_Xor_i64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(560u64), 0)
+                }
+                Lexed_Token::Fetch_Xor_u8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(561u64), 0)
+                }
+                Lexed_Token::Fetch_Xor_u16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(562u64), 0)
+                }
+                Lexed_Token::Fetch_Xor_u32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(563u64), 0)
+                }
+                Lexed_Token::Fetch_Xor_u64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(564u64), 0)
+                }
+                Lexed_Token::Cmp_Exchg_i8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(565u64), 0)
+                }
+                Lexed_Token::Cmp_Exchg_i16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(566u64), 0)
+                }
+                Lexed_Token::Cmp_Exchg_i32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(567u64), 0)
+                }
+                Lexed_Token::Cmp_Exchg_i64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(568u64), 0)
+                }
+                Lexed_Token::Cmp_Exchg_u8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(569u64), 0)
+                }
+                Lexed_Token::Cmp_Exchg_u16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(570u64), 0)
+                }
+                Lexed_Token::Cmp_Exchg_u32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(571u64), 0)
+                }
+                Lexed_Token::Cmp_Exchg_u64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(572u64), 0)
+                }
+                Lexed_Token::Atomic_Ld_8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(573u64), 0)
+                }
+                Lexed_Token::Atomic_Ld_16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(574u64), 0)
+                }
+                Lexed_Token::Atomic_Ld_32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(575u64), 0)
+                }
+                Lexed_Token::Atomic_Ld_64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(576u64), 0)
+                }
+                Lexed_Token::Atomic_St_8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(577u64), 0)
+                }
+                Lexed_Token::Atomic_St_16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(578u64), 0)
+                }
+                Lexed_Token::Atomic_St_32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(579u64), 0)
+                }
+                Lexed_Token::Atomic_St_64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(580u64), 0)
+                }
+                Lexed_Token::Spawn => {
+                    (Token_Kind::Instruction, Token_Value::integer(581u64), 0)
+                }
+                Lexed_Token::Wait => {
+                    (Token_Kind::Instruction, Token_Value::integer(582u64), 0)
+                }
+                Lexed_Token::Notify => {
+                    (Token_Kind::Instruction, Token_Value::integer(583u64), 0)
+                }
+                Lexed_Token::Swap_8 => {
+                    (Token_Kind::Instruction, Token_Value::integer(584u64), 0)
+                }
+                Lexed_Token::Swap_16 => {
+                    (Token_Kind::Instruction, Token_Value::integer(585u64), 0)
+                }
+                Lexed_Token::Swap_32 => {
+                    (Token_Kind::Instruction, Token_Value::integer(586u64), 0)
+                }
+                Lexed_Token::Swap_64 => {
+                    (Token_Kind::Instruction, Token_Value::integer(587u64), 0)
                 }
                 Lexed_Token::Type_i8 => {
                     (Token_Kind::Type, Token_Value::integer(8), SIGNED)
